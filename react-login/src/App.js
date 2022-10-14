@@ -1,72 +1,371 @@
-import 'mdb-react-ui-kit/dist/css/mdb.min.css'
-import React from 'react';
-import {MDBContainer, MDBCol, MDBRow, MDBBtn, MDBIcon, MDBInput, MDBCheckbox} from 'mdb-react-ui-kit';
-
+import React, {useState, useEffect} from "react";
+import "./styles.css";
+import {db, Fire} from './Fire'
+import firebase from 'firebase'
+import { BrowserRouter as Router,Switch,Route,Link,NavLink, Redirect } from "react-router-dom" 
+import Sidebar from './components/Sidebar'
+import Login from './components/Login'
+import Body from './components/Body'
+import ContextAppProvider from './ContextAPI'
+import { useBeforeunload } from 'react-beforeunload'
 function App() {
+  const [update, setUpdate]=useState(0)
+  const [user, setUser]=useState('')
+  const [name, setName]=useState('')
+  const [email, setEmail]=useState('')
+  const [password, setPassword]=useState('')
+  const [emailError, setEmailError]=useState('')
+  const [passwordError, setPasswordError]=useState('')
+  const [hasAccount, setHasAccount]=useState(false)
+  const [lname, setlName]=useState('')
+  const [userinfo, setUserinfo]=useState([])
+  const [users, setUsers]=useState([])
+  const [cover, setCover]=useState('https://www.gettyimages.ca/gi-resources/images/500px/983794168.jpg')
+  const [forgotpassword, setForgotpassword]=useState(false)
+  const [msgids, setMsgIds] = useState([''])
+  const [loading, setLoading]=useState(false)
+  const clearInputs = () => {
+    setEmail('')
+    setPassword('')
+  }
+  const clearErrors = () => {
+    setEmailError('')
+    setPasswordError('')
+  }
+  const handleLogin = () => {
+   
+    clearErrors()
+    firebase.auth().signInWithEmailAndPassword(email, password)
+    .then(()=>{setLoading(true)})
+    .catch(err => {
+      switch(err.code) {
+        case "auth/invalid-email":
+          setEmailError(err.message)
+          break
+        case "auth/user/disabled":
+        case "auth/user-not-found":
+          setEmailError('Email does not exist')
+        break
+        case "auth/wrong-password":
+          setPasswordError('Incorrect Password')
+        break
+        default:
+      }  
+    })
 
-  return (
-    <MDBContainer fluid className="p-3 my-5 h-custom">
+  } 
+  const handleSignup = () => {
+    console.log('signup')
+    clearErrors()
+    firebase.auth().createUserWithEmailAndPassword(email, password).catch(err => {
+        
+        switch(err.code) {
+        case "auth/email-already-in-use":
+          setEmailError(err.message)
+          break
+        case "auth/invalid-email":
+          setEmailError(err.message)
+        break
+        case "auth/weak-password":
+          setPasswordError(err.message)
+        break
+        default: 
+        setEmailError('Invalid')
+      }
+    })
+    firebase.auth().onAuthStateChanged(user => {
+      if(user) {
+          user.updateProfile({
+            displayName: name,
+          }) 
+          db.collection('users').doc(user.uid).set({
+              created: new Date(), 
+              msgids,
+              uid: firebase.auth().currentUser.uid,
+              online: true, 
+              userinfo: {
+                name,
+                cover,
+                age: '', 
+                phone: '', 
+                city: '',
+                country: '',
+                website: 'https://',
+                job: '',
+                email,
+              },
+              customization: {
+                color: '#10325c',
+                themecolor: '#0f6ce6',
+                darkmode: false,
+                widemode: false,
+              }
+          })
+          db.collection('notifications').doc(user.uid).set({
+            notifications: []
+          })
+   
+      }//if (user)
+      else {
+        setUser('')
+      } 
+    }) 
+  }
+  const handleLogout = () => {
+    if(user) {
+      db.collection('users').doc(user.uid).update({online: false})
+    }
+    window.location.reload()
+    firebase.auth().signOut()
+  }
+  const authListener = () => {
+    firebase.auth().onAuthStateChanged(user => {
+      if(user) {
+        clearInputs()
+        setUser(user)
+        db.collection('users').doc(user.uid).update({online: true})
+      }
+      else {
 
-      <MDBRow>
+          setUser('')
+          db.collection('users').doc(user.uid).update({online: false})
+      }
+    })
+  } 
+  
+  function loginwithGoogle(){
+    var provider = new firebase.auth.GoogleAuthProvider();
+    provider.addScope('email');
 
-      <MDBCol col='10' md='6'>
-          <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.webp" class="img-fluid" alt="Sample image" />
-        </MDBCol>
+    firebase.auth()
+    .signInWithPopup(provider)
+    .then((result) => {
+      if(result.additionalUserInfo.isNewUser){
+            /** @type {firebase.auth.OAuthCredential} */
+      var credential = result.credential;
+  
+      // This gives you a Google Access Token. You can use it to access the Google API.
+      var token = credential.accessToken;
+      // The signed-in user info.
+      var user = result.user;
+      // ...
+      db.collection('users').doc(user.uid).set({
+        created: new Date(), 
+        msgids,
+        uid: user.uid,
+        online: true, 
+        userinfo: {
+          name: user.displayName,
+          cover: user.photoURL,
+          age: '', 
+          phone: user.phoneNumber, 
+          city:'',
+          country: '',
+          website: 'https://',
+          job: '',
+          email: user.email
+        },
+        customization: {
+          color: '#10325c',
+          themecolor: '#0f6ce6',
+          darkmode: false,
+          widemode: false,
+        }
+    })
+    db.collection('notifications').doc(user.uid).set({
+      notifications: []
+    })
+      }
 
-        <MDBCol col='4' md='6'>
+    }).catch((error) => {
+      // Handle Errors here.
+      var errorCode = error.code;
+      var errorMessage = error.message;
+      // The email of the user's account used.
+      var email = error.email;
+      // The firebase.auth.AuthCredential type that was used.
+      var credential = error.credential;
+      // ...
+      setEmailError(error.message)
+      setTimeout(()=>{
+        setEmailError('')
+      },3000)
+    });
+  }
+  function loginwithTwitter(){
+    var provider = new firebase.auth.TwitterAuthProvider();
+    provider.addScope("email");
 
-          <div className="d-flex flex-row align-items-center justify-content-center">
+    firebase.auth().signInWithPopup(provider)
+    .then((result) => {
+      if(result.additionalUserInfo.isNewUser){
+        /** @type {firebase.auth.OAuthCredential} */
+        var credential = result.credential;
+  
+        // This gives you a Google Access Token. You can use it to access the Google API.
+        var token = credential.accessToken;
+        // The signed-in user info.
+        var usergoogle = result.user;
+        // ...
+        db.collection('users').doc(usergoogle.uid).set({
+          created: new Date(), 
+          msgids,
+          uid: usergoogle.uid,
+          online: true, 
+          userinfo: {
+            name: usergoogle.displayName,
+            cover: usergoogle.photoURL,
+            age: '', 
+            phone: usergoogle.phoneNumber, 
+            city:'',
+            country: '',
+            website: 'https://',
+            job: '',
+            email: usergoogle.email
+          },
+          customization: {
+            color: '#10325c',
+            themecolor: '#0f6ce6',
+            darkmode: false,
+            widemode: false,
+          }
+      })
+      db.collection('notifications').doc(usergoogle.uid).set({
+        notifications: []
+      })
+    }
+    })
+    .catch((error) => {
+      // Handle Errors here.
+      var errorCode = error.code;
+      var errorMessage = error.message;
+      // The email of the user's account used.
+      var email = error.email;
+      // The firebase.auth.AuthCredential type that was used.
+      var credential = error.credential;
+  
+      // ...
+      setEmailError(email)
+      setTimeout(()=>{
+        setEmailError('')
+      },3000)
+      console.log(errorCode)
+    });
+  }
+  function loginwithFacebook(){
+    var provider = new firebase.auth.FacebookAuthProvider();
+    provider.addScope("email");
 
-            <p className="lead fw-normal mb-0 me-3">Sign in with</p>
+    firebase.auth()
+    .signInWithPopup(provider)
+    .then((result) => {
+      if(result.additionalUserInfo.isNewUser){
+        /** @type {firebase.auth.OAuthCredential} */
+        var credential = result.credential;
+  
+        // This gives you a Google Access Token. You can use it to access the Google API.
+        var token = credential.accessToken;
+        // The signed-in user info.
+        var usergoogle = result.user;
+        // ...
+        db.collection('users').doc(usergoogle.uid).set({
+          created: new Date(), 
+          msgids,
+          uid: usergoogle.uid,
+          online: true, 
+          userinfo: {
+            name: usergoogle.displayName,
+            cover: usergoogle.photoURL,
+            age: '', 
+            phone: usergoogle.phoneNumber, 
+            city:'',
+            country: '',
+            website: 'https://',
+            job: '',
+            email: usergoogle.email
+          },
+          customization: {
+            color: '#10325c',
+            themecolor: '#0f6ce6',
+            darkmode: false,
+            widemode: false,
+          }
+      })
+      db.collection('notifications').doc(usergoogle.uid).set({
+        notifications: []
+      })
+    }
+    })
+    .catch((error) => {
+      // Handle Errors here.
+      var errorCode = error.code;
+      var errorMessage = error.message;
+      // The email of the user's account used.
+      var email = error.email;
+      // The firebase.auth.AuthCredential type that was used.
+      var credential = error.credential;
+  
+      // ...
+      setEmailError(email)
+      setTimeout(()=>{
+        setEmailError('')
+      },3000)
+      console.log(errorCode)
+    });
+  }
+  useBeforeunload(() => {
+    if(user) {
+      db.collection('users').doc(user.uid).update({online: false})
+    }
+  }) 
+  useEffect(() => { 
+    authListener()
+    window.addEventListener('onbeforeunload', removeActiveStatus) 
+    function removeActiveStatus() {
+      if(user) {
+        db.collection('users').doc(user.uid).update({online: false})
+      }
+    }
+    if(user) {
+      db.collection('users').doc(user.uid).update({online: true})
+    }
 
-            <MDBBtn floating size='md' tag='a' className='me-2' id="google-login"  style={{ backgroundColor: "#dd4b39" }}>
-              <MDBIcon fab icon='google' />
-            </MDBBtn>
+  },[])  
+  /*
+   localStorage.openpages = Date.now();
+   var onLocalStorageEvent = function(e){
+       if(e.key == "openpages"){
+           // Listen if anybody else is opening the same page!
+           localStorage.page_available = Date.now();
+       }
+       if(e.key == "page_available"){
+           alert("One more page already open");
+       }
+   };
 
-            <MDBBtn floating size='md' tag='a'  className='me-2' id="facebook-login" href="https://connect.facebook.net/en_US/sdk.js">
-              <MDBIcon fab icon='facebook' />
-            </MDBBtn>
+   window.addEventListener('storage', onLocalStorageEvent, false);
+*/  
+   return ( 
+    
+        <Router >
+    <div className="App">
+       {user?
+        <ContextAppProvider>
+        <>
+          <Body setLoading={setLoading} handleLogout={handleLogout} />
+          <Redirect to='/Home'/>
+        </>
+        </ContextAppProvider>
+        :
+        <> 
+        <Login loginwithTwitter={()=>loginwithTwitter} loginwithFacebook={()=>loginwithFacebook}loginwithGoogle={()=>loginwithGoogle} loading={loading} name={name} setName={setName} lname={lname} setlName={setlName}email={email} setEmail={setEmail} password= {password} setPassword={setPassword} handleLogin={handleLogin} handleSignup={handleSignup} hasAccount={hasAccount} setHasAccount={setHasAccount} emailError={emailError} passwordError={passwordError}/>       
+        <Redirect to='/'/>
+     </>
+        }
+    </div>  
+     </Router>
 
-            <MDBBtn floating size='md' tag='a'  className='me-2'>
-              <MDBIcon fab icon='linkedin-in' />
-            </MDBBtn>
-
-            <MDBBtn floating size='md' tag='a'  className='me-2' style={{ backgroundColor: "#000000" }}>
-              <MDBIcon fab icon='github' />
-            </MDBBtn>
-          </div>
-
-          <div className="divider d-flex align-items-center my-4 justify-content-center">
-            <p className="text-center fw-bold mx-3 mb-0">Or</p>
-          </div>
-
-          <MDBInput wrapperClass='mb-4' label='Email address' icon="envelope" id='formControlLg' type='email' size="lg"/>
-          <MDBInput wrapperClass='mb-4' label='Password' icon="lock" id='formControlLg' type='password' size="lg"/>
-
-          <div className="d-flex justify-content-between mb-4">
-            <MDBCheckbox name='flexCheck' value='' id='flexCheckDefault' label='Remember me' />
-            <a href="!#" className="link-danger">Forgot password?</a>
-          </div>
-
-          <div className='text-center text-md-start mt-4 pt-2'>
-            <MDBBtn className="mb-0 px-5 bg-info" size='lg'>Login</MDBBtn>
-            <p className="small fw-bold mt-2 pt-1 mb-2">Don't have an account? <a className="link-danger">Register</a></p>
-          </div>
-
-        </MDBCol>
-
-      </MDBRow>
-
-      <div className="d-flex flex-column flex-md-row text-center text-md-start justify-content-between py-4 px-4 px-xl-5 bg-info">
-
-        <div className="text-white mb-3 mb-md-0">
-          Copyright © 2022. MOON AND CAKE.
-        </div>
-
-      </div>
-
-    </MDBContainer>
   );
 }
 
-export default App;
+export default App 
