@@ -26,8 +26,6 @@ function Login(props){
      <div className='icon'>
               <button className='login-btn gog-btn' onClick={loginwithGoogle()}> <i class="fab fa-google"></i></button>
               <button className='login-btn fb-btn' onClick={loginwithFacebook()}><i className="fab fa-facebook"></i></button>
-              <button className='login-btn twi-btn' onClick={loginwithTwitter()}><i class="fab fa-twitter"></i></button>
-              <button className='login-btn git-btn' ><i class="fab fa-github"></i></button>
               </div>      
 
         <div className="sub_title">

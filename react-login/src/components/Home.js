@@ -54,7 +54,7 @@ function Body(props) {
   function determinetext() {
     if (user) {
       
-        return determineTime() + " " + user.displayName
+        return determineTime() + " " + user.displayName + " (role: " + user.providerData[0].providerId + ")"
       
     }
   }

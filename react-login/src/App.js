@@ -102,7 +102,7 @@ function App() {
               }
           })
           db.collection('notifications').doc(user.uid).set({
-            notifications: []
+            notifications: 'email'
           })
    
       }//if (user)
@@ -164,6 +164,7 @@ function App() {
           website: 'https://',
           job: '',
           email: user.email
+          
         },
         customization: {
           color: '#10325c',
@@ -173,7 +174,7 @@ function App() {
         }
     })
     db.collection('notifications').doc(user.uid).set({
-      notifications: []
+      notifications: 'Google'
     })
       }
 
@@ -190,66 +191,6 @@ function App() {
       setTimeout(()=>{
         setEmailError('')
       },3000)
-    });
-  }
-  function loginwithTwitter(){
-    var provider = new firebase.auth.TwitterAuthProvider();
-    provider.addScope("email");
-
-    firebase.auth().signInWithPopup(provider)
-    .then((result) => {
-      if(result.additionalUserInfo.isNewUser){
-        /** @type {firebase.auth.OAuthCredential} */
-        var credential = result.credential;
-  
-        // This gives you a Google Access Token. You can use it to access the Google API.
-        var token = credential.accessToken;
-        // The signed-in user info.
-        var usergoogle = result.user;
-        // ...
-        db.collection('users').doc(usergoogle.uid).set({
-          created: new Date(), 
-          msgids,
-          uid: usergoogle.uid,
-          online: true, 
-          userinfo: {
-            name: usergoogle.displayName,
-            cover: usergoogle.photoURL,
-            age: '', 
-            phone: usergoogle.phoneNumber, 
-            city:'',
-            country: '',
-            website: 'https://',
-            job: '',
-            email: usergoogle.email
-          },
-          customization: {
-            color: '#10325c',
-            themecolor: '#0f6ce6',
-            darkmode: false,
-            widemode: false,
-          }
-      })
-      db.collection('notifications').doc(usergoogle.uid).set({
-        notifications: []
-      })
-    }
-    })
-    .catch((error) => {
-      // Handle Errors here.
-      var errorCode = error.code;
-      var errorMessage = error.message;
-      // The email of the user's account used.
-      var email = error.email;
-      // The firebase.auth.AuthCredential type that was used.
-      var credential = error.credential;
-  
-      // ...
-      setEmailError(email)
-      setTimeout(()=>{
-        setEmailError('')
-      },3000)
-      console.log(errorCode)
     });
   }
   function loginwithFacebook(){
@@ -273,6 +214,7 @@ function App() {
           msgids,
           uid: usergoogle.uid,
           online: true, 
+          role: 1,
           userinfo: {
             name: usergoogle.displayName,
             cover: usergoogle.photoURL,
@@ -292,7 +234,7 @@ function App() {
           }
       })
       db.collection('notifications').doc(usergoogle.uid).set({
-        notifications: []
+        notifications: 'Facebook'
       })
     }
     })
