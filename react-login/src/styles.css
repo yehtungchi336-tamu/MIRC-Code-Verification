@@ -748,6 +748,13 @@ a {
   justify-content: space-between;
   min-height: 70%;
 }
+.choose_role {
+  width: 400px;
+  padding: 3px 6px;
+  margin: .4rem;
+  font-size: 15px;
+  justify-content: centor;
+}
 form {
   display: flex;
   height: 100%;

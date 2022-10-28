@@ -35,10 +35,24 @@ function Login(props){
         <div className="title">
         <h2>{hasAccount?'Log In':'Register'}</h2>
         </div>
+
         <div className="spacer1"></div>
+        <label style={{display: hasAccount?'none': 'flex'}}>  
+            <fieldset className="choose_role">
+                <legend>Choose your role</legend>
+                <div>
+                  <input type="radio" id="assistant" name="interest" class="slectOne" value="assistant" />
+                  <label for="assistant">Assistant</label>
+                </div>
+                <div>
+                  <input type="radio" id="executive" name="interest" class="slectOne" value="executive" />
+                  <label for="executive">Executive</label>
+                </div>
+            </fieldset>  
+          </label> 
           <div className="logincontainer">
             <form onSubmit={(e)=>e.preventDefault()}>
-              <label style={{display: hasAccount?'none': 'flex'}}>
+              <label style={{display: hasAccount?'none': 'flex'}}>   
                 <span>Name</span>
                 <input type="text" placeholder='Jennifer Chang' onChange={(e)=>setName(e.target.value)}/>
               </label>

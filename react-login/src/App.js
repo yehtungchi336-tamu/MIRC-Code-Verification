@@ -115,7 +115,7 @@ function App() {
     if(user) {
       db.collection('users').doc(user.uid).update({online: false})
     }
-    window.location.reload()
+    window.location.host
     firebase.auth().signOut()
   }
   const authListener = () => {
@@ -294,7 +294,7 @@ function App() {
        {user?
         <ContextAppProvider>
         <>
-          <Body setLoading={setLoading} handleLogout={handleLogout} />
+          <Body setLoading={setLoading}  handleLogout={handleLogout}/>
           <Redirect to='/Home'/>
         </>
         </ContextAppProvider>
