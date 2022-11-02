@@ -8,6 +8,8 @@ import Login from './components/Login'
 import Body from './components/Body'
 import ContextAppProvider from './ContextAPI'
 import { useBeforeunload } from 'react-beforeunload'
+import emailjs from 'emailjs-com'
+
 function App() {
   const [update, setUpdate]=useState(0)
   const [user, setUser]=useState('')
