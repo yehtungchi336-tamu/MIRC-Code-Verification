@@ -16,40 +16,39 @@ function Login(props){
         return 'Log in'
       }
   }
+
   return (
     <>
      <Route exact path='/'>
      <div className='image'>
      <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.webp" class="img-fluid" alt="Sample image" />
      </div>
-     <div className='login'>
-     <div className='icon'>
-              <button className='login-btn gog-btn' onClick={loginwithGoogle()}> <i class="fab fa-google"></i></button>
-              <button className='login-btn fb-btn' onClick={loginwithFacebook()}><i className="fab fa-facebook"></i></button>
-              </div>      
-
-        <div className="sub_title">
+     <div className='login'>    
+        <div className='icon'>
+          <label style={{display: hasAccount?'flex': 'none'}}>  
+            <button className='login-btn gog-btn' onClick={loginwithGoogle()}> <i class="fab fa-google"></i></button>
+            <button className='login-btn fb-btn' onClick={loginwithFacebook()}><i className="fab fa-facebook"></i></button>
+          </label>    
+        </div>  
+        <div className="sub_title" style={{display: hasAccount?'flex': 'none'}}>
             <p className="text-center">Or</p>
-          </div>
+        </div>
 
         <div className="title">
         <h2>{hasAccount?'Log In':'Register'}</h2>
-        </div>
-
+        </div>        
         <div className="spacer1"></div>
-        <label style={{display: hasAccount?'none': 'flex'}}>  
             <fieldset className="choose_role">
                 <legend>Choose your role</legend>
                 <div>
                   <input type="radio" id="assistant" name="interest" class="slectOne" value="assistant" />
-                  <label for="assistant">Assistant</label>
+                  <label for="assistant" >Assistant</label>
                 </div>
                 <div>
                   <input type="radio" id="executive" name="interest" class="slectOne" value="executive" />
-                  <label for="executive">Executive</label>
+                  <label for="executive" >Executive</label>
                 </div>
             </fieldset>  
-          </label> 
           <div className="logincontainer">
             <form onSubmit={(e)=>e.preventDefault()}>
               <label style={{display: hasAccount?'none': 'flex'}}>   

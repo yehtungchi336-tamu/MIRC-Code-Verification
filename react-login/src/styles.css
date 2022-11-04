@@ -719,7 +719,7 @@ a {
 }
 .sub_title {
   display: flex;
-  justify-content: space-around;
+  justify-content: center;
   color: rgba(0, 0, 0, 0.397);
   height: 70%;
   font-weight: bold;
@@ -727,7 +727,7 @@ a {
 .title {
   display: flex;
   position: relative;
-  justify-content: space-around;
+  justify-content: center;
   color: rgba(35, 34, 34, 0.925);
   top: 30%;
 }
@@ -749,7 +749,7 @@ a {
   min-height: 70%;
 }
 .choose_role {
-  width: 400px;
+  width: 345px;
   padding: 3px 6px;
   margin: .4rem;
   font-size: 15px;

@@ -12,7 +12,7 @@ function Sidebar (props) {
   const [loader, setLoader]=useState(true)
   const user = firebase.auth().currentUser
   const [extend, setExtend]=useState(false)
-
+/*
   useEffect(()=>{
     db.collection('users').doc(user.uid).onSnapshot(snap=>{
       const user = snap.data()  
@@ -21,6 +21,7 @@ function Sidebar (props) {
       setLoader(false)
     })
   },[userimg])
+  */
   return (
    <>
   

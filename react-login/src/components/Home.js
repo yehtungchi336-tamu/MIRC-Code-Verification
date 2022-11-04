@@ -17,11 +17,13 @@ import Usersettings from "./Usersettings";
 import { ContextApp } from "../ContextAPI";
 import Hoverlink from "./Hoverlink";
 function Body(props) {
-  const { themecolor } = useContext(ContextApp);
-  const user = firebase.auth().currentUser;
-  const [cover, setCover] = useState("");
-  const { handleLogout } = props;
-  const links = ["comment", "notifications", "settings", "logout"];
+  const { themecolor } = useContext(ContextApp)
+  const user = firebase.auth().currentUser
+  const [roleType, setRoleType] = useState('')
+  //var roleType = 'assistant'
+  const [cover, setCover] = useState("")
+  const { handleLogout } = props
+  const links = ["comment", "notifications", "settings", "logout"]
   const [notifi, setNotifLength]=useState(0)
   const lnks = [
     { icon: "fal fa-comment-alt", txt: "Comment" },
@@ -37,6 +39,18 @@ function Body(props) {
         <Hoverlink  icon={lnk.icon} txt={lnk.txt} handleLogout={handleLogout} />
       );
     });
+
+    useEffect(()=>{
+      if (user){
+      db.collection('users').doc(user.uid).onSnapshot(snap=>{
+        const tmp = snap.data()
+        setRoleType(tmp.role)
+        //roleType = tmp.role
+        console.log("home set role.." + tmp.role)
+      })
+    }
+    },[])
+
   function determineTime() {
     const d = new Date();
     if (d.getHours() >= 6 && d.getHours() < 12) {
@@ -51,19 +65,13 @@ function Body(props) {
       return "Good Night,";
     }
   }
+
   function determinetext() {
     if (user) {
-      
-        return determineTime() + " " + user.displayName + " (role: " + user.providerData[0].providerId + ")"
-      
+        return determineTime() + " " + roleType + " " + user.displayName + " (login type: " + user.providerData[0].providerId + ")"
     }
   }
-  useEffect(()=>{
-    db.collection('notifications').doc(user.uid).onSnapshot(snap=>{
-      const notifi = snap.data()
-      setNotifLength(notifi.notifications.length)
-    })
-  },[])
+
   return (
     <div className="home">
       <div className="header flex sb">

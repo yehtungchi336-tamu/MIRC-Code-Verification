@@ -177,6 +177,7 @@ function Body(props) {
         });
         setAllusers(users);
       });
+      /*
       db.collection('users').doc(user.uid).onSnapshot(snap=>{
         const user = snap.data()
         document.documentElement.style.setProperty(
@@ -186,7 +187,7 @@ function Body(props) {
           '--chat-color', user.customization.color
         )
       })
-
+      */
     }
     setLoading(false);
   }, []);
