@@ -69,40 +69,89 @@ function Body(props) {
       <div className="header flex sb">
         <h2 className="marginBottom">{determinetext()}</h2>
       </div>
-      <hr />
+      
       <div className="flex fe sticky">
-        <div className="gridobjects bs marginBottom">
-          <Hoverlink
-            icon="fal fa-comment-alt"
-            txt="Comment"
-            classNames="blueback one flexrow sa"
-            lnk=""
-          />
-          <div className="bell">
-          <Hoverlink
-            icon="fal fa-bell"
-            txt="Notifications"
-            classNames="blueback two flexrow sa"
-            lnk=""
-          />
-          <div className="notificount flex">{notifi}</div>
-          </div>
-          <Hoverlink
-            icon="fal fa-cog"
-            txt="Settings"
-            classNames="blueback three flexrow sa "
-            lnk=""
-          />
+        <div className="gridobjects  bs marginBottom">
           <Hoverlink
             icon="fal fa-sign-out"
             txt="Logout"
-            classNames="blueback four flexrow sa"
+            classNames="blueback all flexrow sa"
             lnk="/"
             clk={() => props.handleLogout()}
           />
         </div>
       </div>
-      <hr />
+      
+      <form> 
+          <div class="form-group">
+            <label for="subject">Subject</label>
+            <input
+              type="subject"
+              name="subject"
+              class="form-control-lg "
+              id="subject"
+              placeholder=" enter email subject"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="recipient">TO: </label>
+            <input
+              type="recipient"
+              name="recipient"
+              class="form-control-lg"
+              id="recipient"
+              placeholder=" enter the recipient"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="cc">CC:</label>
+            <input
+              type="cc"
+              name="cc"
+              class="form-control-lg"
+              id="cc"
+              placeholder=" enter the Carbon Copy"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="bcc">BCC:</label>
+            <input
+              type="bcc"
+              name="bcc"
+              class="form-control-lg"
+              id="bcc"
+              placeholder=" enter the Blind Carbon Copy"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="email_body">Message</label>
+            <textarea
+              class="form-control-lg"
+              id="email_body"
+              rows="5"
+            ></textarea>
+          </div>
+          
+      <div >
+        <div className="gridobjects  bs marginBottom">
+          <Hoverlink
+            
+            txt="Submit"
+            classNames="blueback all flexrow center"
+            lnk="/"
+            
+          />
+        </div>
+      </div>
+      
+
+      </form>
+
+
       <div className="homeside">
 
       </div>
