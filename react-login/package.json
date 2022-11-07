@@ -39,7 +39,7 @@
     "react-is": "^18.2.0",
     "react-link-preview": "0.1.3",
     "react-player": "2.9.0",
-    "react-router-dom": "5.2.0",
+    "react-router-dom": "^5.2.0",
     "react-scripts": "^4.0.0",
     "react-spinners": "0.10.4",
     "react-time-ago": "6.2.2",

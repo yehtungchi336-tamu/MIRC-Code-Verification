@@ -6,6 +6,7 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
+  useHistory,
   Link,
   NavLink,
   Redirect,
@@ -16,6 +17,7 @@ import emailjs from 'emailjs-com'
 import Usersettings from "./Usersettings";
 import { ContextApp } from "../ContextAPI";
 import Hoverlink from "./Hoverlink";
+//import linkage from "/linkage";
 function Body(props) {
   const { themecolor } = useContext(ContextApp)
   const user = firebase.auth().currentUser
@@ -61,6 +63,11 @@ function Body(props) {
       }
     );
   }
+
+  /*const nav = useNavigate();
+  const nav2emaillinkage = () => {
+    nav('/linkage');
+  };*/
 
   useEffect(()=>{
     if (user){
@@ -111,6 +118,17 @@ function Body(props) {
           />
         </div>
       </div>
+      {/*
+      <div>
+        <button onClick={nav2emaillinkage} id="nav_linkage">Linkage your Email</button>
+        <Router>
+          <Switch>
+            <Route path="/linkage" component={linkage}/>
+          </Switch>
+        </Router>
+      </div>
+      */}
+
       <div class="container">
         <div class="row">
           <div class="col align-self-center">
@@ -160,15 +178,16 @@ function Body(props) {
               </div>
 
               <div class="form-group">
-                <label for="email_body">Message</label>
+                <label htmlFor="message">Message</label>
                 <textarea
                   class="form-control-lg"
-                  id="email_body"
+                  name="message"
+                  id="message"
                   rows="5"
                 ></textarea>
               </div>
                 
-              <button type="submit" id="submit_form" class="btn btn-primary">Submit</button>
+              <button type="submit" class="btn btn-primary" id="submit_form">Submit</button>
 
             </form>
           </div>
