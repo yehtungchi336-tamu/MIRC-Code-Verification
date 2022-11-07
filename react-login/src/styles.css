@@ -3083,3 +3083,9 @@ transform: translateY(-50%)
     display: none;
   }
 }
+
+#submit_form{
+  width: 75px;
+  height: 30px;
+  color: black
+}

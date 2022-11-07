@@ -9,6 +9,7 @@
   ],
   "main": "src/index.js",
   "dependencies": {
+    "@emailjs/browser": "^3.9.1",
     "@fullcalendar/core": "5.5.1",
     "@fullcalendar/daygrid": "5.5.0",
     "@fullcalendar/list": "5.5.0",

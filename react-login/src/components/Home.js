@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import firebase from "firebase";
 import { db } from "../Fire";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
@@ -12,7 +12,7 @@ import {
   useLocation
 } from "react-router-dom";
 import ReactTimeAgo from 'react-time-ago'
-
+import emailjs from 'emailjs-com'
 import Usersettings from "./Usersettings";
 import { ContextApp } from "../ContextAPI";
 import Hoverlink from "./Hoverlink";
@@ -40,16 +40,38 @@ function Body(props) {
       );
     });
 
-    useEffect(()=>{
-      if (user){
-      db.collection('users').doc(user.uid).onSnapshot(snap=>{
-        const tmp = snap.data()
-        setRoleType(tmp.role)
-        //roleType = tmp.role
-        console.log("home set role.." + tmp.role)
-      })
+  const form = useRef();
+  function MailSending(e){
+    e.preventDefault();
+
+    emailjs.sendForm(
+      "service_k0epgii",
+      "template_a0nogel",
+      form.current,
+      "J14Ld2x5lECND_Nx1"
+    )
+    .then(
+      (result) => {
+        console.log(result.text);
+        alert("SUCCESS!");
+      },
+      (error) => {
+        console.log(error.text);
+        alert("FAILED...", error);
+      }
+    );
+  }
+
+  useEffect(()=>{
+    if (user){
+    db.collection('users').doc(user.uid).onSnapshot(snap=>{
+      const tmp = snap.data()
+      setRoleType(tmp.role)
+      //roleType = tmp.role
+      console.log("home set role.." + tmp.role)
+    })
     }
-    },[])
+  },[])
 
   function determineTime() {
     const d = new Date();
@@ -89,77 +111,69 @@ function Body(props) {
           />
         </div>
       </div>
-      
-      <form> 
-          <div class="form-group">
-            <label for="subject">Subject</label>
-            <input
-              type="subject"
-              name="subject"
-              class="form-control-lg "
-              id="subject"
-              placeholder=" enter email subject"
-            />
-          </div>
+      <div class="container">
+        <div class="row">
+          <div class="col align-self-center">
+            <form action="" ref={form} onSubmit={MailSending}> 
+              <div class="form-group">
+                <label for="subject">Subject</label>
+                <input
+                  type="subject"
+                  name="subject"
+                  class="form-control-lg "
+                  id="subject"
+                  placeholder=" enter email subject"
+                />
+              </div>
 
-          <div class="form-group">
-            <label for="recipient">TO: </label>
-            <input
-              type="recipient"
-              name="recipient"
-              class="form-control-lg"
-              id="recipient"
-              placeholder=" enter the recipient"
-            />
-          </div>
+              <div class="form-group">
+                <label for="recipient">TO: </label>
+                <input
+                  type="recipient"
+                  name="recipient"
+                  class="form-control-lg"
+                  id="recipient"
+                  placeholder=" enter the recipient's address"
+                />
+              </div>
 
-          <div class="form-group">
-            <label for="cc">CC:</label>
-            <input
-              type="cc"
-              name="cc"
-              class="form-control-lg"
-              id="cc"
-              placeholder=" enter the Carbon Copy"
-            />
-          </div>
+              <div class="form-group">
+                <label for="cc">CC:</label>
+                <input
+                  type="cc"
+                  name="cc"
+                  class="form-control-lg"
+                  id="cc"
+                  placeholder=" enter the Carbon Copy"
+                />
+              </div>
 
-          <div class="form-group">
-            <label for="bcc">BCC:</label>
-            <input
-              type="bcc"
-              name="bcc"
-              class="form-control-lg"
-              id="bcc"
-              placeholder=" enter the Blind Carbon Copy"
-            />
-          </div>
+              <div class="form-group">
+                <label for="bcc">BCC:</label>
+                <input
+                  type="bcc"
+                  name="bcc"
+                  class="form-control-lg"
+                  id="bcc"
+                  placeholder=" enter the Blind Carbon Copy"
+                />
+              </div>
 
-          <div class="form-group">
-            <label for="email_body">Message</label>
-            <textarea
-              class="form-control-lg"
-              id="email_body"
-              rows="5"
-            ></textarea>
+              <div class="form-group">
+                <label for="email_body">Message</label>
+                <textarea
+                  class="form-control-lg"
+                  id="email_body"
+                  rows="5"
+                ></textarea>
+              </div>
+                
+              <button type="submit" id="submit_form" class="btn btn-primary">Submit</button>
+
+            </form>
           </div>
-          
-      <div >
-        <div className="gridobjects  bs marginBottom">
-          <Hoverlink
-            
-            txt="Submit"
-            classNames="blueback all flexrow center"
-            lnk="/"
-            
-          />
         </div>
       </div>
-      
-
-      </form>
-
-
       <div className="homeside">
 
       </div>
