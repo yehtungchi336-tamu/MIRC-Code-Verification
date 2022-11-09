@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useContext } from "react";
 import firebase from "firebase";
-import { db } from "../Fire";
+import { db, realtime_db } from "../Fire";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 import {
   BrowserRouter as Router,
@@ -17,7 +17,7 @@ import emailjs from 'emailjs-com'
 import Usersettings from "./Usersettings";
 import { ContextApp } from "../ContextAPI";
 import Hoverlink from "./Hoverlink";
-//import linkage from "/linkage";
+import linkage from "./linkage";
 function Body(props) {
   const { themecolor } = useContext(ContextApp)
   const user = firebase.auth().currentUser
@@ -64,10 +64,10 @@ function Body(props) {
     );
   }
 
-  /*const nav = useNavigate();
+  const history = useHistory();
   const nav2emaillinkage = () => {
-    nav('/linkage');
-  };*/
+    history.push('/linkage');
+  };
 
   useEffect(()=>{
     if (user){
@@ -118,17 +118,14 @@ function Body(props) {
           />
         </div>
       </div>
-      {/*
       <div>
-        <button onClick={nav2emaillinkage} id="nav_linkage">Linkage your Email</button>
-        <Router>
-          <Switch>
-            <Route path="/linkage" component={linkage}/>
-          </Switch>
-        </Router>
+        {/*
+        <button className="btn btn-success" onClick={nav2emaillinkage}>
+          Email Linkage
+        </button>
+        */}
       </div>
-      */}
-
+      {/*
       <div class="container">
         <div class="row">
           <div class="col align-self-center">
@@ -193,6 +190,7 @@ function Body(props) {
           </div>
         </div>
       </div>
+      */}
       <div className="homeside">
 
       </div>

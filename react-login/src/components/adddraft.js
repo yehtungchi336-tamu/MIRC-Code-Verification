@@ -20,7 +20,6 @@ function Adddraft(props) {
   const { themecolor } = useContext(ContextApp)
   const user = firebase.auth().currentUser
   const [roleType, setRoleType] = useState('')
-  //var roleType = 'assistant'
   const [cover, setCover] = useState("")
   const { handleLogout } = props
   const links = ["comment", "notifications", "settings", "adddraft", "logout"]
@@ -77,6 +76,17 @@ function Adddraft(props) {
 
   }
 
+  useEffect(()=>{
+    if (user){
+    db.collection('users').doc(user.uid).onSnapshot(snap=>{
+      const tmp = snap.data()
+      setRoleType(tmp.role)
+      //roleType = tmp.role
+      console.log("home set role.." + tmp.role)
+    })
+    }
+  },[])
+
   function determineTime() {
     const d = new Date();
     if (d.getHours() >= 6 && d.getHours() < 12) {
@@ -94,14 +104,15 @@ function Adddraft(props) {
 
   function determinetext() {
     if (user) {
-        return determineTime() + " " + roleType + user.displayName + " (login type: " + user.providerData[0].providerId + ")" + "   Add draft"
+        return determineTime() + " " + roleType + " " + user.displayName + " (login type: " + user.providerData[0].providerId + ")"
     }
   }
 
   return (
     <div className="home">
       <div className="header flex sb">
-        <h2 className="marginBottom">{determinetext()}</h2>
+        {/*<h2 className="marginBottom">{determinetext()}</h2>*/}
+        <h2 style={{color: 'black'}}>Add Draft</h2>
       </div>
       
       <div className="flex fe sticky">
@@ -119,7 +130,7 @@ function Adddraft(props) {
         <div class="row">
           <div class="col align-self-center">
           <form onSubmit={handleSubmit}>
-            <label>Subject:
+            <label>Subject
             <input 
               type="text" 
               name="subject" 
@@ -128,7 +139,7 @@ function Adddraft(props) {
               onChange={handleChange}
             />
             </label>
-            <label>TO:
+            <label>TO
               <input 
                 type="text" 
                 name="recipient" 
@@ -137,7 +148,7 @@ function Adddraft(props) {
                 onChange={handleChange}
             />
             </label>
-            <label>CC:
+            <label>CC
               <input 
                 type="text" 
                 name="CC" 
@@ -146,7 +157,7 @@ function Adddraft(props) {
                 onChange={handleChange}
             />
             </label>
-            <label>BCC:
+            <label>BCC
               <input 
                 type="text" 
                 name="BCC" 
@@ -156,8 +167,9 @@ function Adddraft(props) {
             />
             </label>
 
-            <textarea value={textarea  || ""} rows="10" onChange={handle_textarea_Change} />
-              <input type="submit" value='Submit' />
+            <label>Message<textarea value={textarea  || ""} rows="10" onChange={handle_textarea_Change} />
+            </label>
+              <input type="submit" class="btn btn-primary" id='draft_submit' value='Submit' />
 
 
           </form>

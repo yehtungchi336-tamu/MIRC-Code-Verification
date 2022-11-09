@@ -3095,3 +3095,15 @@ transform: translateY(-50%)
   height: 35px;
   color: black
 }
+
+#draft_submit{
+  width: 75px;
+  height: 30px;
+  color: black
+}
+
+#linkage_btn{
+  width: 125px;
+  height: 35px;
+  color: black
+}

@@ -1,13 +1,15 @@
 import React, {useState, useEffect, useContext} from 'react'
 import { BrowserRouter as Router,Switch,Route,Link,NavLink, Redirect } from "react-router-dom" 
 import firebase from 'firebase'
-import {db} from '../Fire'
+import {db, realtime_db} from '../Fire'
 import Usernav from './Usernav'
 import Userrow from './Userrow'
 import Userprofile from './Userprofile'
 import Usersettings from './Usersettings'
 import Home from './Home'
 import Adddraft from './adddraft'
+import Linkage from './linkage'
+import MailSend from './MailSend'
 import Notifications from './Notifications'
 import {CSSTransition, TransitionGroup} from 'react-transition-group'
 import {ContextApp} from '../ContextAPI'
@@ -58,6 +60,18 @@ function Paths (props) {
       <Route  path='/adddraft'>
         <div className={darkmode? "conversations darkmode":'conversations'} style={{backgroundColor: themecolor}}>
           <Adddraft handleLogout={props.handleLogout}/>
+        </div>
+      </Route>
+
+      <Route  path='/linkage'>
+        <div className={darkmode? "conversations darkmode":'conversations'} style={{backgroundColor: themecolor}}>
+          <Linkage handleLogout={props.handleLogout}/>
+        </div>
+      </Route>
+
+      <Route  path='/MailSend'>
+        <div className={darkmode? "conversations darkmode":'conversations'} style={{backgroundColor: themecolor}}>
+          <MailSend handleLogout={props.handleLogout}/>
         </div>
       </Route>
   </>
