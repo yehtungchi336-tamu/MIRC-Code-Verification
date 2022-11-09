@@ -17,10 +17,12 @@ let ContextAppProvider=(props)=>{
   if(user) {
     db.collection('users').doc(user.uid).onSnapshot(snap=>{
       let user = snap.data()
+      /*
       setDarkmode(user.customization.darkmode)
       setWidemode(user.customization.widemode)
       setChatcolor(user.customization.color)
       setThemecolor(user.customization.themecolor)
+      */
     })
   }
   return (

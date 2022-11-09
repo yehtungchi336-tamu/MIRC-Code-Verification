@@ -1,13 +1,16 @@
 import React, {useState, useEffect} from "react";
 import "./styles.css";
-import {db, Fire} from './Fire'
-import firebase from 'firebase'
+import {db, Fire} from './Fire';
+import firebase from "firebase";
 import { BrowserRouter as Router,Switch,Route,Link,NavLink, Redirect } from "react-router-dom" 
 import Sidebar from './components/Sidebar'
 import Login from './components/Login'
 import Body from './components/Body'
+import adddraft from './components/adddraft'
 import ContextAppProvider from './ContextAPI'
 import { useBeforeunload } from 'react-beforeunload'
+import emailjs from 'emailjs-com'
+
 function App() {
   const [update, setUpdate]=useState(0)
   const [user, setUser]=useState('')
@@ -16,7 +19,9 @@ function App() {
   const [password, setPassword]=useState('')
   const [emailError, setEmailError]=useState('')
   const [passwordError, setPasswordError]=useState('')
-  const [hasAccount, setHasAccount]=useState(false)
+  const [hasAccount, setHasAccount]=useState(true)
+  //const [loginType, setLoginType]=useState('assistant')
+  var loginType = "assistant"
   const [lname, setlName]=useState('')
   const [userinfo, setUserinfo]=useState([])
   const [users, setUsers]=useState([])
@@ -33,8 +38,15 @@ function App() {
     setPasswordError('')
   }
   const handleLogin = () => {
-   
     clearErrors()
+
+    var checkbox = document.querySelectorAll("input[type='radio']:checked")
+    for (let i = 0; i < checkbox.length; i++) {
+        //setLoginType(checkbox[0].id)
+        loginType = checkbox[0].id
+        console.log("Checkbox is checked.." + loginType)
+    }
+
     firebase.auth().signInWithEmailAndPassword(email, password)
     .then(()=>{setLoading(true)})
     .catch(err => {
@@ -52,7 +64,6 @@ function App() {
         default:
       }  
     })
-
   } 
   const handleSignup = () => {
     console.log('signup')
@@ -82,7 +93,7 @@ function App() {
               created: new Date(), 
               msgids,
               uid: firebase.auth().currentUser.uid,
-              online: true, 
+              online: true,
               userinfo: {
                 name,
                 cover,
@@ -115,25 +126,39 @@ function App() {
     if(user) {
       db.collection('users').doc(user.uid).update({online: false})
     }
-    //window.location.host
+    //setLoginType('assistant')
+    loginType = 'assistant'
+    console.log("handle logout.." + loginType)
+    window.location.host
     firebase.auth().signOut()
   }
   const authListener = () => {
-    firebase.auth().onAuthStateChanged(user => {
+    firebase.auth().onAuthStateChanged(user => {   
       if(user) {
         clearInputs()
         setUser(user)
         db.collection('users').doc(user.uid).update({online: true})
+
+        firebase.auth().onAuthStateChanged(user => {
+          db.collection('users').doc(user.uid).set({role: loginType})
+          console.log("Final role.." + loginType)
+       } )
       }
       else {
-
           setUser('')
-          db.collection('users').doc(user.uid).update({online: false})
+          //setLoginType('assistant')
+          //db.collection('users').doc(user.uid).update({online: false})
       }
     })
   } 
   
   function loginwithGoogle(){
+    var checkbox = document.querySelectorAll("input[type='radio']:checked")
+    for (let i = 0; i < checkbox.length; i++) {
+        loginType = checkbox[0].id
+        console.log("Checkbox is checked.." + loginType)
+    }
+
     var provider = new firebase.auth.GoogleAuthProvider();
     provider.addScope('email');
 
@@ -214,7 +239,6 @@ function App() {
           msgids,
           uid: usergoogle.uid,
           online: true, 
-          role: 1,
           userinfo: {
             name: usergoogle.displayName,
             cover: usergoogle.photoURL,
@@ -260,8 +284,37 @@ function App() {
       db.collection('users').doc(user.uid).update({online: false})
     }
   }) 
+
   useEffect(() => { 
+    let cnt = false
     authListener()
+
+    /*
+    var checkbox = document.querySelector("input[id='executive']")  
+    if (checkbox)
+    {
+      checkbox.addEventListener('change', function() {
+       if (checkbox.checked) 
+       {
+         //setLoginType('executive')
+         loginType = 'executive'
+       }
+       console.log("Checkbox is checked.." + loginType)
+     });
+    } 
+    var checkbox_2 = document.querySelector("input[id='assistant']")  
+    if (checkbox_2)
+    {
+      checkbox_2.addEventListener('change', function() {
+       if (checkbox_2.checked) 
+       {
+         //setLoginType('executive')
+         loginType = 'assistant'
+       }
+       console.log("Checkbox is checked.." + loginType)
+     });
+    } 
+    */
     window.addEventListener('onbeforeunload', removeActiveStatus) 
     function removeActiveStatus() {
       if(user) {
@@ -272,6 +325,7 @@ function App() {
       db.collection('users').doc(user.uid).update({online: true})
     }
 
+    return() => cnt = true
   },[])  
   /*
    localStorage.openpages = Date.now();
@@ -286,7 +340,8 @@ function App() {
    };
 
    window.addEventListener('storage', onLocalStorageEvent, false);
-*/  
+*/   
+
    return ( 
     
         <Router >
@@ -294,7 +349,7 @@ function App() {
        {user?
         <ContextAppProvider>
         <>
-          <Body setLoading={setLoading}  handleLogout={handleLogout}/>
+          <Body setLoading={setLoading} handleLogout={handleLogout} />
           <Redirect to='/Home'/>
         </>
         </ContextAppProvider>
