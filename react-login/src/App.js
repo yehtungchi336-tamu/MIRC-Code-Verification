@@ -6,6 +6,7 @@ import { BrowserRouter as Router,Switch,Route,Link,NavLink, Redirect } from "rea
 import Sidebar from './components/Sidebar'
 import Login from './components/Login'
 import Body from './components/Body'
+import adddraft from './components/adddraft'
 import ContextAppProvider from './ContextAPI'
 import { useBeforeunload } from 'react-beforeunload'
 import emailjs from 'emailjs-com'

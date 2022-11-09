@@ -7,6 +7,7 @@ import Userrow from './Userrow'
 import Userprofile from './Userprofile'
 import Usersettings from './Usersettings'
 import Home from './Home'
+import Adddraft from './adddraft'
 import Notifications from './Notifications'
 import {CSSTransition, TransitionGroup} from 'react-transition-group'
 import {ContextApp} from '../ContextAPI'
@@ -54,6 +55,11 @@ function Paths (props) {
     <Route  path='/settings'>
       <Usersettings  settings={'settings'} type={'settings'} link={{link0: 'settings',link1: 'preferences', link2:'themes', link3: 'support'}} linklabel={{link0: 'Account',link1: 'Preferences', link2: 'Customize', link3: 'Support'}}/>
     </Route>
+      <Route  path='/adddraft'>
+        <div className={darkmode? "conversations darkmode":'conversations'} style={{backgroundColor: themecolor}}>
+          <Adddraft handleLogout={props.handleLogout}/>
+        </div>
+      </Route>
   </>
   )
 }

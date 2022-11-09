@@ -33,6 +33,7 @@ function Sidebar (props) {
   
         <div className="icons">
             <NavLink activeClassName='activelink' exact to='/home'><span><i class="far fa-home"></i>{widemode?<p className='widemodeElement'>Home</p>:''}</span></NavLink>
+            <NavLink activeClassName='activelink'  to='/adddraft'><span><i class="fal fa-cog"></i>{widemode?<p className='widemodeElement'>Adddraft</p>:''}</span></NavLink>
             <NavLink activeClassName='activelink' onClick={()=>{chatFuncDisplay()}}  to='/chat'><span><i class="far fa-comment-alt"></i>{widemode?<p className='widemodeElement'>Chat</p>:''}</span></NavLink>
             <NavLink activeClassName='activelink'  to='/notifications'><span><i class="far fa-bell"></i>{widemode?<p className='widemodeElement'>Notifications</p>:''}</span></NavLink>
             <NavLink activeClassName='activelink' to='/podcast'><span><i class="fal fa-podcast"></i>{widemode?<p className='widemodeElement'>Podcast</p>:''}</span></NavLink>
