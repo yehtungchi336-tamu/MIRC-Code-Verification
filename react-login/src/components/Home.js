@@ -21,9 +21,8 @@ import linkage from "./linkage";
 function Body(props) {
   const { themecolor } = useContext(ContextApp)
   const user = firebase.auth().currentUser
-  const [roleType, setRoleType] = useState('')
-  //var roleType = 'assistant'
   const [cover, setCover] = useState("")
+  //const [print_role, setRoleType] = useState("")
   const { handleLogout } = props
   const links = ["comment", "notifications", "settings", "logout"]
   const [notifi, setNotifLength]=useState(0)
@@ -69,16 +68,7 @@ function Body(props) {
     history.push('/linkage');
   };
 
-  useEffect(()=>{
-    if (user){
-    db.collection('users').doc(user.uid).onSnapshot(snap=>{
-      const tmp = snap.data()
-      setRoleType(tmp.role)
-      //roleType = tmp.role
-      console.log("home set role.." + tmp.role)
-    })
-    }
-  },[])
+
 
   function determineTime() {
     const d = new Date();
@@ -95,13 +85,25 @@ function Body(props) {
     }
   }
 
+  /*
+  useEffect(()=>{
+      if (user){
+      db.collection('users').doc(user.uid).onSnapshot(snap=>{
+        const tmp = snap.data()
+        setRoleType(tmp.msgids)
+        console.log("home set role.." + tmp.msgids)
+      })
+      }
+    })
+*/
   function determinetext() {
     if (user) {
-        return determineTime() + " " + roleType + " " + user.displayName + " (login type: " + user.providerData[0].providerId + ")"
+        return determineTime() + " " + user.msgids + " " + user.displayName + " (login type: " + user.providerData[0].providerId + ")"
     }
   }
 
   return (
+
     <div className="home">
       <div className="header flex sb">
         <h2 className="marginBottom">{determinetext()}</h2>

@@ -8,7 +8,7 @@ import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props
 import ReactFacebookLogin from 'react-facebook-login'
 
 function Login(props){
-  const {loginwithTwitter,loginwithFacebook,loginwithGoogle,setlName,lname,name, setName, email, setEmail, password, setPassword, handleLogin, handleSignup, hasAccount, setHasAccount, emailError, passwordError } = props
+  const {loginwithTwitter,loginwithFacebook,loginwithGoogle,setlName,lname,name, setRoleType, setName, email, setEmail, password, setPassword, handleLogin, handleSignup, hasAccount, setHasAccount, emailError, passwordError } = props
   function determineLoading (){
       if(props.loading) {
        return <div class="lds-ring"><div></div><div></div><div></div><div></div></div>
@@ -41,11 +41,11 @@ function Login(props){
             <fieldset className="choose_role">
                 <legend>Choose your role</legend>
                 <div>
-                  <input type="radio" id="assistant" name="interest" class="slectOne" value="assistant" />
+                  <input type="radio" id="assistant" name="interest" class="slectOne" value="assistant" onChange={(e)=>setRoleType(e.target.value)} />
                   <label for="assistant" >Assistant</label>
                 </div>
                 <div>
-                  <input type="radio" id="executive" name="interest" class="slectOne" value="executive" />
+                  <input type="radio" id="executive" name="interest" class="slectOne" value="executive" onChange={(e)=>setRoleType(e.target.value)} />
                   <label for="executive" >Executive</label>
                 </div>
             </fieldset>  
