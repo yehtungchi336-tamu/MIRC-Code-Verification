@@ -1,3 +1,4 @@
+"""
 from django.shortcuts import render
 import pyrebase
 
@@ -32,4 +33,19 @@ def index(request):
             'framework':framework
         }
         return render(request, 'index.html', context)
+
+"""
+
+
+from django.shortcuts import render
+from rest_framework import generics, status
+from .serializers import TodoSerializer
+
+from .models import Todo
+# Create your views here.
+
+
+class TodoListView(generics.ListAPIView):
+    model = Todo
+    serializer_class = TodoSerializer
 # Create your views here.
