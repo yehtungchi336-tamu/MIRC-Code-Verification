@@ -85,7 +85,7 @@ function Body(props) {
     }
   }
 
-  /*
+ /* 
   useEffect(()=>{
       if (user){
       db.collection('users').doc(user.uid).onSnapshot(snap=>{
