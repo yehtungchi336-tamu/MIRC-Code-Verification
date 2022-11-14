@@ -844,7 +844,7 @@ form label input:focus {
 .body .sidebar {
   display: grid;
   grid-template-rows: 1fr 4fr;
-  background-color: var(--theme-color);
+  /*background-color: var(--theme-color);*/
   overflow-y: scroll;
   overflow-x: hidden;
   grid-gap: 10%;

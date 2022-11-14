@@ -205,9 +205,9 @@ function Body(props) {
     className={widemode ? "body widebody" : "body"}
       style={{ backgroundColor: themecolor }}
     >
-      <div className='sidebar'
+      <div className='sidebar' style={{backgroundColor: user.msgids === "assistant" ? 'var(--theme-color)' : '#7c3838ce'}}
       >
-        <Sidebar updateProfile={updateProfile} chatFuncDisplay={chatFuncDisplay} setChatview={setChatview} setChatstarted={setChatstarted} handleLogout={handleLogout} />
+        <Sidebar updateProfile={updateProfile} chatFuncDisplay={chatFuncDisplay} setChatview={setChatview} setChatstarted={setChatstarted} handleLogout={handleLogout}/>
       </div>
       <Switch>
         <Paths
