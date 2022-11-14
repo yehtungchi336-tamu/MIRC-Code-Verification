@@ -135,8 +135,8 @@ function App() {
       db.collection('users').doc(user.uid).update({online: false})
     }
     console.log("handle logout.." + loginType)
-    window.location.host
     firebase.auth().signOut()
+    window.location.href = '/'
   }
   const authListener = () => {
     firebase.auth().onAuthStateChanged(user => {   
@@ -309,7 +309,7 @@ function App() {
         <ContextAppProvider>
         <>
           <Body setLoading={setLoading} handleLogout={handleLogout} />
-          <Redirect to='/Home'/>
+          <Redirect exact to='/Home'/>
         </>
         </ContextAppProvider>
         :
