@@ -71,6 +71,9 @@ function Adddraft(props) {
       cc: inputs.CC,
       bcc: inputs.BCC,
       message: textarea,
+      assistant: "Test",
+      audiofile: "",
+      status: "pending",
     });
 
 

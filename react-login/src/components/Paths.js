@@ -8,6 +8,9 @@ import Userprofile from './Userprofile'
 import Usersettings from './Usersettings'
 import Home from './Home'
 import Adddraft from './adddraft'
+import Assigntask from './assigntask'
+import Updatedraft from './updatedraft'
+import Assistant_draftlist from './assistant_draftlist'
 import Linkage from './linkage'
 import MailSend from './MailSend'
 import Notifications from './Notifications'
@@ -72,6 +75,24 @@ function Paths (props) {
       <Route  path='/MailSend'>
         <div className={darkmode? "conversations darkmode":'conversations'} style={{backgroundColor: themecolor}}>
           <MailSend handleLogout={props.handleLogout}/>
+        </div>
+      </Route>
+      
+      <Route  path='/assigntask'>
+        <div className={darkmode? "conversations darkmode":'conversations'} style={{backgroundColor: themecolor}}>
+          <Assigntask handleLogout={props.handleLogout}/>
+        </div>
+      </Route>
+
+      <Route  path='/updatedraft'>
+        <div className={darkmode? "conversations darkmode":'conversations'} style={{backgroundColor: themecolor}}>
+          <Updatedraft handleLogout={props.handleLogout}/>
+        </div>
+      </Route>
+      
+      <Route  path='/assistant_draftlist'>
+        <div className={darkmode? "conversations darkmode":'conversations'} style={{backgroundColor: themecolor}}>
+          <Assistant_draftlist handleLogout={props.handleLogout}/>
         </div>
       </Route>
   </>
