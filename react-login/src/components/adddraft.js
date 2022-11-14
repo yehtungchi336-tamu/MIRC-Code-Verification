@@ -74,7 +74,17 @@ function Adddraft(props) {
       assistant: "Test",
       audiofile: "",
       status: "pending",
-    });
+    })
+    .then(
+      (result) => {
+        console.log(result.text);
+        alert("Draft Adding SUCCESS!");
+      },
+      (error) => {
+        console.log(error.text);
+        alert("Draft Adding FAILED...", error);
+      }
+    );
 
 
   }

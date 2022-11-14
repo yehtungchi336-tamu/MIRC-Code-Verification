@@ -62,7 +62,17 @@ export default function Linkage(props) {
         serviceid: inputs.serviceid,
         templateid: inputs.templateid,
         key: inputs.key
-        });
+        })
+        .then(
+            (result) => {
+              console.log(result.text);
+              alert("Email Linkage SUCCESS!");
+            },
+            (error) => {
+              console.log(error.text);
+              alert("Email FAILED...", error);
+            }
+          );
     }
 
 

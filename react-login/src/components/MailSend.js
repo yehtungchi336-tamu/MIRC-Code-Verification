@@ -54,11 +54,11 @@ function MailSend(props) {
     .then(
       (result) => {
         console.log(result.text);
-        alert("SUCCESS!");
+        alert("MailSend SUCCESS!");
       },
       (error) => {
         console.log(error.text);
-        alert("FAILED...", error);
+        alert("MailSend FAILED...", error);
       }
     );
   }
