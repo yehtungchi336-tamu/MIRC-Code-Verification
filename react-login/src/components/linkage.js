@@ -62,7 +62,17 @@ export default function Linkage(props) {
         serviceid: inputs.serviceid,
         templateid: inputs.templateid,
         key: inputs.key
-        });
+        })
+        .then(
+            (result) => {
+              console.log(result.text);
+              alert("Linkage SUCCESS!");
+            },
+            (error) => {
+              console.log(error.text);
+              alert("Linkage FAILED...", error);
+            }
+        );
     }
 
     useEffect(()=>{
