@@ -37,6 +37,7 @@ function Sidebar (props) {
             <NavLink activeClassName='activelink' to='/assigntask'><span><i class="fal fa-podcast"></i>{widemode?<p className='widemodeElement'>Assigntask</p>:''}</span></NavLink>
             {/* <NavLink activeClassName='activelink' to='/updatedraft'><span><i class="fal fa-podcast"></i>{widemode?<p className='widemodeElement'>Updatedraft</p>:''}</span></NavLink> */}
             <NavLink activeClassName='activelink'  to='/assistant_draftlist'><span><i class="far fa-bell"></i>{widemode?<p className='widemodeElement'>Assistant_draftlist</p>:''}</span></NavLink>
+            <NavLink activeClassName='activelink'  to='/executive_draftlist'><span><i class="far fa-bell"></i>{widemode?<p className='widemodeElement'>Executive_draftlist</p>:''}</span></NavLink>
             <NavLink activeClassName='activelink'  to='/MailSend'><span><i class="far fa-bell"></i>{widemode?<p className='widemodeElement'>MailSending</p>:''}</span></NavLink>
             <NavLink activeClassName='activelink' to='/linkage'><span><i class="fal fa-podcast"></i>{widemode?<p className='widemodeElement'>Linkage</p>:''}</span></NavLink>
 
