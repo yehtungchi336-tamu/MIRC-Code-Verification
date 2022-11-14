@@ -46,7 +46,7 @@ function Paths (props) {
           </div>
       </div>
     </Route>
-      <Route  path='/home'>
+      <Route  path='/Home'>
         <div className={darkmode? "conversations darkmode":'conversations'} style={{backgroundColor: themecolor}}>
           <Home handleLogout={props.handleLogout}/>
         </div>

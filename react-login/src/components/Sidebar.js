@@ -46,7 +46,7 @@ function Sidebar (props) {
                   <NavLink activeClassName='activelink'  to='/settings'><span><i class="fal fa-cog"></i>{widemode?<p className='widemodeElement'>Settings</p>:''}</span></NavLink>
                   <NavLink exact to='./' onClick={()=>{handleLogout()}}><span> <i  class="fal fa-sign-out-alt"></i>{widemode?<p className='widemodeElement'>Logout</p>:''}</span></NavLink> 
                   <a onClick={()=>{updateProfile()}} className='widemodeElement' ><i class={widemode?"fal fa-chevron-double-right rotate":'fal fa-chevron-double-right'}></i></a>*/}
-                  <NavLink exact to='/' onClick={()=>{handleLogout()}}><span> <i  class="fal fa-sign-out-alt"></i>{widemode?<p className='widemodeElement'>Logout</p>:''}</span></NavLink> 
+                  <NavLink activeClassName='activelink' exact to='/Login' onClick={()=>{handleLogout()}}><span> <i  class="fal fa-sign-out-alt"></i>{widemode?<p className='widemodeElement'>Logout</p>:''}</span></NavLink> 
                 </div>
               )
             } else {
@@ -69,7 +69,7 @@ function Sidebar (props) {
                   <NavLink activeClassName='activelink' to='/podcast'><span><i class="fal fa-podcast"></i>{widemode?<p className='widemodeElement'>Podcast</p>:''}</span></NavLink>
                   <NavLink activeClassName='activelink'  to='/settings'><span><i class="fal fa-cog"></i>{widemode?<p className='widemodeElement'>Settings</p>:''}</span></NavLink>
                   */}
-                  <NavLink exact to='/' onClick={()=>{handleLogout()}}><span> <i  class="fal fa-sign-out-alt"></i>{widemode?<p className='widemodeElement'>Logout</p>:''}</span></NavLink> 
+                  <NavLink activeClassName='activelink' exact to='/Login' onClick={()=>{handleLogout()}}><span> <i  class="fal fa-sign-out-alt"></i>{widemode?<p className='widemodeElement'>Logout</p>:''}</span></NavLink> 
                   {/*<a onClick={()=>{updateProfile()}} className='widemodeElement' ><i class={widemode?"fal fa-chevron-double-right rotate":'fal fa-chevron-double-right'}></i></a> */}
                 </div>
               )
