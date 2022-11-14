@@ -16,7 +16,9 @@ import emailjs from 'emailjs-com'
 import Usersettings from "./Usersettings";
 import { ContextApp } from "../ContextAPI";
 import Hoverlink from "./Hoverlink";
-import Updatedraft from './updatedraft'
+import Updatedraft from './updatedraft';
+import Table from "./Table";
+
 function Assistant_draftlist(props) {
   const { themecolor } = useContext(ContextApp)
   const user = firebase.auth().currentUser
@@ -53,7 +55,6 @@ function Assistant_draftlist(props) {
     setTextarea(event.target.value)
   }
 
-
   const handleread = () => {
 
     var assistant_name = 'YiChia'
@@ -75,7 +76,6 @@ function Assistant_draftlist(props) {
       });
     });
     const [state, setState] = React.useState(data);
-    console.log("data");
     console.log(data);
     // return data;
     return (
@@ -191,7 +191,7 @@ function Assistant_draftlist(props) {
       <div class="container">
         <div class="row">
           <div class="col align-self-center">
-            { handleread()}
+            {handleread()}
           </div>
         </div>
       </div>

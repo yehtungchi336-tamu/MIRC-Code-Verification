@@ -18,12 +18,12 @@ import Usersettings from "./Usersettings";
 import { ContextApp } from "../ContextAPI";
 import Hoverlink from "./Hoverlink";
 import linkage from "./linkage";
+
 function Body(props) {
   const { themecolor } = useContext(ContextApp)
   const user = firebase.auth().currentUser
-  const [roleType, setRoleType] = useState('')
-  //var roleType = 'assistant'
   const [cover, setCover] = useState("")
+  //const [print_role, setRoleType] = useState("")
   const { handleLogout } = props
   const links = ["comment", "notifications", "settings", "logout"]
   const [notifi, setNotifLength]=useState(0)
@@ -69,16 +69,7 @@ function Body(props) {
     history.push('/linkage');
   };
 
-  useEffect(()=>{
-    if (user){
-    db.collection('users').doc(user.uid).onSnapshot(snap=>{
-      const tmp = snap.data()
-      setRoleType(tmp.role)
-      //roleType = tmp.role
-      console.log("home set role.." + tmp.role)
-    })
-    }
-  },[])
+
 
   function determineTime() {
     const d = new Date();
@@ -95,13 +86,25 @@ function Body(props) {
     }
   }
 
+ /* 
+  useEffect(()=>{
+      if (user){
+      db.collection('users').doc(user.uid).onSnapshot(snap=>{
+        const tmp = snap.data()
+        setRoleType(tmp.msgids)
+        console.log("home set role.." + tmp.msgids)
+      })
+      }
+    })
+*/
   function determinetext() {
     if (user) {
-        return determineTime() + " " + roleType + " " + user.displayName + " (login type: " + user.providerData[0].providerId + ")"
+        return determineTime() + " " + user.msgids + " " + user.displayName + " (login type: " + user.providerData[0].providerId + ")"
     }
   }
 
   return (
+
     <div className="home">
       <div className="header flex sb">
         <h2 className="marginBottom">{determinetext()}</h2>
@@ -125,72 +128,7 @@ function Body(props) {
         </button>
         */}
       </div>
-      {/*
-      <div class="container">
-        <div class="row">
-          <div class="col align-self-center">
-            <form action="" ref={form} onSubmit={MailSending}> 
-              <div class="form-group">
-                <label for="subject">Subject</label>
-                <input
-                  type="subject"
-                  name="subject"
-                  class="form-control-lg "
-                  id="subject"
-                  placeholder=" enter email subject"
-                />
-              </div>
 
-              <div class="form-group">
-                <label for="recipient">TO: </label>
-                <input
-                  type="recipient"
-                  name="recipient"
-                  class="form-control-lg"
-                  id="recipient"
-                  placeholder=" enter the recipient's address"
-                />
-              </div>
-
-              <div class="form-group">
-                <label for="cc">CC:</label>
-                <input
-                  type="cc"
-                  name="cc"
-                  class="form-control-lg"
-                  id="cc"
-                  placeholder=" enter the Carbon Copy"
-                />
-              </div>
-
-              <div class="form-group">
-                <label for="bcc">BCC:</label>
-                <input
-                  type="bcc"
-                  name="bcc"
-                  class="form-control-lg"
-                  id="bcc"
-                  placeholder=" enter the Blind Carbon Copy"
-                />
-              </div>
-
-              <div class="form-group">
-                <label htmlFor="message">Message</label>
-                <textarea
-                  class="form-control-lg"
-                  name="message"
-                  id="message"
-                  rows="5"
-                ></textarea>
-              </div>
-                
-              <button type="submit" class="btn btn-primary" id="submit_form">Submit</button>
-
-            </form>
-          </div>
-        </div>
-      </div>
-      */}
       <div className="homeside">
 
       </div>

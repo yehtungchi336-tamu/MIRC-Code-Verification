@@ -74,21 +74,21 @@ function Adddraft(props) {
       assistant: "Test",
       audiofile: "",
       status: "pending",
-    });
+    })
+    .then(
+      (result) => {
+        console.log(result.text);
+        alert("Draft Adding SUCCESS!");
+      },
+      (error) => {
+        console.log(error.text);
+        alert("Draft Adding FAILED...", error);
+      }
+    );
 
 
   }
-
-  useEffect(()=>{
-    if (user){
-    db.collection('users').doc(user.uid).onSnapshot(snap=>{
-      const tmp = snap.data()
-      setRoleType(tmp.role)
-      //roleType = tmp.role
-      console.log("home set role.." + tmp.role)
-    })
-    }
-  },[])
+  
 
   function determineTime() {
     const d = new Date();
@@ -107,7 +107,7 @@ function Adddraft(props) {
 
   function determinetext() {
     if (user) {
-        return determineTime() + " " + roleType + " " + user.displayName + " (login type: " + user.providerData[0].providerId + ")"
+      return determineTime() + " " + user.msgids + " " + user.displayName + " (login type: " + user.providerData[0].providerId + ")"
     }
   }
 
