@@ -16,7 +16,7 @@ import emailjs from 'emailjs-com'
 import Usersettings from "./Usersettings";
 import { ContextApp } from "../ContextAPI";
 import Hoverlink from "./Hoverlink";
-function Adddraft(props) {
+function Assigntask(props) {
   const { themecolor } = useContext(ContextApp)
   const user = firebase.auth().currentUser
   const [roleType, setRoleType] = useState('')
@@ -43,9 +43,7 @@ function Adddraft(props) {
   const [textarea, setTextarea] = useState();
   const [inputs, setInputs] = useState({})
   const handleChange = (event) => {
-    const name = event.target.name;
-    const value = event.target.value;
-    setInputs(values => ({...values, [name]: value}))
+    setInputs(event.target.value)
   }
 
   const handle_textarea_Change = (event) => {
@@ -56,29 +54,33 @@ function Adddraft(props) {
   const handleSubmit = (event) => {
     event.preventDefault();
     console.log(inputs);
-    console.log(textarea);
-    console.log(user.displayName);
-    console.log(inputs.subject);
-    console.log(inputs.recipient);
-    console.log(inputs.CC);
-    console.log(inputs.BCC);
 
     var tutorialsRef = realtime_db.ref("/draft");
     tutorialsRef.push({
       username: user.displayName,
-      subject: inputs.subject,
-      recipient: inputs.recipient,
-      cc: inputs.CC,
-      bcc: inputs.BCC,
-      message: textarea,
-      assistant: "Test",
+      subject: "",//inputs.subject,
+      recipient: "",//inputs.recipient,
+      cc: "",//inputs.CC,
+      bcc: "",//inputs.BCC,
+      message: "",//textarea,
+      assistant: inputs,
       audiofile: "",
       status: "pending",
     });
 
 
   }
-  
+
+  useEffect(()=>{
+    if (user){
+    db.collection('users').doc(user.uid).onSnapshot(snap=>{
+      const tmp = snap.data()
+      setRoleType(tmp.role)
+      //roleType = tmp.role
+      console.log("home set role.." + tmp.role)
+    })
+    }
+  },[])
 
   function determineTime() {
     const d = new Date();
@@ -97,7 +99,7 @@ function Adddraft(props) {
 
   function determinetext() {
     if (user) {
-      return determineTime() + " " + user.msgids + " " + user.displayName + " (login type: " + user.providerData[0].providerId + ")"
+        return determineTime() + " " + roleType + " " + user.displayName + " (login type: " + user.providerData[0].providerId + ")"
     }
   }
 
@@ -105,7 +107,7 @@ function Adddraft(props) {
     <div className="home">
       <div className="header flex sb">
         {/*<h2 className="marginBottom">{determinetext()}</h2>*/}
-        <h2 style={{color: 'black'}}>Add Draft</h2>
+        <h2 style={{color: 'black'}}>Assign Task</h2>
       </div>
       
       <div className="flex fe sticky">
@@ -123,7 +125,7 @@ function Adddraft(props) {
         <div class="row">
           <div class="col align-self-center">
           <form onSubmit={handleSubmit}>
-            <label>Subject
+            {/* <label>Assistant
             <input 
               type="text" 
               name="subject" 
@@ -131,8 +133,28 @@ function Adddraft(props) {
               placeholder=" enter email subject"
               onChange={handleChange}
             />
-            </label>
-            <label>TO
+            </label> */}
+            <label htmlFor="assistant">Assistant:
+            <select placeholder="Please select assistant" name="assistant" onChange={handleChange}>
+              <option value="">Please select assistant</option>
+              <option value="Jinson">Jinson</option>
+              <option value="YaoWen">YaoWen</option>
+              <option value="Yaru">Yaru</option>
+              <option value="YiChia">YiChia</option>
+              <option value="Max">Max</option>
+            </select>
+          </label>
+            Audiofile
+            {/* <label>Subject
+            <input 
+              type="text" 
+              name="subject" 
+              value={inputs.subject || ""} 
+              placeholder=" enter email subject"
+              onChange={handleChange}
+            />
+            </label> */}
+            {/* <label>TO
               <input 
                 type="text" 
                 name="recipient" 
@@ -161,7 +183,7 @@ function Adddraft(props) {
             </label>
 
             <label>Message<textarea value={textarea  || ""} rows="10" onChange={handle_textarea_Change} />
-            </label>
+            </label> */}
               <input type="submit" class="btn btn-primary" id='draft_submit' value='Submit' />
 
 
@@ -177,4 +199,4 @@ function Adddraft(props) {
     </div>
   );
 }
-export default Adddraft;
+export default Assigntask;
