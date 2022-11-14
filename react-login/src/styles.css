@@ -527,7 +527,7 @@ button:active {
 /* Handle */
 
 ::-webkit-scrollbar-thumb {
-  background: var(--theme-color);
+  background: #7a7a7ace;
   border-radius: 10px;
 color: #056dff
 }
@@ -844,7 +844,7 @@ form label input:focus {
 .body .sidebar {
   display: grid;
   grid-template-rows: 1fr 4fr;
-  background-color: var(--theme-color);
+  /*background-color: var(--theme-color);*/
   overflow-y: scroll;
   overflow-x: hidden;
   grid-gap: 10%;
@@ -2059,7 +2059,7 @@ span[role='img'] {
   background-color: transparent;
 }
 .msgs:hover::-webkit-scrollbar-thumb {
-  background-color: var(--theme-color);
+  background-color: #7a7a7ace;
 }
 
 .whiteb {
@@ -2108,7 +2108,7 @@ textarea::-webkit-scrollbar {
 }
 
 .whiteb textarea:focus {
-  border: solid 3px var(--theme-color)
+  border: solid 3px #7a7a7ace
 }
 .whiteb .fa-laugh {
   right: 20%;
