@@ -59,7 +59,7 @@ function Executive_draftlist(props) {
     var executive_name = 'Yaru Yang'
     var userRef = realtime_db.ref("/draft");
     const data = [];
-
+    const send_data = [];
     
 
     userRef.orderByChild("username").equalTo(executive_name).once("value", function (snapshot) {
