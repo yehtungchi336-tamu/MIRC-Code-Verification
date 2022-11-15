@@ -11,6 +11,8 @@ import Adddraft from './adddraft'
 import Assigntask from './assigntask'
 import Updatedraft from './updatedraft'
 import Assistant_draftlist from './assistant_draftlist'
+import Executive_draftlist from './executive_draftlist'
+import ExecutiveUpdatedraft from './executive_updatedraft'
 import Linkage from './linkage'
 import MailSend from './MailSend'
 import Notifications from './Notifications'
@@ -95,6 +97,20 @@ function Paths (props) {
           <Assistant_draftlist handleLogout={props.handleLogout}/>
         </div>
       </Route>
+
+      <Route  path='/executive_draftlist'>
+        <div className={darkmode? "conversations darkmode":'conversations'} style={{backgroundColor: themecolor}}>
+          <Executive_draftlist handleLogout={props.handleLogout}/>
+        </div>
+      </Route>
+
+      <Route  path='/executive_updatedraft'>
+        <div className={darkmode? "conversations darkmode":'conversations'} style={{backgroundColor: themecolor}}>
+          <ExecutiveUpdatedraft handleLogout={props.handleLogout}/>
+        </div>
+      </Route>
+
+      
   </>
   )
 }

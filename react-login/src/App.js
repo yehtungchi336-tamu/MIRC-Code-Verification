@@ -20,14 +20,13 @@ function App() {
   const [emailError, setEmailError]=useState('')
   const [passwordError, setPasswordError]=useState('')
   const [hasAccount, setHasAccount]=useState(true)
-  //const [loginType, setLoginType]=useState('assistant')
-  var loginType = "assistant"
+  const [loginType, setRoleType]=useState('')
   const [lname, setlName]=useState('')
   const [userinfo, setUserinfo]=useState([])
   const [users, setUsers]=useState([])
   const [cover, setCover]=useState('https://www.gettyimages.ca/gi-resources/images/500px/983794168.jpg')
   const [forgotpassword, setForgotpassword]=useState(false)
-  const [msgids, setMsgIds] = useState([''])
+  //const [msgids, setMsgIds] = useState([''])
   const [loading, setLoading]=useState(false)
   const clearInputs = () => {
     setEmail('')
@@ -40,15 +39,14 @@ function App() {
   const handleLogin = () => {
     clearErrors()
 
-    var checkbox = document.querySelectorAll("input[type='radio']:checked")
-    for (let i = 0; i < checkbox.length; i++) {
-        //setLoginType(checkbox[0].id)
-        loginType = checkbox[0].id
-        console.log("Checkbox is checked.." + loginType)
-    }
-
+    
     firebase.auth().signInWithEmailAndPassword(email, password)
-    .then(()=>{setLoading(true)})
+    .then(()=>{
+      //db.collection('users').doc(user.uid).update({msgids: loginType})
+      firebase.auth().currentUser.msgids = loginType
+      console.log("login success.." + firebase.auth().currentUser.msgids)
+      setLoading(true)
+    })
     .catch(err => {
       switch(err.code) {
         case "auth/invalid-email":
@@ -65,10 +63,18 @@ function App() {
       }  
     })
   } 
+
   const handleSignup = () => {
     console.log('signup')
     clearErrors()
-    firebase.auth().createUserWithEmailAndPassword(email, password).catch(err => {
+    firebase.auth().createUserWithEmailAndPassword(email, password)
+    .then(()=>{
+      firebase.auth().currentUser.updateProfile({
+        displayName: name,
+      }) 
+      //authListener()
+    })
+    .catch(err => {
         
         switch(err.code) {
         case "auth/email-already-in-use":
@@ -91,7 +97,7 @@ function App() {
           }) 
           db.collection('users').doc(user.uid).set({
               created: new Date(), 
-              msgids,
+              msgids: loginType,
               uid: firebase.auth().currentUser.uid,
               online: true,
               userinfo: {
@@ -115,22 +121,22 @@ function App() {
           db.collection('notifications').doc(user.uid).set({
             notifications: 'email'
           })
-   
+          firebase.auth().currentUser.msgids = loginType
+          console.log("email signup success.." + firebase.auth().currentUser.msgids)
       }//if (user)
       else {
         setUser('')
       } 
     }) 
   }
+
   const handleLogout = () => {
     if(user) {
       db.collection('users').doc(user.uid).update({online: false})
     }
-    //setLoginType('assistant')
-    loginType = 'assistant'
     console.log("handle logout.." + loginType)
-    window.location.host
     firebase.auth().signOut()
+    window.location.href = '/'
   }
   const authListener = () => {
     firebase.auth().onAuthStateChanged(user => {   
@@ -138,27 +144,15 @@ function App() {
         clearInputs()
         setUser(user)
         db.collection('users').doc(user.uid).update({online: true})
-
-        firebase.auth().onAuthStateChanged(user => {
-          db.collection('users').doc(user.uid).set({role: loginType})
-          console.log("Final role.." + loginType)
-       } )
       }
       else {
           setUser('')
-          //setLoginType('assistant')
           //db.collection('users').doc(user.uid).update({online: false})
       }
     })
   } 
   
   function loginwithGoogle(){
-    var checkbox = document.querySelectorAll("input[type='radio']:checked")
-    for (let i = 0; i < checkbox.length; i++) {
-        loginType = checkbox[0].id
-        console.log("Checkbox is checked.." + loginType)
-    }
-
     var provider = new firebase.auth.GoogleAuthProvider();
     provider.addScope('email');
 
@@ -168,7 +162,6 @@ function App() {
       if(result.additionalUserInfo.isNewUser){
             /** @type {firebase.auth.OAuthCredential} */
       var credential = result.credential;
-  
       // This gives you a Google Access Token. You can use it to access the Google API.
       var token = credential.accessToken;
       // The signed-in user info.
@@ -176,7 +169,7 @@ function App() {
       // ...
       db.collection('users').doc(user.uid).set({
         created: new Date(), 
-        msgids,
+        msgids: loginType,
         uid: user.uid,
         online: true, 
         userinfo: {
@@ -202,7 +195,8 @@ function App() {
       notifications: 'Google'
     })
       }
-
+      firebase.auth().currentUser.msgids = loginType
+      console.log("google login success.." + firebase.auth().currentUser.msgids)
     }).catch((error) => {
       // Handle Errors here.
       var errorCode = error.code;
@@ -228,7 +222,6 @@ function App() {
       if(result.additionalUserInfo.isNewUser){
         /** @type {firebase.auth.OAuthCredential} */
         var credential = result.credential;
-  
         // This gives you a Google Access Token. You can use it to access the Google API.
         var token = credential.accessToken;
         // The signed-in user info.
@@ -236,7 +229,7 @@ function App() {
         // ...
         db.collection('users').doc(usergoogle.uid).set({
           created: new Date(), 
-          msgids,
+          msgids: loginType,
           uid: usergoogle.uid,
           online: true, 
           userinfo: {
@@ -261,6 +254,8 @@ function App() {
         notifications: 'Facebook'
       })
     }
+    firebase.auth().currentUser.msgids = loginType
+    console.log("facebook login success.." + firebase.auth().currentUser.msgids)
     })
     .catch((error) => {
       // Handle Errors here.
@@ -289,73 +284,37 @@ function App() {
     let cnt = false
     authListener()
 
-    /*
-    var checkbox = document.querySelector("input[id='executive']")  
-    if (checkbox)
-    {
-      checkbox.addEventListener('change', function() {
-       if (checkbox.checked) 
-       {
-         //setLoginType('executive')
-         loginType = 'executive'
-       }
-       console.log("Checkbox is checked.." + loginType)
-     });
-    } 
-    var checkbox_2 = document.querySelector("input[id='assistant']")  
-    if (checkbox_2)
-    {
-      checkbox_2.addEventListener('change', function() {
-       if (checkbox_2.checked) 
-       {
-         //setLoginType('executive')
-         loginType = 'assistant'
-       }
-       console.log("Checkbox is checked.." + loginType)
-     });
-    } 
-    */
     window.addEventListener('onbeforeunload', removeActiveStatus) 
     function removeActiveStatus() {
       if(user) {
         db.collection('users').doc(user.uid).update({online: false})
+        firebase.auth().currentUser.msgids = loginType
+        console.log("login success 1.." + firebase.auth().currentUser.msgids)
       }
     }
     if(user) {
       db.collection('users').doc(user.uid).update({online: true})
+      firebase.auth().currentUser.msgids = loginType
+      console.log("login success 2.." + firebase.auth().currentUser.msgids)
     }
 
     return() => cnt = true
   },[])  
-  /*
-   localStorage.openpages = Date.now();
-   var onLocalStorageEvent = function(e){
-       if(e.key == "openpages"){
-           // Listen if anybody else is opening the same page!
-           localStorage.page_available = Date.now();
-       }
-       if(e.key == "page_available"){
-           alert("One more page already open");
-       }
-   };
-
-   window.addEventListener('storage', onLocalStorageEvent, false);
-*/   
 
    return ( 
-    
-        <Router >
+
+    <Router >
     <div className="App">
        {user?
         <ContextAppProvider>
         <>
           <Body setLoading={setLoading} handleLogout={handleLogout} />
-          <Redirect to='/Home'/>
+          <Redirect exact to='/Home'/>
         </>
         </ContextAppProvider>
         :
         <> 
-        <Login loginwithFacebook={()=>loginwithFacebook}loginwithGoogle={()=>loginwithGoogle} loading={loading} name={name} setName={setName} lname={lname} setlName={setlName}email={email} setEmail={setEmail} password= {password} setPassword={setPassword} handleLogin={handleLogin} handleSignup={handleSignup} hasAccount={hasAccount} setHasAccount={setHasAccount} emailError={emailError} passwordError={passwordError}/>       
+        <Login loginwithFacebook={()=>loginwithFacebook}loginwithGoogle={()=>loginwithGoogle}  setRoleType={setRoleType} loading={loading} name={name} setName={setName} lname={lname} setlName={setlName}email={email} handleSignup={handleSignup} setEmail={setEmail} password= {password} setPassword={setPassword} handleLogin={handleLogin} hasAccount={hasAccount} setHasAccount={setHasAccount} emailError={emailError} passwordError={passwordError}/>       
         <Redirect to='/'/>
      </>
         }

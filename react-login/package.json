@@ -24,6 +24,8 @@
     "firebase": "8.2.5",
     "ismobilejs": "1.1.1",
     "nodemon": "2.0.7",
+    "primeicons": "^6.0.1",
+    "primereact": "^8.7.2",
     "react": "17.0.1",
     "react-addons-css-transition-group": "15.6.2",
     "react-beforeunload": "2.4.0",

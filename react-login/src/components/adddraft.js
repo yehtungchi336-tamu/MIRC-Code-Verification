@@ -74,7 +74,12 @@ function Adddraft(props) {
       assistant: "Test",
       audiofile: "",
       status: "pending",
+<<<<<<< HEAD
     }).then(
+=======
+    })
+    .then(
+>>>>>>> origin/Develop
       (result) => {
         console.log(result.text);
         alert("Draft Adding SUCCESS!");
@@ -84,18 +89,13 @@ function Adddraft(props) {
         alert("Draft Adding FAILED...", error);
       }
     );
-  }
+<<<<<<< HEAD
+=======
 
-  useEffect(()=>{
-    if (user){
-    db.collection('users').doc(user.uid).onSnapshot(snap=>{
-      const tmp = snap.data()
-      setRoleType(tmp.role)
-      //roleType = tmp.role
-      console.log("home set role.." + tmp.role)
-    })
-    }
-  },[])
+
+>>>>>>> origin/Develop
+  }
+  
 
   function determineTime() {
     const d = new Date();
@@ -114,7 +114,7 @@ function Adddraft(props) {
 
   function determinetext() {
     if (user) {
-        return determineTime() + " " + roleType + " " + user.displayName + " (login type: " + user.providerData[0].providerId + ")"
+      return determineTime() + " " + user.msgids + " " + user.displayName + " (login type: " + user.providerData[0].providerId + ")"
     }
   }
 
