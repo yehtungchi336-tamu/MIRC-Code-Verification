@@ -49,7 +49,8 @@ function Updatedraft(props) {
         <Hoverlink  icon={lnk.icon} txt={lnk.txt} handleLogout={handleLogout} />
       );
     });
-  const inputLocationRef = useRef(null);
+  const form = useRef();
+
   const [textarea, setTextarea] = useState();
   const [inputs, setInputs] = useState({})
   const handleChange = (event) => {
@@ -75,32 +76,22 @@ function Updatedraft(props) {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-
+    const key = location.aboutProps['datakey'];
     // const locationName = inputLocationRef.current.value;
     // console.log("locationName");
     // console.log(locationName);
-    console.log("rrrr");
-    console.log(inputs);
-    console.log(inputs.subject);
-    console.log(textarea);
-    console.log(location.aboutProps['datakey'])
-    const key = location.aboutProps['datakey'];
-    // console.log(user.displayName);
-    // console.log(inputs.subject);
-    // console.log(inputs.recipient);
-    // console.log(inputs.CC);
-    // console.log(inputs.BCC);
-
-    const test = '/draft/'+ key
-    console.log('/draft/'+ key);
+    console.log("handleSubmit");
+    // console.log(form.current);
+    console.log(form.current);
+    console.log(form.current.message.value);
 
     const updates = {};
-    updates[`draft/${key}/subject`] = inputs.subject;
-    updates[`draft/${key}/cc`] = inputs.CC;
-    updates[`draft/${key}/bcc`] = inputs.BCC;
-    updates[`draft/${key}/message`] = textarea;
-    updates[`draft/${key}/recipient`] = inputs.recipient;
-    updates[`draft/${key}/status`] = "completed";
+    updates[`draft/${key}/subject`] = form.current.subject.value;
+    updates[`draft/${key}/cc`] = form.current.cc.value;
+    updates[`draft/${key}/bcc`] = form.current.bcc.value;
+    updates[`draft/${key}/message`] = form.current.message.value;
+    updates[`draft/${key}/recipient`] = form.current.recipient.value;
+    updates[`draft/${key}/status`] = "Completed";
     realtime_db.ref().update(updates);
     console.log("RRRRRRRR")
 
@@ -146,9 +137,13 @@ function Updatedraft(props) {
     // )
 
     const key = location.aboutProps['datakey'];
+    const data = location.aboutProps;
     const recipient = location.aboutProps['recipient'];
+    console.log("data_form")
     console.log(location.aboutProps)
     console.log(location.aboutProps['datakey'])
+    console.log(location.aboutProps['datakey'])
+    
     // var userRef = realtime_db.ref("/draft");
     // const data = [];
     // userRef.orderByKey().equalTo(key).once("value", function (snapshot) {
@@ -170,7 +165,7 @@ function Updatedraft(props) {
       <div className="home">
         <div className="header flex sb">
           {/*<h2 className="marginBottom">{determinetext()}</h2>*/}
-          <h2 style={{color: 'black'}}>Update Draft</h2>
+          <h2 style={{color: 'black'}}>Write Draft</h2>
         </div>
         
         <div className="flex fe sticky">
@@ -184,66 +179,86 @@ function Updatedraft(props) {
             />
           </div>
         </div>
+        <div>
+          {/*
+          <button className="btn btn-success" onClick={nav2emaillinkage}>
+            Email Linkage
+          </button>
+          */}
+        </div>
+  
         <div class="container">
           <div class="row">
             <div class="col align-self-center">
-            <form onSubmit={handleSubmit}>
-            {/* <label>
-              <input 
-                type="text" 
-                name="key" 
-                defaultValue={location.aboutProps.datakey || ""} 
-                placeholder="enter key"
-                // onChange={handleChange}
-              />
-              </label> */}
-
-              <label>Subject
-              <input 
-                type="text" 
-                name="subject" 
-                defaultValue={location.aboutProps.subject || ""} 
-                placeholder=" enter email subject"
-                onChange={handleChange}
-              />
-              </label>
-              <label>TO
-                <input 
-                  type="text" 
-                  name="recipient" 
-                  defaultValue={location.aboutProps.recipient || ""} 
-                  placeholder=" enter the recipient's address"
-                  onChange={handleChange}
-              />
-              </label>
-              <label>CC
-                <input 
-                  type="text" 
-                  name="CC" 
-                  defaultValue={location.aboutProps.cc || ""} 
-                  placeholder=" enter the Carbon Copy"
-                  onChange={handleChange}
-              />
-              </label>
-              <label>BCC
-                <input 
-                  type="text" 
-                  name="BCC" 
-                  defaultValue={location.aboutProps.bcc || ""} 
-                  // ref = {inputLocationRef}
-                  placeholder=" enter the Blind Carbon Copy"
-                  onChange={handleChange}
-              />
-              </label>
+              <form action="" ref={form} onSubmit={handleSubmit}> 
+              
+                <div class="form-group">
+                  <label for="subject">Subject
+                  <input
+                    type="subject"
+                    name="subject"
+                    class="form-control-xlg "
+                    id="subject"
+                    defaultValue={data.subject}
+                    placeholder=" enter email subject"
+                  />
+                  </label>
+                </div>
   
-              <label>Message<textarea defaultValue={location.aboutProps.message  || ""} rows="10" onChange={handle_textarea_Change} />
-              </label>
-                <input type="submit" class="btn btn-primary" id='draft_submit' value='Submit' />
+                <div class="form-group">
+                  <label for="recipient">TO
+                  <input
+                    type="recipient"
+                    name="recipient"
+                    class="form-control-xlg"
+                    id="recipient"
+                    defaultValue={data.recipient}
+                    placeholder=" enter the recipient's address"
+                  />
+                  </label>
+                </div>
   
+                <div class="form-group">
+                  <label for="cc">CC
+                  <input
+                    type="cc"
+                    name="cc"
+                    class="form-control-xlg"
+                    id="cc"
+                    defaultValue={data.cc}
+                    placeholder=" enter the Carbon Copy"
+                  />
+                  </label>
+                </div>
   
-            </form>
+                <div class="form-group">
+                  <label for="bcc">BCC
+                  <input
+                    type="bcc"
+                    name="bcc"
+                    class="form-control-xlg"
+                    id="bcc"
+                    defaultValue={data.bcc}
+                    placeholder=" enter the Blind Carbon Copy"
+                  />
+                  </label>
+                </div>
   
+                <div class="form-group">
+                  <label htmlFor="message">Message
+                  <textarea
+                    class="form-control-xlg"
+                    name="message"
+                    id="message"
+                    defaultValue={data.message}
+                    rows="10"
+                  ></textarea>
+                  </label>
+                </div>
+                  
+                <button type="submit" class="btn btn-primary" id="submit_form">Submit</button>
   
+              </form>
             </div>
           </div>
         </div>

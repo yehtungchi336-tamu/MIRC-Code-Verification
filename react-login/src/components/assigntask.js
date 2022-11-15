@@ -65,7 +65,7 @@ function Assigntask(props) {
       message: "",//textarea,
       assistant: inputs,
       audiofile: "",
-      status: "pending",
+      status: "Pending",
     });
 
 

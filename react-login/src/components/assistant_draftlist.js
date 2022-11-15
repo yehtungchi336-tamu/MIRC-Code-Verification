@@ -57,16 +57,22 @@ function Assistant_draftlist(props) {
 
   const handleread = () => {
 
-    var assistant_name = 'YaoWen'
+    var assistant_name = 'YiChia'
     var userRef = realtime_db.ref("/draft");
     const data = [];
+    console.log("ori_data");
+    console.log(data);
     userRef.orderByChild("assistant").equalTo(assistant_name).once("value", function (snapshot) {
       snapshot.forEach(function(childSnapshot) {
+        if (childSnapshot.val().status == "Pending" || childSnapshot.val().status == "Rejected") { 
           data.push({ key: childSnapshot.key, status: childSnapshot.val().status, username: childSnapshot.val().username, bcc: childSnapshot.val().bcc, 
             cc: childSnapshot.val().cc,
             message: childSnapshot.val().message, 
             recipient: childSnapshot.val().recipient,
-            subject: childSnapshot.val().subject,})
+            subject: childSnapshot.val().subject,
+            status: childSnapshot.val().status,
+          })
+        }
       });
     });
     const [state, setState] = React.useState(data);
@@ -85,13 +91,11 @@ function Assistant_draftlist(props) {
             <td>{item.username}</td>
             <td>{item.status}</td>
             <td>
-            {/* to={{ pathname:'/updatedraft',state: {title:'from home page'}}} */}
             <NavLink activeClassName='activelink'  to={{ pathname:'/updatedraft',aboutProps: {datakey:item.key,bcc: item.bcc, 
             cc: item.cc,
             message: item.message, 
             recipient: item.recipient,
             subject: item.subject,}}}exact><span><i class="far fa-bell"></i>Write Draft</span></NavLink>
-            {/* <Updatedraft arr={item.key}> test  </Updatedraft> */}
             </td>
           </tr>
         ))}
