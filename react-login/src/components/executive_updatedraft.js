@@ -250,6 +250,7 @@ function ExecutiveUpdatedraft(props) {
                   onClick={() => (button_state.button = 1)}
                   type="submit"
                   name="Accept"
+                  id='draft_submit'
                   value="wow"
                 >
                   Accept
@@ -258,6 +259,7 @@ function ExecutiveUpdatedraft(props) {
                   onClick={() => (button_state.button = 2)}
                   type="submit"
                   name="btn2"
+                  id='draft_submit'
                   value="oh no"
                 >
                   Reject
