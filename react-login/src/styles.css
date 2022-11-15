@@ -3102,6 +3102,12 @@ transform: translateY(-50%)
   color: black
 }
 
+#draft_accept{
+  width: 150px;
+  height: 30px;
+  color: black
+}
+
 #linkage_btn{
   width: 125px;
   height: 35px;

@@ -101,7 +101,7 @@ function Executive_draftlist(props) {
           <td>Executive</td>
           <td>Assistant</td>
           <td>Draft_Status</td>
-          <td>Button</td>
+          <td>Review</td>
         </tr>
         {state.map((item) => (
           // <tr key={item.id}>
@@ -110,7 +110,6 @@ function Executive_draftlist(props) {
             <td>{item.assistant}</td>
             <td>{item.status}</td>
             <td>
-            {/* to={{ pathname:'/updatedraft',state: {title:'from home page'}}} */}
             <NavLink activeClassName='activelink'  to={{ pathname:'/executive_updatedraft',aboutProps: {datakey:item.key,bcc: item.bcc, 
             cc: item.cc,
             message: item.message, 
