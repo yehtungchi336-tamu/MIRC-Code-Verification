@@ -63,28 +63,11 @@ function ExecutiveUpdatedraft(props) {
     setTextarea(event.target.value)
   }
 
-  // const handleSave = (event) => 
-  //   event.preventDefault();{
-  //   // STEP 4：
-  //   // 透過 inputLocationRef.current 可以指稱到該 input 元素
-  //   // 透過 inputLocationRef.current.value 即可取得該 input 元素的值
-  //   const locationName = inputLocationRef.current.value;
-  //   console.log("locationName");
-  //   console.log(locationName);
-  //   // ...
-  // };
-
   const handleSubmit = (event) => {
     event.preventDefault();
-
-    
-
+  
     const key = location.aboutProps['datakey'];
-    // const locationName = inputLocationRef.current.value;
-    // console.log("locationName");
-    // console.log(locationName);
     console.log("handleSubmit");
-    // console.log(form.current);
     console.log(form.current);
     console.log(form.current.message.value);
 
@@ -96,11 +79,31 @@ function ExecutiveUpdatedraft(props) {
     updates[`draft/${key}/recipient`] = form.current.recipient.value;
     if (button_state.button === 1) {
       updates[`draft/${key}/status`] = "Accepted";
+
     }
     if (button_state.button === 2) {
       updates[`draft/${key}/status`] = "Rejected";
     }
     realtime_db.ref().update(updates);
+
+
+    emailjs.sendForm(
+      "service_k0epgii",
+      "template_a0nogel",
+      form.current,
+      "J14Ld2x5lECND_Nx1"
+    )
+    .then(
+      (result) => {
+        console.log(result.text);
+        alert("MailSend SUCCESS!");
+      },
+      (error) => {
+        console.log(error.text);
+        alert("MailSend FAILED...", error);
+      }
+    );
+
     console.log("RRRRRRRR")
 
 
@@ -138,6 +141,28 @@ function ExecutiveUpdatedraft(props) {
     }
   }
 
+  function MailSending(e){
+    e.preventDefault();
+
+    emailjs.sendForm(
+      "service_k0epgii",
+      "template_a0nogel",
+      form.current,
+      "J14Ld2x5lECND_Nx1"
+    )
+    .then(
+      (result) => {
+        console.log(result.text);
+        alert("MailSend SUCCESS!");
+      },
+      (error) => {
+        console.log(error.text);
+        alert("MailSend FAILED...", error);
+      }
+    );
+  }
+
+  
   function data_form() {
     // const refContainer = useRef(initialValue);
     // const InputElement = () => (
@@ -149,8 +174,6 @@ function ExecutiveUpdatedraft(props) {
     const recipient = location.aboutProps['recipient'];
     console.log("data_form")
     console.log(location.aboutProps)
-    console.log(location.aboutProps['datakey'])
-    console.log(location.aboutProps['datakey'])
     
     return (
       <div className="home">
@@ -251,14 +274,16 @@ function ExecutiveUpdatedraft(props) {
                   type="submit"
                   name="Accept"
                   value="wow"
+                  id='draft_accept'
                 >
-                  Accept
+                  Accept & Send Email
                 </button>
                 <button
                   onClick={() => (button_state.button = 2)}
                   type="submit"
                   name="btn2"
                   value="oh no"
+                  id='draft_accept'
                 >
                   Reject
                 </button>
