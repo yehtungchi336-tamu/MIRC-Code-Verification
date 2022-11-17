@@ -86,12 +86,13 @@ function Body(props) {
     }
   }
 
-  
+
   useEffect(()=>{
       if (user){
           if (!user.msgids)
           {
             props.handleLogout()
+            return;
           }
       }
     })

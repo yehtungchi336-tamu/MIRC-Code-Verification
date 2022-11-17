@@ -73,11 +73,34 @@ function App() {
     console.log('signup')
     clearErrors()
     firebase.auth().createUserWithEmailAndPassword(email, password)
-    .then(()=>{
-      //firebase.auth().currentUser.msgids = "Signup";
-      //authListener()
-      firebase.auth().signOut();
-      window.location.href = '/'
+    .then(function(result) {
+      result.user.updateProfile({
+        displayName: name
+      })
+
+      db.collection('users').doc(result.user.uid).set({
+        created: new Date(), 
+        msgids,
+        uid: result.user.uid,
+        online: true,
+        userinfo: {
+          name,
+          cover,
+          age: '', 
+          phone: '', 
+          city: '',
+          country: '',
+          website: 'https://',
+          job: '',
+          email,
+        },
+        customization: {
+          color: '#10325c',
+          themecolor: '#0f6ce6',
+          darkmode: false,
+          widemode: false,
+        }
+    })
     })
     .catch(err => {
         
@@ -97,12 +120,12 @@ function App() {
     })
     firebase.auth().onAuthStateChanged(user => {
       if(user) {
-          user.updateProfile({
-            displayName: name,
-          }) 
+          //user.updateProfile({
+          //  displayName: name,
+          //}) 
           db.collection('users').doc(user.uid).set({
               created: new Date(), 
-              msgids: loginType,
+              msgids,
               uid: firebase.auth().currentUser.uid,
               online: true,
               userinfo: {
@@ -126,8 +149,8 @@ function App() {
           db.collection('notifications').doc(user.uid).set({
             notifications: 'email'
           })
-          firebase.auth().currentUser.msgids = loginType
-          console.log("email signup success.." + firebase.auth().currentUser.msgids)
+          //firebase.auth().currentUser.msgids = loginType
+          //console.log("email signup success.." + firebase.auth().currentUser.msgids)
       }//if (user)
       else {
         setUser('')
@@ -137,7 +160,7 @@ function App() {
 
   const handleLogout = () => {
     if(user) {
-      db.collection('users').doc(user.uid).update({online: false})
+      //db.collection('users').doc(user.uid).update({online: false})
     }
     console.log("handle logout.." + loginType)
     firebase.auth().signOut()
@@ -148,7 +171,7 @@ function App() {
       if(user) {
         clearInputs()
         setUser(user)
-        db.collection('users').doc(user.uid).update({online: true})
+        //db.collection('users').doc(user.uid).update({online: true})
       }
       else {
           setUser('')
@@ -303,13 +326,13 @@ function App() {
     window.addEventListener('onbeforeunload', removeActiveStatus) 
     function removeActiveStatus() {
       if(user) {
-        db.collection('users').doc(user.uid).update({online: false})
+        //db.collection('users').doc(user.uid).update({online: false})
         firebase.auth().currentUser.msgids = loginType
         console.log("login success 1.." + firebase.auth().currentUser.msgids)
       }
     }
     if(user) {
-      db.collection('users').doc(user.uid).update({online: true})
+      //db.collection('users').doc(user.uid).update({online: true})
       firebase.auth().currentUser.msgids = loginType
       console.log("login success 2.." + firebase.auth().currentUser.msgids)
     }

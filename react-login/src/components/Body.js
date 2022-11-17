@@ -158,7 +158,7 @@ function Body(props) {
       .doc(user.uid)
       .onSnapshot((user) => {
         const userlist = user.data();
-        setMsgpersonids(userlist.msgpersonids);
+        //setMsgpersonids(userlist.msgpersonids);
         setUserlist(userlist);
         db.collection("conversations").onSnapshot((snap) => {
           let convos = [];
