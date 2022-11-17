@@ -39,7 +39,12 @@ function App() {
   const handleLogin = () => {
     clearErrors()
 
-    
+    if (!loginType)
+    {
+      window.alert('Please select your login role!')
+      return
+    }
+
     firebase.auth().signInWithEmailAndPassword(email, password)
     .then(()=>{
       //db.collection('users').doc(user.uid).update({msgids: loginType})
@@ -69,10 +74,10 @@ function App() {
     clearErrors()
     firebase.auth().createUserWithEmailAndPassword(email, password)
     .then(()=>{
-      firebase.auth().currentUser.updateProfile({
-        displayName: name,
-      }) 
+      //firebase.auth().currentUser.msgids = "Signup";
       //authListener()
+      firebase.auth().signOut();
+      window.location.href = '/'
     })
     .catch(err => {
         
@@ -153,6 +158,12 @@ function App() {
   } 
   
   function loginwithGoogle(){
+    if (!loginType)
+    {
+      window.alert('Please select your login role!')
+      return
+    }
+
     var provider = new firebase.auth.GoogleAuthProvider();
     provider.addScope('email');
 
@@ -213,6 +224,11 @@ function App() {
     });
   }
   function loginwithFacebook(){
+    if (!loginType)
+    {
+      window.alert('Please select your login role!')
+      return
+    }
     var provider = new firebase.auth.FacebookAuthProvider();
     provider.addScope("email");
 
