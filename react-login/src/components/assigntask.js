@@ -29,7 +29,7 @@ const FileUpload = (list, setter) => {
       var storageRef = storage.ref();
       // Upload the file and metadata
       //const uploadTask = uploadBytesResumable(storageRef, file);
-      var uploadTask = storageRef.child(`/audios/${user.uid}/${file.name + uuidv4()}`).put(file);
+      var uploadTask = storageRef.child(`/audios/${user.uid}/${Date() + " _ " +file.name}`).put(file);
 
       uploadTask.on("state_changed", (snapshot) => {
           var progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
