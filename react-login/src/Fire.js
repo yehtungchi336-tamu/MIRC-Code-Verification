@@ -1,4 +1,5 @@
 import firebase from 'firebase'
+//import { getStorage } from "firebase/storage";
 
 const  firebaseApp = firebase.initializeApp ({
   apiKey: "AIzaSyBtw3coit5Y_E2gJInz7RavYXuthmhh35Q",
@@ -14,4 +15,7 @@ const  firebaseApp = firebase.initializeApp ({
 const db= firebaseApp.firestore()
 const realtime_db = firebaseApp.database()
 const Fire = firebaseApp
-export  {db, realtime_db, Fire}
+//export {db, realtime_db, Fire}
+/////////
+const storage = firebaseApp.storage()
+export {db, realtime_db, Fire, storage}

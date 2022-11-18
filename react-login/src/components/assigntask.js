@@ -1,22 +1,114 @@
 import React, { useState, useEffect, useRef, useContext } from "react";
 import firebase from "firebase";
-import { db,realtime_db } from "../Fire";
-import { CSSTransition, TransitionGroup } from "react-transition-group";
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Link,
-  NavLink,
-  Redirect,
-  useLocation
-} from "react-router-dom";
-import ReactTimeAgo from 'react-time-ago'
-import emailjs from 'emailjs-com'
-import Usersettings from "./Usersettings";
+import { db, realtime_db, storage } from "../Fire";
+//import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { ContextApp } from "../ContextAPI";
 import Hoverlink from "./Hoverlink";
+
+export default Assigntask;
+
+const FileUpload = (list, setter) => {
+
+  //const ref = firebase.storage().ref();
+  const [progrss, setProgrss] = useState(0);
+  const [isLoading, setIsLoading] = useState();
+  const [file, setFile] = useState();
+  const [url, setUrl] = useState();
+
+  const onFileUpload = () => {
+      if (!file) return;
+      setIsLoading(true);
+      //const storageRef = ref(storage, `/files/${file.name}`);
+      var storageRef = storage.ref();
+      // Upload the file and metadata
+      //const uploadTask = uploadBytesResumable(storageRef, file);
+      var uploadTask = storageRef.child(`/files/${file.name}`).put(file);
+
+      uploadTask.on("state_changed", (snapshot) => {
+          var progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+          setProgrss(progress);
+      }, (err) => {
+          console.log(err);
+          setIsLoading(false);
+      },
+          () => {
+              // Handle successful uploads on complete
+              /*
+              getDownloadURL(uploadTask.snapshot.ref)
+                  .then(url => {
+                      setUrl(url);
+                      setIsLoading(false);
+                  })
+              */
+              uploadTask.snapshot.ref.getDownloadURL()
+                  .then(url => {
+                      setUrl(url);
+                      setIsLoading(false);
+              })
+          }
+      )
+  }
+
+  const onFileChange = e => {
+      setFile(e.target.files[0]);
+      e.preventDefault();
+  }
+
+
+  return (
+      <>
+          <input type="file" onChange={onFileChange} />
+          <button onClick={onFileUpload}>
+              Upload!
+          </button>
+          <div className="break"></div>
+          {isLoading && <p>File upload <b>{progrss}%</b></p>}
+          {url && <p>Firebase storage URL: <a href={url} target="_blank" rel="noreferrer">{url}</a></p>}
+      </>
+
+  )
+}
+
 function Assigntask(props) {
+  //const ref = firebase.storage().ref(`images/${image.name}`);
+/*
+  function SongPicker() {
+    const [song, setSong] = useState(null);
+  
+    //Get current user through authentication
+    const user = auth.currentUser;
+  
+    const pickDocument = async () => {
+      let result = await DocumentPicker.getDocumentAsync({});
+      // Fetch the photo with it's local URI
+      const response = fetch(result.uri);
+      alert(result.uri);
+      console.log(result);
+  
+      const file = new Blob(
+        [response.value], {
+          type: 'audio/mpeg'
+        });
+      console.log('do we see this?');
+  
+      try {
+        //Create the file reference
+        const storage = getStorage();
+        const storageRef = ref(storage, `songs/${user.uid}/${result.name}`);
+  
+        // Upload Blob file to Firebase
+        const snapshot = uploadBytes(storageRef, file, 'blob').then((snapshot) => {
+          console.log('Uploaded a song to firebase storage!');
+        });
+  
+        setSong(result.uri);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  }
+
+  */
   const { themecolor } = useContext(ContextApp)
   const user = firebase.auth().currentUser
   const [roleType, setRoleType] = useState('')
@@ -103,6 +195,8 @@ function Assigntask(props) {
     }
   }
 
+  
+
   return (
     <div className="home">
       <div className="header flex sb">
@@ -125,15 +219,7 @@ function Assigntask(props) {
         <div class="row">
           <div class="col align-self-center">
           <form onSubmit={handleSubmit}>
-            {/* <label>Assistant
-            <input 
-              type="text" 
-              name="subject" 
-              value={inputs.subject || ""} 
-              placeholder=" enter email subject"
-              onChange={handleChange}
-            />
-            </label> */}
+            {}
             <label htmlFor="assistant">Assistant:
             <select placeholder="Please select assistant" name="assistant" onChange={handleChange}>
               <option value="">Please select assistant</option>
@@ -145,51 +231,9 @@ function Assigntask(props) {
             </select>
           </label>
             Audiofile
-            {/* <label>Subject
-            <input 
-              type="text" 
-              name="subject" 
-              value={inputs.subject || ""} 
-              placeholder=" enter email subject"
-              onChange={handleChange}
-            />
-            </label> */}
-            {/* <label>TO
-              <input 
-                type="text" 
-                name="recipient" 
-                value={inputs.recipient || ""} 
-                placeholder=" enter the recipient's address"
-                onChange={handleChange}
-            />
-            </label>
-            <label>CC
-              <input 
-                type="text" 
-                name="CC" 
-                value={inputs.CC || ""} 
-                placeholder=" enter the Carbon Copy"
-                onChange={handleChange}
-            />
-            </label>
-            <label>BCC
-              <input 
-                type="text" 
-                name="BCC" 
-                value={inputs.BCC || ""} 
-                placeholder=" enter the Blind Carbon Copy"
-                onChange={handleChange}
-            />
-            </label>
-
-            <label>Message<textarea value={textarea  || ""} rows="10" onChange={handle_textarea_Change} />
-            </label> */}
-              <input type="submit" class="btn btn-primary" id='draft_submit' value='Submit' />
-
-
-          </form>
-
-
+            {}
+              <FileUpload></FileUpload>
+         </form>
           </div>
         </div>
       </div>
@@ -199,4 +243,6 @@ function Assigntask(props) {
     </div>
   );
 }
-export default Assigntask;
+
+
+
