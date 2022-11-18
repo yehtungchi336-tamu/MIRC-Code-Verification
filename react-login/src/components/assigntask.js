@@ -9,73 +9,60 @@ import "firebase/auth";
 export default Assigntask;
 
 function Assigntask(props) {
-  const FileUpload = (list, setter) => {
-    //const ref = firebase.storage().ref();
-    const [progrss, setProgrss] = useState(0);
-    const [isLoading, setIsLoading] = useState();
-    const [file, setFile] = useState();
-    const [url, setUrl] = useState();
-    //
-    const {v4 : uuidv4} = require('uuid')
-    // Initialize Firebase Authentication and get a reference to the service
-    const auth = firebase.auth();
-    //Get current user through authentication
-    const user = auth.currentUser;
+  ////
   
-    const onFileUpload = () => {
-        if (!file) return;
-        setIsLoading(true);
-        //const storageRef = ref(storage, `/files/${file.name}`);
-        var storageRef = storage.ref();
-        // Upload the file and metadata
-        //const uploadTask = uploadBytesResumable(storageRef, file);
-        var uploadTask = storageRef.child(`/audios/${user.uid}/${Date() + " _ " +file.name}`).put(file);
-  
-        uploadTask.on("state_changed", (snapshot) => {
-            var progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
-            setProgrss(progress);
-        }, (err) => {
-            console.log(err);
-            setIsLoading(false);
-        },
-            () => {
-                // Handle successful uploads on complete
-                /*
-                getDownloadURL(uploadTask.snapshot.ref)
-                    .then(url => {
-                        setUrl(url);
-                        setIsLoading(false);
-                    })
-                */
-                uploadTask.snapshot.ref.getDownloadURL()
-                    .then(url => {
-                        setUrl(url);
-                        setIsLoading(false);
-                })
-            }
-        )
-    }
-    const onFileChange = e => {
-        setFile(e.target.files[0]);
-        e.preventDefault();
-    }
-    return (
-        <>
-            <input type="file" onChange={onFileChange} />
-            <button onClick={onFileUpload}>
-                Upload!
-            </button>
-            <div className="break"></div>
-            {isLoading && <p>File upload <b>{progrss}%</b></p>}
-            {url && <p>File uploaded</p>}      
-            {/*url && <p>Firebase storage URL: <a href={url} target="_blank" rel="noreferrer">{url}</a></p>*/}
-        </>
-  
-    )
+  //const ref = firebase.storage().ref();
+  const [progrss, setProgrss] = useState(0);
+  const [isLoading, setIsLoading] = useState();
+  const [file, setFile] = useState();
+  const [url, setUrl] = useState();
+  //
+  const {v4 : uuidv4} = require('uuid')
+  // Initialize Firebase Authentication and get a reference to the service
+  const auth = firebase.auth();
+  //Get current user through authentication
+  const user = auth.currentUser;
+
+  const onFileUpload = () => {
+      if (!file) return;
+      setIsLoading(true);
+      //const storageRef = ref(storage, `/files/${file.name}`);
+      var storageRef = storage.ref();
+      // Upload the file and metadata
+      //const uploadTask = uploadBytesResumable(storageRef, file);
+      var uploadTask = storageRef.child(`/audios/${user.uid}/${Date() + " _ " +file.name}`).put(file);
+
+      uploadTask.on("state_changed", (snapshot) => {
+          var progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+          setProgrss(progress);
+      }, (err) => {
+          console.log(err);
+          setIsLoading(false);
+      },
+          () => {
+              // Handle successful uploads on complete
+              /*
+              getDownloadURL(uploadTask.snapshot.ref)
+                  .then(url => {
+                      setUrl(url);
+                      setIsLoading(false);
+                  })
+              */
+              uploadTask.snapshot.ref.getDownloadURL()
+                  .then(url => {
+                      setUrl(url);
+                      setIsLoading(false);
+              })
+          }
+      )
+  }
+  const onFileChange = e => {
+      setFile(e.target.files[0]);
+      e.preventDefault();
   }
 
   const { themecolor } = useContext(ContextApp)
-  const user = firebase.auth().currentUser
+  //const user = firebase.auth().currentUser
   const [roleType, setRoleType] = useState('')
   const [cover, setCover] = useState("")
   const { handleLogout } = props
@@ -194,7 +181,15 @@ function Assigntask(props) {
             </select>
             </label>
             Audiofile
-            <FileUpload></FileUpload>
+
+            <input type="file" onChange={onFileChange} />
+            <button onClick={onFileUpload}>
+                Upload!
+            </button>
+            <div className="break"></div>
+            {isLoading && <p>File upload <b>{progrss}%</b></p>}
+            {url && <p>File uploaded</p>}
+            
           </form>
           </div>
         </div>
