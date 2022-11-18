@@ -8,114 +8,72 @@ import "firebase/auth";
 
 export default Assigntask;
 
-const FileUpload = (list, setter) => {
-
-  //const ref = firebase.storage().ref();
-  const [progrss, setProgrss] = useState(0);
-  const [isLoading, setIsLoading] = useState();
-  const [file, setFile] = useState();
-  const [url, setUrl] = useState();
-  //
-  const {v4 : uuidv4} = require('uuid')
-  // Initialize Firebase Authentication and get a reference to the service
-  const auth = firebase.auth();
-  //Get current user through authentication
-  const user = auth.currentUser;
-
-  const onFileUpload = () => {
-      if (!file) return;
-      setIsLoading(true);
-      //const storageRef = ref(storage, `/files/${file.name}`);
-      var storageRef = storage.ref();
-      // Upload the file and metadata
-      //const uploadTask = uploadBytesResumable(storageRef, file);
-      var uploadTask = storageRef.child(`/audios/${user.uid}/${Date() + " _ " +file.name}`).put(file);
-
-      uploadTask.on("state_changed", (snapshot) => {
-          var progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
-          setProgrss(progress);
-      }, (err) => {
-          console.log(err);
-          setIsLoading(false);
-      },
-          () => {
-              // Handle successful uploads on complete
-              /*
-              getDownloadURL(uploadTask.snapshot.ref)
-                  .then(url => {
-                      setUrl(url);
-                      setIsLoading(false);
-                  })
-              */
-              uploadTask.snapshot.ref.getDownloadURL()
-                  .then(url => {
-                      setUrl(url);
-                      setIsLoading(false);
-              })
-          }
-      )
-  }
-
-  const onFileChange = e => {
-      setFile(e.target.files[0]);
-      e.preventDefault();
-  }
-
-  return (
-      <>
-          <input type="file" onChange={onFileChange} />
-          <button onClick={onFileUpload}>
-              Upload!
-          </button>
-          <div className="break"></div>
-          {isLoading && <p>File upload <b>{progrss}%</b></p>}
-          {url && <p>File uploaded</p>}      
-          {/*url && <p>Firebase storage URL: <a href={url} target="_blank" rel="noreferrer">{url}</a></p>*/}
-      </>
-
-  )
-}
-
 function Assigntask(props) {
-  //const ref = firebase.storage().ref(`images/${image.name}`);
-/*
-  function SongPicker() {
-    const [song, setSong] = useState(null);
-  
+  const FileUpload = (list, setter) => {
+    //const ref = firebase.storage().ref();
+    const [progrss, setProgrss] = useState(0);
+    const [isLoading, setIsLoading] = useState();
+    const [file, setFile] = useState();
+    const [url, setUrl] = useState();
+    //
+    const {v4 : uuidv4} = require('uuid')
+    // Initialize Firebase Authentication and get a reference to the service
+    const auth = firebase.auth();
     //Get current user through authentication
     const user = auth.currentUser;
   
-    const pickDocument = async () => {
-      let result = await DocumentPicker.getDocumentAsync({});
-      // Fetch the photo with it's local URI
-      const response = fetch(result.uri);
-      alert(result.uri);
-      console.log(result);
+    const onFileUpload = () => {
+        if (!file) return;
+        setIsLoading(true);
+        //const storageRef = ref(storage, `/files/${file.name}`);
+        var storageRef = storage.ref();
+        // Upload the file and metadata
+        //const uploadTask = uploadBytesResumable(storageRef, file);
+        var uploadTask = storageRef.child(`/audios/${user.uid}/${Date() + " _ " +file.name}`).put(file);
   
-      const file = new Blob(
-        [response.value], {
-          type: 'audio/mpeg'
-        });
-      console.log('do we see this?');
-  
-      try {
-        //Create the file reference
-        const storage = getStorage();
-        const storageRef = ref(storage, `songs/${user.uid}/${result.name}`);
-  
-        // Upload Blob file to Firebase
-        const snapshot = uploadBytes(storageRef, file, 'blob').then((snapshot) => {
-          console.log('Uploaded a song to firebase storage!');
-        });
-  
-        setSong(result.uri);
-      } catch (error) {
-        console.log(error);
-      }
+        uploadTask.on("state_changed", (snapshot) => {
+            var progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+            setProgrss(progress);
+        }, (err) => {
+            console.log(err);
+            setIsLoading(false);
+        },
+            () => {
+                // Handle successful uploads on complete
+                /*
+                getDownloadURL(uploadTask.snapshot.ref)
+                    .then(url => {
+                        setUrl(url);
+                        setIsLoading(false);
+                    })
+                */
+                uploadTask.snapshot.ref.getDownloadURL()
+                    .then(url => {
+                        setUrl(url);
+                        setIsLoading(false);
+                })
+            }
+        )
     }
+    const onFileChange = e => {
+        setFile(e.target.files[0]);
+        e.preventDefault();
+    }
+    return (
+        <>
+            <input type="file" onChange={onFileChange} />
+            <button onClick={onFileUpload}>
+                Upload!
+            </button>
+            <div className="break"></div>
+            {isLoading && <p>File upload <b>{progrss}%</b></p>}
+            {url && <p>File uploaded</p>}      
+            {/*url && <p>Firebase storage URL: <a href={url} target="_blank" rel="noreferrer">{url}</a></p>*/}
+        </>
+  
+    )
   }
 
-  */
   const { themecolor } = useContext(ContextApp)
   const user = firebase.auth().currentUser
   const [roleType, setRoleType] = useState('')
@@ -202,8 +160,6 @@ function Assigntask(props) {
     }
   }
 
-  
-
   return (
     <div className="home">
       <div className="header flex sb">
@@ -236,17 +192,14 @@ function Assigntask(props) {
               <option value="YiChia">YiChia</option>
               <option value="Max">Max</option>
             </select>
-          </label>
+            </label>
             Audiofile
-            {}
-              <FileUpload></FileUpload>
-         </form>
+            <FileUpload></FileUpload>
+          </form>
           </div>
         </div>
       </div>
-      <div className="homeside">
-
-      </div>
+      <div className="homeside"></div>
     </div>
   );
 }
