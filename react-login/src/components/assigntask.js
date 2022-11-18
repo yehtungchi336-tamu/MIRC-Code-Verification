@@ -30,8 +30,8 @@ function Assigntask(props) {
       var storageRef = storage.ref();
       // Upload the file and metadata
       //const uploadTask = uploadBytesResumable(storageRef, file);
-      console.log(inputs);
-      var uploadTask = storageRef.child(`/audios/${user.uid}/${inputs}/${Date() + " _ " +file.name}`).put(file);
+      console.log(assistantId);
+      var uploadTask = storageRef.child(`/audios/${user.uid}/${assistantId}/${Date() + " _ " +file.name}`).put(file);
 
       uploadTask.on("state_changed", (snapshot) => {
           var progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
@@ -86,9 +86,10 @@ function Assigntask(props) {
     });
 
   const [textarea, setTextarea] = useState();
-  const [inputs, setInputs] = useState({})
+  //const [inputs, setInputs] = useState({})
+  const [assistantId, setAssistant] = useState({})
   const handleChange = (event) => {
-    setInputs(event.target.value)
+    setAssistant(event.target.value)
   }
 
   const handle_textarea_Change = (event) => {
@@ -98,8 +99,8 @@ function Assigntask(props) {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log(inputs);
-
+    console.log(assistantId);
+    /*
     var tutorialsRef = realtime_db.ref("/draft");
     tutorialsRef.push({
       username: user.displayName,
@@ -112,8 +113,7 @@ function Assigntask(props) {
       audiofile: "",
       status: "Pending",
     });
-
-
+    */
   }
 
   useEffect(()=>{
