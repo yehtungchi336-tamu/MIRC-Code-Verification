@@ -86,21 +86,21 @@ function Body(props) {
     }
   }
 
- /* 
+
   useEffect(()=>{
       if (user){
-      db.collection('users').doc(user.uid).onSnapshot(snap=>{
-        const tmp = snap.data()
-        setRoleType(tmp.msgids)
-        console.log("home set role.." + tmp.msgids)
-      })
+          if (!user.msgids)
+          {
+            props.handleLogout()
+            return;
+          }
       }
     })
-*/
-  function determinetext() {
+
+    function determinetext() {
     if (user) {
         return determineTime() + " " + user.msgids + " " + user.displayName + " (login type: " + user.providerData[0].providerId + ")"
-    }
+      }
   }
 
   return (

@@ -94,6 +94,7 @@ function ExecutiveUpdatedraft(props) {
           console.log(error.text);
           alert("MailSend FAILED...", error);
         }
+<<<<<<< HEAD
       );
       realtime_db.ref().update(updates);
     }
@@ -118,6 +119,17 @@ function ExecutiveUpdatedraft(props) {
       } 
     }
 
+=======
+      )
+
+    }
+    else if (button_state.button === 2) {
+      updates[`draft/${key}/status`] = "Rejected";
+      realtime_db.ref().update(updates);
+      alert("DRAFT RETURNED!");
+    }
+    window.location.replace('/executive_updatedraft');
+>>>>>>> origin/jinson
   }
 
   useEffect(()=>{

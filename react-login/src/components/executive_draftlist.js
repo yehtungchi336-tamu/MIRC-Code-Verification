@@ -121,6 +121,7 @@ function Executive_draftlist(props) {
     );
   }
 
+  /*
   useEffect(()=>{
     if (user){
     db.collection('users').doc(user.uid).onSnapshot(snap=>{
@@ -131,6 +132,7 @@ function Executive_draftlist(props) {
     })
     }
   },[])
+*/
 
   function determineTime() {
     const d = new Date();

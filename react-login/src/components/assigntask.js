@@ -70,7 +70,7 @@ function Assigntask(props) {
 
 
   }
-
+/*
   useEffect(()=>{
     if (user){
     db.collection('users').doc(user.uid).onSnapshot(snap=>{
@@ -81,7 +81,7 @@ function Assigntask(props) {
     })
     }
   },[])
-
+*/
   function determineTime() {
     const d = new Date();
     if (d.getHours() >= 6 && d.getHours() < 12) {
