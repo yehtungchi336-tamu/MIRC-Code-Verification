@@ -79,34 +79,30 @@ function ExecutiveUpdatedraft(props) {
     updates[`draft/${key}/recipient`] = form.current.recipient.value;
     if (button_state.button === 1) {
       updates[`draft/${key}/status`] = "Accepted";
+      emailjs.sendForm(
+        "service_k0epgii",
+        "template_a0nogel",
+        form.current,
+        "J14Ld2x5lECND_Nx1"
+      )
+      .then(
+        (result) => {
+          console.log(result.text);
+          alert("MailSend SUCCESS!");
+        },
+        (error) => {
+          console.log(error.text);
+          alert("MailSend FAILED...", error);
+        }
+      )
 
     }
-    if (button_state.button === 2) {
+    else if (button_state.button === 2) {
       updates[`draft/${key}/status`] = "Rejected";
+      realtime_db.ref().update(updates);
+      alert("DRAFT RETURNED!");
     }
-    realtime_db.ref().update(updates);
-
-
-    emailjs.sendForm(
-      "service_k0epgii",
-      "template_a0nogel",
-      form.current,
-      "J14Ld2x5lECND_Nx1"
-    )
-    .then(
-      (result) => {
-        console.log(result.text);
-        alert("MailSend SUCCESS!");
-      },
-      (error) => {
-        console.log(error.text);
-        alert("MailSend FAILED...", error);
-      }
-    );
-
-    console.log("RRRRRRRR")
-
-
+    window.location.replace('/executive_updatedraft');
   }
 
   useEffect(()=>{
