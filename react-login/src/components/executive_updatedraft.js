@@ -68,44 +68,55 @@ function ExecutiveUpdatedraft(props) {
   
     const key = location.aboutProps['datakey'];
     console.log("handleSubmit");
-    console.log(form.current);
-    console.log(form.current.message.value);
-
+    // console.log(form.current);
+    // console.log(form.current.message.value);
     const updates = {};
-    updates[`draft/${key}/subject`] = form.current.subject.value;
-    updates[`draft/${key}/cc`] = form.current.cc.value;
-    updates[`draft/${key}/bcc`] = form.current.bcc.value;
-    updates[`draft/${key}/message`] = form.current.message.value;
-    updates[`draft/${key}/recipient`] = form.current.recipient.value;
+    
     if (button_state.button === 1) {
+      updates[`draft/${key}/subject`] = form.current.subject.value;
+      updates[`draft/${key}/cc`] = form.current.cc.value;
+      updates[`draft/${key}/bcc`] = form.current.bcc.value;
+      updates[`draft/${key}/message`] = form.current.message.value;
+      updates[`draft/${key}/recipient`] = form.current.recipient.value;
       updates[`draft/${key}/status`] = "Accepted";
-
+      emailjs.sendForm(
+        "service_k0epgii",
+        "template_a0nogel",
+        form.current,
+        "J14Ld2x5lECND_Nx1"
+      )
+      .then(
+        (result) => {
+          console.log(result.text);
+          alert("MailSend SUCCESS!");
+        },
+        (error) => {
+          console.log(error.text);
+          alert("MailSend FAILED...", error);
+        }
+      );
+      realtime_db.ref().update(updates);
     }
     if (button_state.button === 2) {
+      updates[`draft/${key}/subject`] = form.current.subject.value;
+      updates[`draft/${key}/cc`] = form.current.cc.value;
+      updates[`draft/${key}/bcc`] = form.current.bcc.value;
+      updates[`draft/${key}/message`] = form.current.message.value;
+      updates[`draft/${key}/recipient`] = form.current.recipient.value;
       updates[`draft/${key}/status`] = "Rejected";
+      realtime_db.ref().update(updates);
+
     }
-    realtime_db.ref().update(updates);
-
-
-    emailjs.sendForm(
-      "service_k0epgii",
-      "template_a0nogel",
-      form.current,
-      "J14Ld2x5lECND_Nx1"
-    )
-    .then(
-      (result) => {
-        console.log(result.text);
-        alert("MailSend SUCCESS!");
-      },
-      (error) => {
-        console.log(error.text);
-        alert("MailSend FAILED...", error);
-      }
-    );
-
-    console.log("RRRRRRRR")
-
+    if (button_state.button === 3) {
+      
+      if (confirm('Are you sure you want to delete this draft?')) { 
+        console.log(key);
+        console.log("delete");
+        var userRef = realtime_db.ref("/draft");
+        userRef.child(key).remove(); 
+        alert("DELETE SUCCESS!");
+      } 
+    }
 
   }
 
@@ -273,6 +284,7 @@ function ExecutiveUpdatedraft(props) {
                   onClick={() => (button_state.button = 1)}
                   type="submit"
                   name="Accept"
+                  id='draft_submit'
                   value="wow"
                   id='draft_accept'
                 >
@@ -282,11 +294,24 @@ function ExecutiveUpdatedraft(props) {
                   onClick={() => (button_state.button = 2)}
                   type="submit"
                   name="btn2"
+                  id='draft_submit'
                   value="oh no"
                   id='draft_accept'
                 >
                   Reject
                 </button>
+
+                <button
+                  onClick={() => (button_state.button = 3)}
+                  type="submit"
+                  name="btn3"
+                  id='draft_submit'
+                  value="delete"
+                  id='draft_accept'
+                >
+                  Delete
+                </button>
+
               </form>
             </div>
           </div>

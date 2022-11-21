@@ -76,7 +76,7 @@ function Assistant_draftlist(props) {
       });
     });
     const [state, setState] = React.useState(data);
-    console.log(data);
+    // console.log(data);
     // return data;
     return (
       <table>
