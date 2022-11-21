@@ -56,7 +56,7 @@ function Executive_draftlist(props) {
 
   const handleread = () => {
 
-    var executive_name = user.displayName;
+    var executive_name = "Yaru Yang";//user.displayName;
     var userRef = realtime_db.ref("/draft");
     const data = [];
     

@@ -2,7 +2,7 @@ import React, {useState, useEffect} from "react";
 import "./styles.css";
 import {db, Fire} from './Fire';
 import firebase from "firebase";
-import { BrowserRouter as Router,Switch,Route,Link,NavLink, Redirect } from "react-router-dom" 
+import { BrowserRouter as Router,Switch,Route,Link,NavLink, useHistory, Redirect } from "react-router-dom" 
 import Sidebar from './components/Sidebar'
 import Login from './components/Login'
 import Body from './components/Body'
@@ -28,6 +28,7 @@ function App() {
   const [forgotpassword, setForgotpassword]=useState(false)
   //const [msgids, setMsgIds] = useState([''])
   const [loading, setLoading]=useState(false)
+  let history = useHistory();
   const clearInputs = () => {
     setEmail('')
     setPassword('')
@@ -164,7 +165,7 @@ function App() {
     }
     console.log("handle logout.." + loginType)
     firebase.auth().signOut()
-    window.location.href = '/'
+    history.push('/')
   }
   const authListener = () => {
     firebase.auth().onAuthStateChanged(user => {   

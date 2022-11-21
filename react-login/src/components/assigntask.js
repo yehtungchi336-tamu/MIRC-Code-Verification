@@ -66,9 +66,10 @@ function Assigntask(props) {
       assistant: inputs,
       audiofile: "",
       status: "Pending",
-    });
-
-
+    })
+    .then(() => {
+      alert("TASK ASSIGNING SUCCESS!")
+    })
   }
 /*
   useEffect(()=>{

@@ -9,7 +9,8 @@ import {
   Link,
   NavLink,
   Redirect,
-  useLocation
+  useLocation,
+  useHistory
 } from "react-router-dom";
 import ReactTimeAgo from 'react-time-ago'
 import emailjs from 'emailjs-com'
@@ -25,6 +26,7 @@ import Hoverlink from "./Hoverlink";
 function ExecutiveUpdatedraft(props) {
 
   let location = useLocation();
+  let history = useHistory();
   // console.log(location.aboutProps);
   const button_state = {button: 1};
   const { themecolor } = useContext(ContextApp)
@@ -88,15 +90,15 @@ function ExecutiveUpdatedraft(props) {
       .then(
         (result) => {
           console.log(result.text);
-          alert("MailSend SUCCESS!");
+          alert("MAILSEND SUCCESS!");
         },
         (error) => {
           console.log(error.text);
-          alert("MailSend FAILED...", error);
+          alert("MAILSEND FAILED...", error);
         }
-<<<<<<< HEAD
       );
       realtime_db.ref().update(updates);
+      history.push("/executive_draftlist");
     }
     if (button_state.button === 2) {
       updates[`draft/${key}/subject`] = form.current.subject.value;
@@ -106,6 +108,8 @@ function ExecutiveUpdatedraft(props) {
       updates[`draft/${key}/recipient`] = form.current.recipient.value;
       updates[`draft/${key}/status`] = "Rejected";
       realtime_db.ref().update(updates);
+      alert("DRAFT REJECTED!");
+      history.push("/executive_draftlist");
 
     }
     if (button_state.button === 3) {
@@ -114,22 +118,11 @@ function ExecutiveUpdatedraft(props) {
         console.log(key);
         console.log("delete");
         var userRef = realtime_db.ref("/draft");
-        userRef.child(key).remove(); 
+        userRef.child(key).remove();
         alert("DELETE SUCCESS!");
+        history.push("/executive_draftlist");
       } 
     }
-
-=======
-      )
-
-    }
-    else if (button_state.button === 2) {
-      updates[`draft/${key}/status`] = "Rejected";
-      realtime_db.ref().update(updates);
-      alert("DRAFT RETURNED!");
-    }
-    window.location.replace('/executive_updatedraft');
->>>>>>> origin/jinson
   }
 
   useEffect(()=>{
@@ -296,7 +289,6 @@ function ExecutiveUpdatedraft(props) {
                   onClick={() => (button_state.button = 1)}
                   type="submit"
                   name="Accept"
-                  id='draft_submit'
                   value="wow"
                   id='draft_accept'
                 >
@@ -306,7 +298,6 @@ function ExecutiveUpdatedraft(props) {
                   onClick={() => (button_state.button = 2)}
                   type="submit"
                   name="btn2"
-                  id='draft_submit'
                   value="oh no"
                   id='draft_accept'
                 >
@@ -317,7 +308,6 @@ function ExecutiveUpdatedraft(props) {
                   onClick={() => (button_state.button = 3)}
                   type="submit"
                   name="btn3"
-                  id='draft_submit'
                   value="delete"
                   id='draft_accept'
                 >
