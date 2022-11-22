@@ -28,13 +28,6 @@ function Assigntask(props) {
   const [cover, setCover] = useState("")
   const { handleLogout } = props
   const [notifi, setNotifLength]=useState(0)
-  const lnks = [
-    { icon: "fal fa-comment-alt", txt: "Comment" },
-    { icon: "fal fa-bell", txt: "Notifications" },
-    { icon: "fal fa-cog", txt: "Settings" },
-    { icon: "fal fa-cog", txt: "Adddraft" },
-    { icon: "fal fa-sign-out", txt: "Logout" }
-  ];
 
   const [textarea, setTextarea] = useState();
   const [inputs, setInputs] = useState({})
@@ -83,7 +76,7 @@ function Assigntask(props) {
 
     userRef.orderByChild("date").once("value", function (snapshot) {
       snapshot.forEach(function(childSnapshot) {
-        //if (childSnapshot.val().status == "Pending") {         
+        if (childSnapshot.val().status == "pending") {         
             preTasks.push({
               status: childSnapshot.val().status, 
               executive: childSnapshot.val().executive,
@@ -91,7 +84,7 @@ function Assigntask(props) {
               task: childSnapshot.val().task,
               date: childSnapshot.val().date,
             })
-       // }
+        }
       });
     });
     ///////
@@ -104,25 +97,14 @@ function Assigntask(props) {
           <td>Task</td>
           <td>Assistant</td>
           <td>Status</td>
+          <td>Date</td>
         </tr>
         {state.map((item) => (
-          // <tr key={item.id}>
           <tr>
-            <td>{item.executive}</td>
+            <td>{item.task}</td>
             <td>{item.assistant}</td>
             <td>{item.status}</td>
-            <td>
-            <NavLink activeClassName='activelink'  to={{ 
-              pathname:'/executive_updatedraft',aboutProps: {
-                datakey:item.key,
-                bcc: item.bcc, 
-                cc: item.cc, 
-                message: item.message, 
-                recipient: item.recipient, 
-                subject: item.subject,
-              }
-            }}exact><span><i class="far fa-bell"></i>Review Draft</span></NavLink>
-            </td>
+            <td>{item.date}</td>
           </tr>
         ))}
       </table>
@@ -140,21 +122,6 @@ function Assigntask(props) {
     })
     }
   },[])
-
-  function determineTime() {
-    const d = new Date();
-    if (d.getHours() >= 6 && d.getHours() < 12) {
-      return "Good Morning,";
-    } else if (d.getHours() >= 12 && d.getHours() < 17) {
-      return "Good Afternoon,";
-    } else if (d.getHours() >= 17 && d.getHours() < 20) {
-      return "Good Evening,";
-    } else if (d.getHours() >= 20 && d.getHours() <= 23) {
-      return "Good Night,";
-    } else if (d.getHours() >= 0 && d.getHours() < 6) {
-      return "Good Night,";
-    }
-  }
 
   return (
     <div className="home">
@@ -176,7 +143,8 @@ function Assigntask(props) {
       </div>
       <div class="previous tasks">
         previous tasks
-        
+        {handleread()}
+        ------------------------
       </div>
       <div class="container">
         <div class="row">
