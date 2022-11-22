@@ -8,9 +8,7 @@ import "firebase/auth";
 
 export default Assigntask;
 
-function Assigntask(props) {
-  ////
-  
+function Assigntask(props) {  
   //const ref = firebase.storage().ref();
   const [progrss, setProgrss] = useState(0);
   const [isLoading, setIsLoading] = useState();
@@ -23,51 +21,12 @@ function Assigntask(props) {
   //Get current user through authentication
   const user = auth.currentUser;
 
-  const onFileUpload = () => {
-      if (!file) return;
-      setIsLoading(true);
-      //const storageRef = ref(storage, `/files/${file.name}`);
-      var storageRef = storage.ref();
-      // Upload the file and metadata
-      //const uploadTask = uploadBytesResumable(storageRef, file);
-      console.log(assistantId);
-      var uploadTask = storageRef.child(`/audios/${user.uid}/${assistantId}/${Date() + " _ " +file.name}`).put(file);
-
-      uploadTask.on("state_changed", (snapshot) => {
-          var progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
-          setProgrss(progress);
-      }, (err) => {
-          console.log(err);
-          setIsLoading(false);
-      },
-          () => {
-              // Handle successful uploads on complete
-              /*
-              getDownloadURL(uploadTask.snapshot.ref)
-                  .then(url => {
-                      setUrl(url);
-                      setIsLoading(false);
-                  })
-              */
-              uploadTask.snapshot.ref.getDownloadURL()
-                  .then(url => {
-                      setUrl(url);
-                      setIsLoading(false);
-              })
-          }
-      )
-  }
-  const onFileChange = e => {
-      setFile(e.target.files[0]);
-      e.preventDefault();
-  }
 
   const { themecolor } = useContext(ContextApp)
   //const user = firebase.auth().currentUser
   const [roleType, setRoleType] = useState('')
   const [cover, setCover] = useState("")
   const { handleLogout } = props
-  const links = ["comment", "notifications", "settings", "adddraft", "logout"]
   const [notifi, setNotifLength]=useState(0)
   const lnks = [
     { icon: "fal fa-comment-alt", txt: "Comment" },
@@ -76,45 +35,100 @@ function Assigntask(props) {
     { icon: "fal fa-cog", txt: "Adddraft" },
     { icon: "fal fa-sign-out", txt: "Logout" }
   ];
-  const id =db.collection('users').doc().id
-  const lnksrow =
-    lnks &&
-    lnks.map((lnk) => {
-      return (
-        <Hoverlink  icon={lnk.icon} txt={lnk.txt} handleLogout={handleLogout} />
-      );
-    });
 
   const [textarea, setTextarea] = useState();
-  //const [inputs, setInputs] = useState({})
+  const [inputs, setInputs] = useState({})
   const [assistantId, setAssistant] = useState({})
+  
   const handleChange = (event) => {
-    setAssistant(event.target.value)
-  }
-
-  const handle_textarea_Change = (event) => {
-    setTextarea(event.target.value)
+    const name = event.target.name;
+    const value = event.target.value;
+    setInputs(values => ({...values, [name]: value}))
   }
 
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log(assistantId);
-    /*
-    var tutorialsRef = realtime_db.ref("/draft");
+    console.log(inputs);
+    console.log(user.displayName);
+    console.log(inputs.subject);
+    console.log(inputs.recipient);
+
+    var tutorialsRef = realtime_db.ref("task/" + user.uid);
     tutorialsRef.push({
-      username: user.displayName,
-      subject: "",//inputs.subject,
-      recipient: "",//inputs.recipient,
-      cc: "",//inputs.CC,
-      bcc: "",//inputs.BCC,
-      message: "",//textarea,
-      assistant: inputs,
-      audiofile: "",
-      status: "Pending",
-    });
-    */
+      userId: user.uid,
+      executive: user.displayName,
+      assistant: inputs.recipient,
+      task: inputs.subject,
+      date: Date(),
+      status: "pending",
+    })
+    .then(
+      (result) => {
+        console.log(result.text);
+        alert("Task Adding SUCCESS!");
+      },
+      (error) => {
+        console.log(error.text);
+        alert("Task Adding FAILED...", error);
+      }
+    );
+
+
   }
+
+  const handleread = () => {
+    var userRef = realtime_db.ref("task/" + user.uid);
+    const preTasks = [];
+
+    userRef.orderByChild("date").once("value", function (snapshot) {
+      snapshot.forEach(function(childSnapshot) {
+        //if (childSnapshot.val().status == "Pending") {         
+            preTasks.push({
+              status: childSnapshot.val().status, 
+              executive: childSnapshot.val().executive,
+              assistant: childSnapshot.val().assistant,
+              task: childSnapshot.val().task,
+              date: childSnapshot.val().date,
+            })
+       // }
+      });
+    });
+    ///////
+    const [state, setState] = React.useState(preTasks);
+    console.log(preTasks);
+    // return data;
+    return (
+      <table>
+        <tr>
+          <td>Task</td>
+          <td>Assistant</td>
+          <td>Status</td>
+        </tr>
+        {state.map((item) => (
+          // <tr key={item.id}>
+          <tr>
+            <td>{item.executive}</td>
+            <td>{item.assistant}</td>
+            <td>{item.status}</td>
+            <td>
+            <NavLink activeClassName='activelink'  to={{ 
+              pathname:'/executive_updatedraft',aboutProps: {
+                datakey:item.key,
+                bcc: item.bcc, 
+                cc: item.cc, 
+                message: item.message, 
+                recipient: item.recipient, 
+                subject: item.subject,
+              }
+            }}exact><span><i class="far fa-bell"></i>Review Draft</span></NavLink>
+            </td>
+          </tr>
+        ))}
+      </table>
+    );
+  }
+
 
   useEffect(()=>{
     if (user){
@@ -142,12 +156,6 @@ function Assigntask(props) {
     }
   }
 
-  function determinetext() {
-    if (user) {
-        return determineTime() + " " + roleType + " " + user.displayName + " (login type: " + user.providerData[0].providerId + ")"
-    }
-  }
-
   return (
     <div className="home">
       <div className="header flex sb">
@@ -166,31 +174,34 @@ function Assigntask(props) {
           />
         </div>
       </div>
+      <div class="previous tasks">
+        previous tasks
+        
+      </div>
       <div class="container">
         <div class="row">
           <div class="col align-self-center">
+          Add New Task 
           <form onSubmit={handleSubmit}>
-            {}
-            <label htmlFor="assistant">Assistant:
-            <select placeholder="Please select assistant" name="assistant" onChange={handleChange}>
-              <option value="">Please select assistant</option>
-              <option value="Jinson">Jinson</option>
-              <option value="YaoWen">YaoWen</option>
-              <option value="Yaru">Yaru</option>
-              <option value="YiChia">YiChia</option>
-              <option value="Max">Max</option>
-            </select>
+            <label>Subject
+            <input 
+              type="text" 
+              name="subject" 
+              value={inputs.subject || ""} 
+              placeholder=" enter task"
+              onChange={handleChange}
+            />
             </label>
-            Audiofile
-
-            <input type="file" onChange={onFileChange} />
-            <button onClick={onFileUpload}>
-                Upload!
-            </button>
-            <div className="break"></div>
-            {isLoading && <p>File upload <b>{progrss}%</b></p>}
-            {url && <p>File uploaded</p>}
-            
+            <label>To assistant
+              <input 
+                type="text" 
+                name="recipient" 
+                value={inputs.recipient || ""} 
+                placeholder=" enter the assistant"
+                onChange={handleChange}
+            />
+            </label>
+            <input type="submit" class="btn btn-primary" id='draft_submit' value='Submit'/>            
           </form>
           </div>
         </div>
