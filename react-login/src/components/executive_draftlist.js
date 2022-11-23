@@ -56,10 +56,9 @@ function Executive_draftlist(props) {
 
   const handleread = () => {
 
-    var executive_name = 'Yaru Yang'
+    var executive_name = "Yaru Yang";//user.displayName;
     var userRef = realtime_db.ref("/draft");
     const data = [];
-    const send_data = [];
     
 
     userRef.orderByChild("username").equalTo(executive_name).once("value", function (snapshot) {
@@ -122,6 +121,7 @@ function Executive_draftlist(props) {
     );
   }
 
+  /*
   useEffect(()=>{
     if (user){
     db.collection('users').doc(user.uid).onSnapshot(snap=>{
@@ -132,6 +132,7 @@ function Executive_draftlist(props) {
     })
     }
   },[])
+*/
 
   function determineTime() {
     const d = new Date();

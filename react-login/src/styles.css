@@ -117,7 +117,7 @@ button:active {
   color: #000000;
 }
 ::selection {
-  background-color: var(--theme-color);
+  background-color: #6e6e6ece;
   color: white;
 }
 

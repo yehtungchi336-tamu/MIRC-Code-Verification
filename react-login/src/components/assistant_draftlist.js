@@ -103,16 +103,18 @@ function Assistant_draftlist(props) {
     );
   }
 
+  /*
   useEffect(()=>{
     if (user){
     db.collection('users').doc(user.uid).onSnapshot(snap=>{
       const tmp = snap.data()
-      setRoleType(tmp.role)
+      //setRoleType(tmp.role)
       //roleType = tmp.role
       console.log("home set role.." + tmp.role)
     })
     }
   },[])
+*/
 
   function determineTime() {
     const d = new Date();
