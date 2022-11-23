@@ -76,7 +76,7 @@ function Assigntask(props) {
 
     userRef.orderByChild("date").once("value", function (snapshot) {
       snapshot.forEach(function(childSnapshot) {
-        if (childSnapshot.val().status == "pending") {         
+        //if (childSnapshot.val().status == "pending") {         
             preTasks.push({
               status: childSnapshot.val().status, 
               executive: childSnapshot.val().executive,
@@ -84,7 +84,7 @@ function Assigntask(props) {
               task: childSnapshot.val().task,
               date: childSnapshot.val().date,
             })
-        }
+        //}
       });
     });
     ///////
