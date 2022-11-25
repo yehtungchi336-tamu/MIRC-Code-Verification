@@ -128,6 +128,10 @@ function Assigntask(props) {
     );
   }
 
+  const handleUpdate = () => {
+    
+  }
+
 
   useEffect(()=>{
     if (user){
@@ -159,13 +163,6 @@ function Assigntask(props) {
         </div>
       </div>
       <div class="previous tasks" onChange={onChangeStatus}>
-        <p>previous tasks</p>
-        <input type="radio" id="allStatus" value="all" name="taskStatus" checked/>
-        <label for="allStatus">all</label>
-        <input type="radio" id="pendingStatus" value="pending" name="taskStatus"/>
-        <label for="pendingStatus">pending</label>
-        <input type="radio" id="finishedStatus" value="finished" name="taskStatus"/>
-        <label for="finishedStatus">finished</label>
         {handleread(sPicked)}
       </div>
       ------------------------

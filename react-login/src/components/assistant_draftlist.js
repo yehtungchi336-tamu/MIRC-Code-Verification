@@ -58,7 +58,8 @@ function Assistant_draftlist(props) {
 
   const handleread = () => {
 
-    var assistant_name = 'YiChia'
+    //var assistant_name = 'YiChia'
+    var assistant_name = user.displayName
     var userRef = realtime_db.ref("/draft");
     const data = [];
     console.log("ori_data");
