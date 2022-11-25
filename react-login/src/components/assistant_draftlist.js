@@ -34,6 +34,7 @@ function Assistant_draftlist(props) {
     { icon: "fal fa-cog", txt: "Adddraft" },
     { icon: "fal fa-sign-out", txt: "Logout" }
   ];
+
   const id =db.collection('users').doc().id
   const lnksrow =
     lnks &&
@@ -103,18 +104,50 @@ function Assistant_draftlist(props) {
     );
   }
 
-  /*
-  useEffect(()=>{
-    if (user){
-    db.collection('users').doc(user.uid).onSnapshot(snap=>{
-      const tmp = snap.data()
-      //setRoleType(tmp.role)
-      //roleType = tmp.role
-      console.log("home set role.." + tmp.role)
-    })
-    }
-  },[])
-*/
+  const handleTaskRead = () => {
+    var userRef = realtime_db.ref("task");
+    const preTasks = [];
+    var assistant_name = user.displayName;
+    console.log("user Name:");
+    console.log(assistant_name);
+
+    userRef.orderByChild("assistant").equalTo(assistant_name).once("value", function (snapshot) {
+      snapshot.forEach(function(childSnapshot) {
+        if (childSnapshot.val().status == "pending") {         
+            preTasks.push({
+              status: childSnapshot.val().status, 
+              executive: childSnapshot.val().executive,
+              assistant: childSnapshot.val().assistant,
+              task: childSnapshot.val().task,
+              date: childSnapshot.val().date,
+            })
+        }
+      });
+    });
+    ///////
+    const [state, setState] = React.useState(preTasks);
+    console.log("preTasks:");
+    console.log(preTasks);
+    // return data;
+    return (
+      <table>Previous Tasks
+        <tr>
+          <td>Task</td>
+          <td>Executive</td>
+          <td>Status</td>
+          <td>Date</td>
+        </tr>
+        {state.map((item) => (
+          <tr>
+            <td>{item.task}</td>
+            <td>{item.executive}</td>
+            <td>{item.status}</td>
+            <td>{item.date}</td>
+          </tr>
+        ))}
+      </table>
+    );
+  }
 
   function determineTime() {
     const d = new Date();
@@ -137,39 +170,6 @@ function Assistant_draftlist(props) {
     }
   }
 
-  // function MyTable() {
-  //   const initState = [
-  //     { id: 1, name: "bread", quantitiy: 50, location: "cupboard" },
-  //     { id: 2, name: "milk", quantitiy: 20, location: "fridge" },
-  //     { id: 3, name: "water", quantitiy: 10, location: "fridge" }
-  //   ];
-  //   console.log(initState);
-  //   const [state, setState] = React.useState(initState);
-  
-  //   return (
-  //     <table>
-  //       <tr>
-  //         <td>Executive</td>
-  //         <td>Draft_Status</td>
-  //         <td>Button</td>
-  //       </tr>
-  //       {state.map((item) => (
-  //         // <tr key={item.id}>
-  //         <tr>
-  //           <td>{item.location}</td>
-  //           <td>{item.name}</td>
-  //           <td>{item.quantitiy}</td>
-            
-            
-  //           {/* {Object.values(item).map((val) => (
-  //             <td>{val}</td>
-  //           ))} */}
-  //         </tr>
-  //       ))}
-  //     </table>
-  //   );
-  // }
-
   return (
     <div className="home">
       <div className="header flex sb">
@@ -188,8 +188,9 @@ function Assistant_draftlist(props) {
           />
         </div>
       </div>
-
-
+      <div class="taskList">
+        {handleTaskRead()}
+      </div>
       <div class="container">
         <div class="row">
           <div class="col align-self-center">

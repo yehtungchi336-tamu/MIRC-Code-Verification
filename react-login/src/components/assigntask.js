@@ -32,6 +32,10 @@ function Assigntask(props) {
   const [textarea, setTextarea] = useState();
   const [inputs, setInputs] = useState({})
   const [assistantId, setAssistant] = useState({})
+
+  const onChangeValue1 = (event) => {
+    console.log(event.target.value);
+  }
   
   const handleChange = (event) => {
     const name = event.target.name;
@@ -42,12 +46,14 @@ function Assigntask(props) {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    console.log("inputs:");
     console.log(inputs);
     console.log(user.displayName);
     console.log(inputs.subject);
     console.log(inputs.recipient);
 
-    var tutorialsRef = realtime_db.ref("task/" + user.uid);
+    //var tutorialsRef = realtime_db.ref("task/" + user.uid);
+    var tutorialsRef = realtime_db.ref("task");
     tutorialsRef.push({
       userId: user.uid,
       executive: user.displayName,
@@ -70,13 +76,23 @@ function Assigntask(props) {
 
   }
 
-  const handleread = () => {
-    var userRef = realtime_db.ref("task/" + user.uid);
-    const preTasks = [];
+  const [sPicked, statusPicked] = useState();
 
-    userRef.orderByChild("date").once("value", function (snapshot) {
+  const onChangeStatus = (e) => {
+    statusPicked(e.target.value);
+  }
+
+  const handleread = () => {
+    //var userRef = realtime_db.ref("task/" + user.uid);
+    var userRef = realtime_db.ref("/task");
+    var executive_name = user.displayName;
+    const preTasks = [];
+    console.log("sPicked:");
+    console.log(sPicked);
+
+    userRef.orderByChild("executive").equalTo(executive_name).once("value", function (snapshot) {
       snapshot.forEach(function(childSnapshot) {
-        //if (childSnapshot.val().status == "pending") {         
+        if (childSnapshot.val().status == "pending") {         
             preTasks.push({
               status: childSnapshot.val().status, 
               executive: childSnapshot.val().executive,
@@ -84,11 +100,12 @@ function Assigntask(props) {
               task: childSnapshot.val().task,
               date: childSnapshot.val().date,
             })
-        //}
+        }
       });
     });
     ///////
     const [state, setState] = React.useState(preTasks);
+    console.log("preTasks:");
     console.log(preTasks);
     // return data;
     return (
@@ -141,11 +158,17 @@ function Assigntask(props) {
           />
         </div>
       </div>
-      <div class="previous tasks">
-        previous tasks
-        {handleread()}
-        ------------------------
+      <div class="previous tasks" onChange={onChangeStatus}>
+        <p>previous tasks</p>
+        <input type="radio" id="allStatus" value="all" name="taskStatus" checked/>
+        <label for="allStatus">all</label>
+        <input type="radio" id="pendingStatus" value="pending" name="taskStatus"/>
+        <label for="pendingStatus">pending</label>
+        <input type="radio" id="finishedStatus" value="finished" name="taskStatus"/>
+        <label for="finishedStatus">finished</label>
+        {handleread(sPicked)}
       </div>
+      ------------------------
       <div class="container">
         <div class="row">
           <div class="col align-self-center">
