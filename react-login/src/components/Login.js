@@ -21,7 +21,7 @@ function Login(props){
     <>
      <Route exact path='/'>
      <div className='image'>
-     <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.webp" class="img-fluid" alt="Sample image" />
+     <img src="https://i.imgur.com/6uSeK8P.jpg" class="img-fluid" alt="Sample image" width="725"/>
      </div>
      <div className='login'>    
         <div className='icon'>
