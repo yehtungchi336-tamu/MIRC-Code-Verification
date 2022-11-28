@@ -105,8 +105,7 @@ function Assistant_draftlist(props) {
     );
   }
 
-  const handleUnfinishedTaskRead = () => {
-    
+  const handleUnfinishedTaskRead = () => {   
 
     var assistant_name = 'YiChia'
     //var assistant_name = user.displayName
