@@ -56,7 +56,7 @@ function Assistant_draftlist(props) {
     setTextarea(event.target.value)
   }
 
-  const handleread = () => {
+  const handleFinishedTaskread = () => {
 
     var assistant_name = 'YiChia'
     //var assistant_name = user.displayName
@@ -200,7 +200,7 @@ function Assistant_draftlist(props) {
       <div class="container">
         <div class="row">
           <div class="col align-self-center">
-            {handleread()}
+            {handleFinishedTaskread()}
           </div>
         </div>
       </div>
