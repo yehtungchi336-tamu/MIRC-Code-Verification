@@ -58,15 +58,15 @@ function Assistant_draftlist(props) {
 
   const handleread = () => {
 
-    //var assistant_name = 'YiChia'
-    var assistant_name = user.displayName
-    var userRef = realtime_db.ref("/draft");
+    var assistant_name = 'YiChia'
+    //var assistant_name = user.displayName
+    var userRef = realtime_db.ref("draft");
     const data = [];
     console.log("ori_data");
     console.log(data);
     userRef.orderByChild("assistant").equalTo(assistant_name).once("value", function (snapshot) {
       snapshot.forEach(function(childSnapshot) {
-        if (childSnapshot.val().status == "Pending" || childSnapshot.val().status == "Rejected") { 
+        if (childSnapshot.val().status != "Pending") { 
           data.push({ key: childSnapshot.key, status: childSnapshot.val().status, username: childSnapshot.val().username, bcc: childSnapshot.val().bcc, 
             cc: childSnapshot.val().cc,
             message: childSnapshot.val().message, 
@@ -81,7 +81,7 @@ function Assistant_draftlist(props) {
     // console.log(data);
     // return data;
     return (
-      <table>
+      <table>--------------------finished-------------------
         <tr>
           <td>Executive</td>
           <td>Draft_Status</td>
@@ -105,45 +105,50 @@ function Assistant_draftlist(props) {
     );
   }
 
-  const handleTaskRead = () => {
-    var userRef = realtime_db.ref("task");
-    const preTasks = [];
-    var assistant_name = user.displayName;
-    console.log("user Name:");
-    console.log(assistant_name);
+  const handleUnfinishedTaskRead = () => {
+    
 
+    var assistant_name = 'YiChia'
+    //var assistant_name = user.displayName
+    var userRef = realtime_db.ref("draft");
+    const data = [];
+    console.log("ori_data");
+    console.log(data);
     userRef.orderByChild("assistant").equalTo(assistant_name).once("value", function (snapshot) {
       snapshot.forEach(function(childSnapshot) {
-        if (childSnapshot.val().status == "pending") {         
-            preTasks.push({
-              status: childSnapshot.val().status, 
-              executive: childSnapshot.val().executive,
-              assistant: childSnapshot.val().assistant,
-              task: childSnapshot.val().task,
-              date: childSnapshot.val().date,
-            })
+        if (childSnapshot.val().status == "Pending") { 
+          data.push({ key: childSnapshot.key, status: childSnapshot.val().status, username: childSnapshot.val().username, bcc: childSnapshot.val().bcc, 
+            cc: childSnapshot.val().cc,
+            message: childSnapshot.val().message, 
+            recipient: childSnapshot.val().recipient,
+            subject: childSnapshot.val().subject,
+            status: childSnapshot.val().status,
+          })
         }
       });
     });
-    ///////
-    const [state, setState] = React.useState(preTasks);
-    console.log("preTasks:");
-    console.log(preTasks);
+    const [state, setState] = React.useState(data);
+    // console.log(data);
     // return data;
     return (
-      <table>Previous Tasks
+      <table>------------------unfinished----------------
         <tr>
-          <td>Task</td>
           <td>Executive</td>
-          <td>Status</td>
-          <td>Date</td>
+          <td>Draft_Status</td>
+          <td>Button</td>
         </tr>
         {state.map((item) => (
+          // <tr key={item.id}>
           <tr>
-            <td>{item.task}</td>
-            <td>{item.executive}</td>
+            <td>{item.username}</td>
             <td>{item.status}</td>
-            <td>{item.date}</td>
+            <td>
+            <NavLink activeClassName='activelink'  to={{ pathname:'/updatedraft',aboutProps: {datakey:item.key,bcc: item.bcc, 
+            cc: item.cc,
+            message: item.message, 
+            recipient: item.recipient,
+            subject: item.subject,}}}exact><span><i class="far fa-bell"></i>Write Draft</span></NavLink>
+            </td>
           </tr>
         ))}
       </table>
@@ -190,9 +195,8 @@ function Assistant_draftlist(props) {
         </div>
       </div>
       <div class="taskList">
-        {handleTaskRead()}
+        {handleUnfinishedTaskRead()}
       </div>
-      ---------------------------------
       <div class="container">
         <div class="row">
           <div class="col align-self-center">

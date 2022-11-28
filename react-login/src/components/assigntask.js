@@ -1,173 +1,77 @@
 import React, { useState, useEffect, useRef, useContext } from "react";
 import firebase from "firebase";
-import { db, realtime_db, storage } from "../Fire";
-//import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { db,realtime_db } from "../Fire";
+import { CSSTransition, TransitionGroup } from "react-transition-group";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link,
+  NavLink,
+  Redirect,
+  useLocation
+} from "react-router-dom";
+import ReactTimeAgo from 'react-time-ago'
+import emailjs from 'emailjs-com'
+import Usersettings from "./Usersettings";
 import { ContextApp } from "../ContextAPI";
 import Hoverlink from "./Hoverlink";
-import "firebase/auth";
-
-export default Assigntask;
-
-function Assigntask(props) {  
-  //const ref = firebase.storage().ref();
-  const [progrss, setProgrss] = useState(0);
-  const [isLoading, setIsLoading] = useState();
-  const [file, setFile] = useState();
-  const [url, setUrl] = useState();
-  //
-  const {v4 : uuidv4} = require('uuid')
-  // Initialize Firebase Authentication and get a reference to the service
-  const auth = firebase.auth();
-  //Get current user through authentication
-  const user = auth.currentUser;
-  //update tasks status
-  const form = useRef();
-
-
+function Assigntask(props) {
   const { themecolor } = useContext(ContextApp)
-  //const user = firebase.auth().currentUser
+  const user = firebase.auth().currentUser
   const [roleType, setRoleType] = useState('')
   const [cover, setCover] = useState("")
   const { handleLogout } = props
+  const links = ["comment", "notifications", "settings", "adddraft", "logout"]
   const [notifi, setNotifLength]=useState(0)
+  const lnks = [
+    { icon: "fal fa-comment-alt", txt: "Comment" },
+    { icon: "fal fa-bell", txt: "Notifications" },
+    { icon: "fal fa-cog", txt: "Settings" },
+    { icon: "fal fa-cog", txt: "Adddraft" },
+    { icon: "fal fa-sign-out", txt: "Logout" }
+  ];
+  const id =db.collection('users').doc().id
+  const lnksrow =
+    lnks &&
+    lnks.map((lnk) => {
+      return (
+        <Hoverlink  icon={lnk.icon} txt={lnk.txt} handleLogout={handleLogout} />
+      );
+    });
 
   const [textarea, setTextarea] = useState();
   const [inputs, setInputs] = useState({})
-  const [assistantId, setAssistant] = useState({})
-
-  const onChangeValue1 = (event) => {
-    console.log(event.target.value);
-  }
-  
   const handleChange = (event) => {
-    const name = event.target.name;
-    const value = event.target.value;
-    setInputs(values => ({...values, [name]: value}))
+    setInputs(event.target.value)
   }
 
-  const handleUpdate  = (e) => {
-    
+  const handle_textarea_Change = (event) => {
+    setTextarea(event.target.value)
   }
 
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log("inputs:");
     console.log(inputs);
-    console.log(user.displayName);
-    console.log(inputs.subject);
-    console.log(inputs.recipient);
 
-    //var tutorialsRef = realtime_db.ref("task/" + user.uid);
-    var tutorialsRef = realtime_db.ref("task");
+    var tutorialsRef = realtime_db.ref("/draft");
     tutorialsRef.push({
-      userId: user.uid,
-      executive: user.displayName,
-      assistant: inputs.recipient,
-      task: inputs.subject,
-      date: Date(),
-      status: "pending",
-    })
-    .then(
-      (result) => {
-        console.log(result.text);
-        alert("Task Adding SUCCESS!");
-      },
-      (error) => {
-        console.log(error.text);
-        alert("Task Adding FAILED...", error);
-      }
-    );
-
-
-  }
-  const handleread = () => {
-    //var userRef = realtime_db.ref("task/" + user.uid);
-    var userRef = realtime_db.ref("/task");
-    var executive_name = user.displayName;
-    const preTasks = [];
-
-    userRef.orderByChild("executive").equalTo(executive_name).once("value", function (snapshot) {
-      snapshot.forEach(function(childSnapshot) {
-        if (childSnapshot.val().status == "pending") {         
-            preTasks.push({
-              status: childSnapshot.val().status, 
-              executive: childSnapshot.val().executive,
-              assistant: childSnapshot.val().assistant,
-              task: childSnapshot.val().task,
-              date: childSnapshot.val().date,
-            })
-        }
-      });
+      username: user.displayName,
+      subject: "",//inputs.subject,
+      recipient: "",//inputs.recipient,
+      cc: "",//inputs.CC,
+      bcc: "",//inputs.BCC,
+      message: "",//textarea,
+      assistant: inputs,
+      audiofile: "",
+      status: "Pending",
+      task: "",
     });
-    ///////
-    const [state, setState] = React.useState(preTasks);
-    console.log("preTasks:");
-    console.log(preTasks);
-    // return data;
-    return (
-      <table>-------------Unfinished tasks------------
-        <tr>
-          <td>Task</td>
-          <td>Assistant</td>
-          <td>Status</td>
-          <td>Date</td>
-        </tr>
-        {state.map((item) => (
-          <tr>
-            <td>{item.task}</td>
-            <td>{item.assistant}</td>
-            <td>{item.status}</td>
-            <td>{item.date}</td>
-          </tr>
-        ))}
-      </table>
-    );
+
+
   }
-
-  const handleFinishedTask = () => {
-    var userRef = realtime_db.ref("/task");
-    var executive_name = user.displayName;
-    const preTasks = [];
-
-    userRef.orderByChild("executive").equalTo(executive_name).once("value", function (snapshot) {
-      snapshot.forEach(function(childSnapshot) {
-        if (childSnapshot.val().status != "pending") {         
-            preTasks.push({
-              status: childSnapshot.val().status, 
-              executive: childSnapshot.val().executive,
-              assistant: childSnapshot.val().assistant,
-              task: childSnapshot.val().task,
-              date: childSnapshot.val().date,
-            })
-        }
-      });
-    });
-    const [state, setState] = React.useState(preTasks);
-    console.log("preTasks:");
-    console.log(preTasks);
-    // return data;
-    return (
-      <table>-------------Finished tasks--------------
-        <tr>
-          <td>Task</td>
-          <td>Assistant</td>
-          <td>Status</td>
-          <td>Date</td>
-        </tr>
-        {state.map((item) => (
-          <tr>
-            <td>{item.task}</td>
-            <td>{item.assistant}</td>
-            <td>{item.status}</td>
-            <td>{item.date}</td>
-          </tr>
-        ))}
-      </table>
-    );
-  }
-
-
+/*
   useEffect(()=>{
     if (user){
     db.collection('users').doc(user.uid).onSnapshot(snap=>{
@@ -178,6 +82,27 @@ function Assigntask(props) {
     })
     }
   },[])
+*/
+  function determineTime() {
+    const d = new Date();
+    if (d.getHours() >= 6 && d.getHours() < 12) {
+      return "Good Morning,";
+    } else if (d.getHours() >= 12 && d.getHours() < 17) {
+      return "Good Afternoon,";
+    } else if (d.getHours() >= 17 && d.getHours() < 20) {
+      return "Good Evening,";
+    } else if (d.getHours() >= 20 && d.getHours() <= 23) {
+      return "Good Night,";
+    } else if (d.getHours() >= 0 && d.getHours() < 6) {
+      return "Good Night,";
+    }
+  }
+
+  function determinetext() {
+    if (user) {
+        return determineTime() + " " + roleType + " " + user.displayName + " (login type: " + user.providerData[0].providerId + ")"
+    }
+  }
 
   return (
     <div className="home">
@@ -185,7 +110,7 @@ function Assigntask(props) {
         {/*<h2 className="marginBottom">{determinetext()}</h2>*/}
         <h2 style={{color: 'black'}}>Assign Task</h2>
       </div>
-      
+
       <div className="flex fe sticky">
         <div className="gridobjects  bs marginBottom">
           <Hoverlink
@@ -197,42 +122,88 @@ function Assigntask(props) {
           />
         </div>
       </div>
-      <div class="previous tasks">
-        {handleread()}
-        {handleFinishedTask()}
-      </div>
       <div class="container">
         <div class="row">
           <div class="col align-self-center">
-          -------------Add New Task------------ 
           <form onSubmit={handleSubmit}>
-            <label>Subject
+            {/* <label>Assistant
+            <input
+              type="text"
+              name="subject"
+              value={inputs.subject || ""}
+              placeholder=" enter email subject"
+              onChange={handleChange}
+            />
+            </label> */}
+            <label htmlFor="assistant">Assistant:
+            <select placeholder="Please select assistant" name="assistant" onChange={handleChange}>
+              <option value="">Please select assistant</option>
+              <option value="Jinson">Jinson</option>
+              <option value="YaoWen">YaoWen</option>
+              <option value="Yaru">Yaru</option>
+              <option value="YiChia">YiChia</option>
+              <option value="Max">Max</option>
+            </select>
+          </label>
+            Task to assistant
             <input 
               type="text" 
               name="subject" 
-              value={inputs.subject || ""} 
-              placeholder=" enter task"
+              value={inputs.subject} 
+              placeholder="enter task"
               onChange={handleChange}
             />
-            </label>
-            <label>To assistant
-              <input 
-                type="text" 
-                name="recipient" 
-                value={inputs.recipient || ""} 
-                placeholder=" enter the assistant"
+            {/* <label>Subject
+            <input
+              type="text"
+              name="subject"
+              value={inputs.subject || ""}
+              placeholder=" enter email subject"
+              onChange={handleChange}
+            />
+            </label> */}
+            {/* <label>TO
+              <input
+                type="text"
+                name="recipient"
+                value={inputs.recipient || ""}
+                placeholder=" enter the recipient's address"
                 onChange={handleChange}
             />
             </label>
-            <input type="submit" class="btn btn-primary" id='draft_submit' value='Submit'/>            
+            <label>CC
+              <input
+                type="text"
+                name="CC"
+                value={inputs.CC || ""}
+                placeholder=" enter the Carbon Copy"
+                onChange={handleChange}
+            />
+            </label>
+            <label>BCC
+              <input
+                type="text"
+                name="BCC"
+                value={inputs.BCC || ""}
+                placeholder=" enter the Blind Carbon Copy"
+                onChange={handleChange}
+            />
+            </label>
+            <label>Message<textarea value={textarea  || ""} rows="10" onChange={handle_textarea_Change} />
+            </label> */}
+              <input type="submit" class="btn btn-primary" id='draft_submit' value='Submit' />
+
+
           </form>
+
+
           </div>
         </div>
       </div>
-      <div className="homeside"></div>
+      <div className="homeside">
+
+      </div>
     </div>
   );
 }
-
-
-
+export default Assigntask;

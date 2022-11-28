@@ -54,7 +54,7 @@ function Executive_draftlist(props) {
   }
 
 
-  const handleread = () => {
+  const handleFinishedread = () => {
 
     var executive_name = "Yaru Yang";//user.displayName;
     var userRef = realtime_db.ref("/draft");
@@ -70,32 +70,17 @@ function Executive_draftlist(props) {
               recipient: childSnapshot.val().recipient,
               subject: childSnapshot.val().subject,
               assistant: childSnapshot.val().assistant,
+              duedate: childSnapshot.val().due,
             })
         }
       });
     });
 
-    // userRef.orderBy('username')
-    // .startAt(executive_name).endAt(executive_name)
-    // .orderBy('lead')                  // !!! THIS LINE WILL RAISE AN ERROR !!!
-    // .startAt('Jack Nicholson').endAt('Jack Nicholson')
-    // .on("value", function (snapshot) {
-    //   snapshot.forEach(function(childSnapshot) {
-    //       data.push({ key: childSnapshot.key, status: childSnapshot.val().status, username: childSnapshot.val().username, bcc: childSnapshot.val().bcc, 
-    //         cc: childSnapshot.val().cc,
-    //         message: childSnapshot.val().message, 
-    //         recipient: childSnapshot.val().recipient,
-    //         subject: childSnapshot.val().subject,
-    //         assistant: childSnapshot.val().assistant,
-    //       })
-    //   });
-    // });
-
     const [state, setState] = React.useState(data);
     console.log(data);
     // return data;
     return (
-      <table>
+      <table>--------------Finished-----------------
         <tr>
           <td>Executive</td>
           <td>Assistant</td>
@@ -120,19 +105,56 @@ function Executive_draftlist(props) {
       </table>
     );
   }
+  const handleUnfinishedread = () => {
 
-  /*
-  useEffect(()=>{
-    if (user){
-    db.collection('users').doc(user.uid).onSnapshot(snap=>{
-      const tmp = snap.data()
-      setRoleType(tmp.role)
-      //roleType = tmp.role
-      console.log("home set role.." + tmp.role)
-    })
-    }
-  },[])
-*/
+    var executive_name = "Yaru Yang";//user.displayName;
+    var userRef = realtime_db.ref("/draft");
+    const data = [];
+    
+
+    userRef.orderByChild("username").equalTo(executive_name).once("value", function (snapshot) {
+      snapshot.forEach(function(childSnapshot) {
+        if (childSnapshot.val().status == "Pending") {         
+            data.push({ key: childSnapshot.key, status: childSnapshot.val().status, username: childSnapshot.val().username, bcc: childSnapshot.val().bcc, 
+              cc: childSnapshot.val().cc,
+              message: childSnapshot.val().message, 
+              recipient: childSnapshot.val().recipient,
+              subject: childSnapshot.val().subject,
+              assistant: childSnapshot.val().assistant,
+            })
+        }
+      });
+    });
+
+    const [state, setState] = React.useState(data);
+    console.log(data);
+    // return data;
+    return (
+      <table>--------------Unfinished-----------------
+        <tr>
+          <td>Executive</td>
+          <td>Assistant</td>
+          <td>Draft_Status</td>
+          <td>Review</td>
+        </tr>
+        {state.map((item) => (
+          // <tr key={item.id}>
+          <tr>
+            <td>{item.username}</td>
+            <td>{item.assistant}</td>
+            <td>{item.status}</td>
+            <td>
+            <NavLink activeClassName='activelink'  to={{ pathname:'/executive_updatedraft',aboutProps: {datakey:item.key,bcc: item.bcc, 
+            cc: item.cc,
+            message: item.message, 
+            recipient: item.recipient,
+            subject: item.subject,}}}exact><span><i class="far fa-bell"></i>Review Draft</span></NavLink>
+            </td>
+          </tr>
+        ))}
+      </table>
+    );
+  }
 
   function determineTime() {
     const d = new Date();
@@ -178,7 +200,8 @@ function Executive_draftlist(props) {
       <div class="container">
         <div class="row">
           <div class="col align-self-center">
-            { handleread()}
+            { handleUnfinishedread()}
+            { handleFinishedread()}
           </div>
         </div>
       </div>
