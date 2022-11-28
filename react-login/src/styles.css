@@ -11,7 +11,7 @@
   --mainshadow: rgba(48, 210, 252, 0.4);
   --dark: #0d1a25;
   --red: #ff0051;
-  --theme-color: #38567cce;
+  --theme-color: #008DFFce;
   --chat-color: #056dff;
   --low-priority: 50;
   --medium-priority: 60;
@@ -78,7 +78,7 @@ hr {
 }
 i {
   cursor: pointer;
-  color: var(--theme-color);
+  color: #464753ce;
   font-size: 20px;
   transition: all 0.3s;
 }
@@ -896,10 +896,10 @@ form label input:focus {
 }
 
  .activelink {
-  background-color: rgba(207, 207, 207, 0.404);
+  background-color: rgba(244, 244, 244, 0.557);
 }
 .sidebar .icons a:hover, .sidebaricons a:hover {
-  background-color: rgba(207, 207, 207, 0.404);
+  background-color: rgba(213, 213, 213, 0.653);
 }
 .sidebar i {
   color: white;
@@ -919,7 +919,6 @@ form label input:focus {
   display: grid;
   grid-template-rows: repeat(10, 10%);
   height: 100%;
-  background-color: var(--theme-color);
 }
 .conversations.darkmode {
   background-color: black;
