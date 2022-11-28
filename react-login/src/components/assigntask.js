@@ -20,6 +20,8 @@ function Assigntask(props) {
   const auth = firebase.auth();
   //Get current user through authentication
   const user = auth.currentUser;
+  //update tasks status
+  const form = useRef();
 
 
   const { themecolor } = useContext(ContextApp)
@@ -41,6 +43,10 @@ function Assigntask(props) {
     const name = event.target.name;
     const value = event.target.value;
     setInputs(values => ({...values, [name]: value}))
+  }
+
+  const handleUpdate  = (e) => {
+    
   }
 
 
