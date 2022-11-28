@@ -195,11 +195,10 @@ function Assigntask(props) {
         {handleread()}
         {handleFinishedTask()}
       </div>
-      ------------------------
       <div class="container">
         <div class="row">
           <div class="col align-self-center">
-          Add New Task 
+          -------------Add New Task------------ 
           <form onSubmit={handleSubmit}>
             <label>Subject
             <input 
