@@ -75,20 +75,11 @@ function Assigntask(props) {
 
 
   }
-
-  const [sPicked, statusPicked] = useState();
-
-  const onChangeStatus = (e) => {
-    statusPicked(e.target.value);
-  }
-
   const handleread = () => {
     //var userRef = realtime_db.ref("task/" + user.uid);
     var userRef = realtime_db.ref("/task");
     var executive_name = user.displayName;
     const preTasks = [];
-    console.log("sPicked:");
-    console.log(sPicked);
 
     userRef.orderByChild("executive").equalTo(executive_name).once("value", function (snapshot) {
       snapshot.forEach(function(childSnapshot) {
@@ -109,7 +100,7 @@ function Assigntask(props) {
     console.log(preTasks);
     // return data;
     return (
-      <table>
+      <table>-------------Unfinished tasks------------
         <tr>
           <td>Task</td>
           <td>Assistant</td>
@@ -128,8 +119,46 @@ function Assigntask(props) {
     );
   }
 
-  const handleUpdate = () => {
-    
+  const handleFinishedTask = () => {
+    var userRef = realtime_db.ref("/task");
+    var executive_name = user.displayName;
+    const preTasks = [];
+
+    userRef.orderByChild("executive").equalTo(executive_name).once("value", function (snapshot) {
+      snapshot.forEach(function(childSnapshot) {
+        if (childSnapshot.val().status != "pending") {         
+            preTasks.push({
+              status: childSnapshot.val().status, 
+              executive: childSnapshot.val().executive,
+              assistant: childSnapshot.val().assistant,
+              task: childSnapshot.val().task,
+              date: childSnapshot.val().date,
+            })
+        }
+      });
+    });
+    const [state, setState] = React.useState(preTasks);
+    console.log("preTasks:");
+    console.log(preTasks);
+    // return data;
+    return (
+      <table>-------------Finished tasks--------------
+        <tr>
+          <td>Task</td>
+          <td>Assistant</td>
+          <td>Status</td>
+          <td>Date</td>
+        </tr>
+        {state.map((item) => (
+          <tr>
+            <td>{item.task}</td>
+            <td>{item.assistant}</td>
+            <td>{item.status}</td>
+            <td>{item.date}</td>
+          </tr>
+        ))}
+      </table>
+    );
   }
 
 
@@ -162,8 +191,9 @@ function Assigntask(props) {
           />
         </div>
       </div>
-      <div class="previous tasks" onChange={onChangeStatus}>
-        {handleread(sPicked)}
+      <div class="previous tasks">
+        {handleread()}
+        {handleFinishedTask()}
       </div>
       ------------------------
       <div class="container">
