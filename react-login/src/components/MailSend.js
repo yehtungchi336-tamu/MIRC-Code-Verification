@@ -42,14 +42,22 @@ function MailSend(props) {
     });
 
   const form = useRef();
+  const ref = realtime_db.ref("/EmailLinkage");
+  let profile = {};
+
+  ref.orderByChild("username")
+      .equalTo(user.displayName)
+      .on('value', snapshot => {
+        profile = snapshot.val();
+      })
   function MailSending(e){
     e.preventDefault();
 
     emailjs.sendForm(
-      "service_k0epgii",
-      "template_a0nogel",
+      profile.serviceid,
+      profile.templateid,
       form.current,
-      "J14Ld2x5lECND_Nx1"
+      profile.key
     )
     .then(
       (result) => {
@@ -58,7 +66,7 @@ function MailSend(props) {
       },
       (error) => {
         console.log(error.text);
-        alert("MailSend FAILED...", error);
+        alert("MailSend FAILED...\nPlease Check the Linkage is Correct", error);
       }
     );
   }
