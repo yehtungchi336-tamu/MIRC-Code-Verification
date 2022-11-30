@@ -3113,3 +3113,17 @@ transform: translateY(-50%)
   height: 35px;
   color: black
 }
+
+#draftlist_table {
+  border: 2px solid darkgray;
+  width: 800px;
+  height: 200px;
+}
+  
+th {
+  border-bottom: 1px solid black;
+}
+  
+td {
+  text-align: center;
+}

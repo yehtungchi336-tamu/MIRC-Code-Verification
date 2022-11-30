@@ -9,13 +9,15 @@ import {
   Link,
   NavLink,
   Redirect,
-  useLocation
+  useLocation,
+  useHistory
 } from "react-router-dom";
 import ReactTimeAgo from 'react-time-ago'
 import emailjs from 'emailjs-com'
 import Usersettings from "./Usersettings";
 import { ContextApp } from "../ContextAPI";
 import Hoverlink from "./Hoverlink";
+//import Table from 'react-bootstrap/Table';
 
 function Executive_draftlist(props) {
   const { themecolor } = useContext(ContextApp)
@@ -59,18 +61,23 @@ function Executive_draftlist(props) {
     var executive_name = "Yaru Yang";//user.displayName;
     var userRef = realtime_db.ref("/draft");
     const data = [];
-    
 
-    userRef.orderByChild("username").equalTo(executive_name).once("value", function (snapshot) {
+    userRef.orderByChild("username")
+    .equalTo(executive_name)
+    .on('value', function(snapshot) {
       snapshot.forEach(function(childSnapshot) {
-        if (childSnapshot.val().status != "Pending") {         
-            data.push({ key: childSnapshot.key, status: childSnapshot.val().status, username: childSnapshot.val().username, bcc: childSnapshot.val().bcc, 
-              cc: childSnapshot.val().cc,
-              message: childSnapshot.val().message, 
-              recipient: childSnapshot.val().recipient,
-              subject: childSnapshot.val().subject,
-              assistant: childSnapshot.val().assistant,
-            })
+        if (childSnapshot.val().status !== "Pending") {         
+          data.push({
+            key: childSnapshot.key, 
+            status: childSnapshot.val().status, 
+            username: childSnapshot.val().username, 
+            bcc: childSnapshot.val().bcc, 
+            cc: childSnapshot.val().cc,
+            message: childSnapshot.val().message, 
+            recipient: childSnapshot.val().recipient,
+            subject: childSnapshot.val().subject,
+            assistant: childSnapshot.val().assistant,
+          })
         }
       });
     });
@@ -92,32 +99,46 @@ function Executive_draftlist(props) {
     // });
 
     const [state, setState] = React.useState(data);
-    console.log(data);
     // return data;
     return (
-      <table>
-        <tr>
-          <td>Executive</td>
-          <td>Assistant</td>
-          <td>Draft_Status</td>
-          <td>Review</td>
-        </tr>
-        {state.map((item) => (
-          // <tr key={item.id}>
-          <tr>
-            <td>{item.username}</td>
-            <td>{item.assistant}</td>
-            <td>{item.status}</td>
-            <td>
-            <NavLink activeClassName='activelink'  to={{ pathname:'/executive_updatedraft',aboutProps: {datakey:item.key,bcc: item.bcc, 
-            cc: item.cc,
-            message: item.message, 
-            recipient: item.recipient,
-            subject: item.subject,}}}exact><span><i class="far fa-bell"></i>Review Draft</span></NavLink>
-            </td>
-          </tr>
-        ))}
-      </table>
+      <div>
+        <table id="draftlist_table">
+          <thead>
+            <tr>
+              <th>Executive</th>
+              <th>Assistant</th>
+              <th>Status</th>
+              <th>Review</th>
+            </tr>
+          </thead>
+          <tbody>
+            {state.map((item) => {
+              return (
+                <>
+                  <tr>
+                    <td>{item.username}</td>
+                    <td>{item.assistant}</td>
+                    <td>{item.status}</td>
+                    <td>
+                      <NavLink activeClassName='activelink' 
+                      to={{ pathname:'/executive_updatedraft',
+                      aboutProps: {
+                      datakey:item.key,
+                      bcc: item.bcc, 
+                      cc: item.cc,
+                      message: item.message, 
+                      recipient: item.recipient,
+                      subject: item.subject,}}} exact>
+                        <span><i class="far fa-bell"></i>Review Draft</span>
+                      </NavLink>
+                    </td>
+                  </tr>
+                </>
+              )
+            })}
+          </tbody>
+        </table>
+      </div>
     );
   }
 
