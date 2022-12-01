@@ -93,7 +93,6 @@ function Updatedraft(props) {
     updates[`draft/${key}/recipient`] = form.current.recipient.value;
     updates[`draft/${key}/status`] = "Completed";
     realtime_db.ref().update(updates)
-    //console.log("RRRRRRRR")
     .then(
       (result) => {
         console.log(result.text);
