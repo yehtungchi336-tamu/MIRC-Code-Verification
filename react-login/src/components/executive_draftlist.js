@@ -17,6 +17,43 @@ import Usersettings from "./Usersettings";
 import { ContextApp } from "../ContextAPI";
 import Hoverlink from "./Hoverlink";
 
+function Collapse(props) {
+  const [isCollapsed, setIsCollapsed] = React.useState(props.collapsed);
+
+  const style = {
+    collapsed: {
+      display: "none"
+    },
+    expanded: {
+      display: "block"
+    },
+    buttonStyle: {
+      display: "block",
+      width: "100%"
+    }
+  };
+
+  return (
+    <div>
+      <button
+        style={style.buttonStyle}
+        onClick={() => setIsCollapsed(!isCollapsed)}
+      >
+        {isCollapsed ? "show" : "collapse"}
+      </button>
+      <div
+        className="collapse-content"
+        // 决定显示和折叠
+        style={isCollapsed ? style.collapsed : style.expanded}
+        // aria-expanded 是给 Screen Reader 用来 判断当前元素状态的辅助属性
+        aria-expanded={isCollapsed}
+      >
+        {props.children}
+      </div>
+    </div>
+  );
+}
+
 function Executive_draftlist(props) {
   const { themecolor } = useContext(ContextApp)
   const user = firebase.auth().currentUser
@@ -80,13 +117,14 @@ function Executive_draftlist(props) {
     console.log(data);
     // return data;
     return (
-      <table>--------------Finished-----------------
+      <table>
         <tr>
           <td>Executive</td>
           <td>Assistant</td>
           <td>Draft_Status</td>
           <td>Review</td>
         </tr>
+        -----------------------------------
         {state.map((item) => (
           // <tr key={item.id}>
           <tr>
@@ -129,13 +167,14 @@ function Executive_draftlist(props) {
     console.log(data);
     // return data;
     return (
-      <table>--------------Unfinished-----------------
+      <table>
         <tr>
           <td>Executive</td>
           <td>Assistant</td>
           <td>Draft_Status</td>
           <td>Review</td>
         </tr>
+        ----------------------------
         {state.map((item) => (
           // <tr key={item.id}>
           <tr>
@@ -199,8 +238,14 @@ function Executive_draftlist(props) {
       <div class="container">
         <div class="row">
           <div class="col align-self-center">
+            --------------Unfinished-----------------
+            <Collapse>
             { handleUnfinishedread()}
+            </Collapse>
+            --------------Finished-----------------
+            <Collapse>
             { handleFinishedread()}
+            </Collapse>
           </div>
         </div>
       </div>

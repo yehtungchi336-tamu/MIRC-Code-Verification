@@ -19,6 +19,43 @@ import Hoverlink from "./Hoverlink";
 import Updatedraft from './updatedraft';
 import Table from "./Table";
 
+function Collapse(props) {
+  const [isCollapsed, setIsCollapsed] = React.useState(props.collapsed);
+
+  const style = {
+    collapsed: {
+      display: "none"
+    },
+    expanded: {
+      display: "block"
+    },
+    buttonStyle: {
+      display: "block",
+      width: "100%"
+    }
+  };
+
+  return (
+    <div>
+      <button
+        style={style.buttonStyle}
+        onClick={() => setIsCollapsed(!isCollapsed)}
+      >
+        {isCollapsed ? "show" : "collapse"}
+      </button>
+      <div
+        className="collapse-content"
+        // 决定显示和折叠
+        style={isCollapsed ? style.collapsed : style.expanded}
+        // aria-expanded 是给 Screen Reader 用来 判断当前元素状态的辅助属性
+        aria-expanded={isCollapsed}
+      >
+        {props.children}
+      </div>
+    </div>
+  );
+}
+
 function Assistant_draftlist(props) {
   const { themecolor } = useContext(ContextApp)
   const user = firebase.auth().currentUser
@@ -81,7 +118,7 @@ function Assistant_draftlist(props) {
     // console.log(data);
     // return data;
     return (
-      <table>--------------------finished-------------------
+      <table>
         <tr>
           <td>Executive</td>
           <td>Draft_Status</td>
@@ -130,7 +167,7 @@ function Assistant_draftlist(props) {
     // console.log(data);
     // return data;
     return (
-      <table>------------------unfinished----------------
+      <table>
         <tr>
           <td>Executive</td>
           <td>Draft_Status</td>
@@ -193,13 +230,17 @@ function Assistant_draftlist(props) {
           />
         </div>
       </div>
-      <div class="taskList">
+      <div class="taskList">------------------Unfinished----------------
+        <Collapse>
         {handleUnfinishedTaskRead()}
+        </Collapse>
       </div>
-      <div class="container">
+      <div class="container">------------------Finished----------------
         <div class="row">
           <div class="col align-self-center">
+          <Collapse>
             {handleFinishedTaskread()}
+            </Collapse>
           </div>
         </div>
       </div>
