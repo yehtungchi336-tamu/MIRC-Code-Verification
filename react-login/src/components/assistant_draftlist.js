@@ -19,6 +19,43 @@ import Hoverlink from "./Hoverlink";
 import Updatedraft from './updatedraft';
 import Table from "./Table";
 
+function Collapse(props) {
+  const [isCollapsed, setIsCollapsed] = React.useState(props.collapsed);
+
+  const style = {
+    collapsed: {
+      display: "none"
+    },
+    expanded: {
+      display: "block"
+    },
+    buttonStyle: {
+      display: "block",
+      width: "100%"
+    }
+  };
+
+  return (
+    <div>
+      <button
+        style={style.buttonStyle}
+        onClick={() => setIsCollapsed(!isCollapsed)}
+      >
+        {isCollapsed ? "show" : "collapse"}
+      </button>
+      <div
+        className="collapse-content"
+        // 决定显示和折叠
+        style={isCollapsed ? style.collapsed : style.expanded}
+        // aria-expanded 是给 Screen Reader 用来 判断当前元素状态的辅助属性
+        aria-expanded={isCollapsed}
+      >
+        {props.children}
+      </div>
+    </div>
+  );
+}
+
 function Assistant_draftlist(props) {
   const { themecolor } = useContext(ContextApp)
   const user = firebase.auth().currentUser
@@ -56,22 +93,24 @@ function Assistant_draftlist(props) {
     setTextarea(event.target.value)
   }
 
-  const handleread = () => {
+  const handleFinishedTaskread = () => {
 
     var assistant_name = 'YiChia'
-    var userRef = realtime_db.ref("/draft");
+    //var assistant_name = user.displayName
+    var userRef = realtime_db.ref("draft");
     const data = [];
     console.log("ori_data");
     console.log(data);
     userRef.orderByChild("assistant").equalTo(assistant_name).once("value", function (snapshot) {
       snapshot.forEach(function(childSnapshot) {
-        if (childSnapshot.val().status == "Pending" || childSnapshot.val().status == "Rejected") { 
+        if (childSnapshot.val().status != "Pending") { 
           data.push({ key: childSnapshot.key, status: childSnapshot.val().status, username: childSnapshot.val().username, bcc: childSnapshot.val().bcc, 
             cc: childSnapshot.val().cc,
             message: childSnapshot.val().message, 
             recipient: childSnapshot.val().recipient,
             subject: childSnapshot.val().subject,
             status: childSnapshot.val().status,
+            deadline: childSnapshot.val().deadline,
           })
         }
       });
@@ -84,6 +123,7 @@ function Assistant_draftlist(props) {
         <tr>
           <td>Executive</td>
           <td>Draft_Status</td>
+          <td>Dead_Line</td>
           <td>Button</td>
         </tr>
         {state.map((item) => (
@@ -91,6 +131,7 @@ function Assistant_draftlist(props) {
           <tr>
             <td>{item.username}</td>
             <td>{item.status}</td>
+            <td>{item.deadline}</td>
             <td>
             <NavLink activeClassName='activelink'  to={{ pathname:'/updatedraft',aboutProps: {datakey:item.key,bcc: item.bcc, 
             cc: item.cc,
@@ -104,45 +145,52 @@ function Assistant_draftlist(props) {
     );
   }
 
-  const handleTaskRead = () => {
-    var userRef = realtime_db.ref("task");
-    const preTasks = [];
-    var assistant_name = user.displayName;
-    console.log("user Name:");
-    console.log(assistant_name);
+  const handleUnfinishedTaskRead = () => {   
 
+    var assistant_name = 'YiChia'
+    //var assistant_name = user.displayName
+    var userRef = realtime_db.ref("draft");
+    const data = [];
+    console.log("ori_data");
+    console.log(data);
     userRef.orderByChild("assistant").equalTo(assistant_name).once("value", function (snapshot) {
       snapshot.forEach(function(childSnapshot) {
-        if (childSnapshot.val().status == "pending") {         
-            preTasks.push({
-              status: childSnapshot.val().status, 
-              executive: childSnapshot.val().executive,
-              assistant: childSnapshot.val().assistant,
-              task: childSnapshot.val().task,
-              date: childSnapshot.val().date,
-            })
+        if (childSnapshot.val().status == "Pending") { 
+          data.push({ key: childSnapshot.key, status: childSnapshot.val().status, username: childSnapshot.val().username, bcc: childSnapshot.val().bcc, 
+            cc: childSnapshot.val().cc,
+            message: childSnapshot.val().message, 
+            recipient: childSnapshot.val().recipient,
+            subject: childSnapshot.val().subject,
+            status: childSnapshot.val().status,
+            deadline: childSnapshot.val().deadline,
+          })
         }
       });
     });
-    ///////
-    const [state, setState] = React.useState(preTasks);
-    console.log("preTasks:");
-    console.log(preTasks);
+    const [state, setState] = React.useState(data);
+    // console.log(data);
     // return data;
     return (
-      <table>Previous Tasks
+      <table>
         <tr>
-          <td>Task</td>
           <td>Executive</td>
-          <td>Status</td>
-          <td>Date</td>
+          <td>Draft_Status</td>
+          <td>Dead_Line</td>
+          <td>Button</td>
         </tr>
         {state.map((item) => (
+          // <tr key={item.id}>
           <tr>
-            <td>{item.task}</td>
-            <td>{item.executive}</td>
+            <td>{item.username}</td>
             <td>{item.status}</td>
-            <td>{item.date}</td>
+            <td>{item.deadline}</td>
+            <td>
+            <NavLink activeClassName='activelink'  to={{ pathname:'/updatedraft',aboutProps: {datakey:item.key,bcc: item.bcc, 
+            cc: item.cc,
+            message: item.message, 
+            recipient: item.recipient,
+            subject: item.subject,}}}exact><span><i class="far fa-bell"></i>Write Draft</span></NavLink>
+            </td>
           </tr>
         ))}
       </table>
@@ -188,14 +236,17 @@ function Assistant_draftlist(props) {
           />
         </div>
       </div>
-      <div class="taskList">
-        {handleTaskRead()}
+      <div class="taskList">------------------Unfinished----------------
+        <Collapse>
+        {handleUnfinishedTaskRead()}
+        </Collapse>
       </div>
-      ---------------------------------
-      <div class="container">
+      <div class="container">------------------Finished----------------
         <div class="row">
           <div class="col align-self-center">
-            {handleread()}
+          <Collapse>
+            {handleFinishedTaskread()}
+            </Collapse>
           </div>
         </div>
       </div>

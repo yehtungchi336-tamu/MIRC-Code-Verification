@@ -172,25 +172,58 @@ function Assigntask(props) {
               <option value="Max">Max</option>
             </select>
           </label>
-
-          
-            {/* Date
-            <DatePicker
-              selected={ startDate }
-              onChange={ handle_Date_Change }
-              name="startDate"
-              dateFormat="MM/dd/yyyy"
-            /> */}
-
-            
-            <label>Comment<textarea value={textarea  || ""} rows="10" onChange={handle_textarea_Change} />
+            Task to assistant
+            <input 
+              type="text" 
+              name="subject" 
+              value={inputs.subject} 
+              placeholder="enter task"
+              onChange={handleChange}
+            />
+            {/* <label>Subject
+            <input
+              type="text"
+              name="subject"
+              value={inputs.subject || ""}
+              placeholder=" enter email subject"
+              onChange={handleChange}
+            />
+            </label> */}
+            {/* <label>TO
+              <input
+                type="text"
+                name="recipient"
+                value={inputs.recipient || ""}
+                placeholder=" enter the recipient's address"
+                onChange={handleChange}
+            />
             </label>
-              
-            <label>Deadline
-            {<DatePicker selected={startDate} onChange={(date) => setStartDate(date)} />}
+            <label>CC
+              <input
+                type="text"
+                name="CC"
+                value={inputs.CC || ""}
+                placeholder=" enter the Carbon Copy"
+                onChange={handleChange}
+            />
             </label>
-            <input type="submit" class="btn btn-primary" id='draft_submit' value='Submit' />
+            <label>BCC
+              <input
+                type="text"
+                name="BCC"
+                value={inputs.BCC || ""}
+                placeholder=" enter the Blind Carbon Copy"
+                onChange={handleChange}
+            />
+            </label>
+            <label>Message<textarea value={textarea  || ""} rows="10" onChange={handle_textarea_Change} />
+            </label> */}
+              <input type="submit" class="btn btn-primary" id='draft_submit' value='Submit' />
+
+
           </form>
+
+
 
           </div>
         </div>
