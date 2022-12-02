@@ -28,7 +28,7 @@ function App() {
   const [forgotpassword, setForgotpassword]=useState(false)
   //const [msgids, setMsgIds] = useState([''])
   const [loading, setLoading]=useState(false)
-  let history = useHistory();
+  let history = useHistory()
   const clearInputs = () => {
     setEmail('')
     setPassword('')
@@ -165,8 +165,9 @@ function App() {
     }
     console.log("handle logout.." + loginType)
     firebase.auth().signOut()
-    history.push('/')
+    window.location.href = '/'
   }
+
   const authListener = () => {
     firebase.auth().onAuthStateChanged(user => {   
       if(user) {
@@ -339,13 +340,13 @@ function App() {
     }
 
     return() => cnt = true
-  },[])  
+    },[])  
 
-   return ( 
+  return ( 
 
     <Router >
     <div className="App">
-       {user?
+      {user?
         <ContextAppProvider>
         <>
           <Body setLoading={setLoading} handleLogout={handleLogout} />
@@ -354,12 +355,12 @@ function App() {
         </ContextAppProvider>
         :
         <> 
-        <Login loginwithFacebook={()=>loginwithFacebook}loginwithGoogle={()=>loginwithGoogle}  setRoleType={setRoleType} loading={loading} name={name} setName={setName} lname={lname} setlName={setlName}email={email} handleSignup={handleSignup} setEmail={setEmail} password= {password} setPassword={setPassword} handleLogin={handleLogin} hasAccount={hasAccount} setHasAccount={setHasAccount} emailError={emailError} passwordError={passwordError}/>       
-        <Redirect to='/'/>
-     </>
-        }
+          <Login loginwithFacebook={()=>loginwithFacebook} loginwithGoogle={()=>loginwithGoogle}  setRoleType={setRoleType} loading={loading} name={name} setName={setName} lname={lname} setlName={setlName}email={email} handleSignup={handleSignup} setEmail={setEmail} password= {password} setPassword={setPassword} handleLogin={handleLogin} hasAccount={hasAccount} setHasAccount={setHasAccount} emailError={emailError} passwordError={passwordError}/>       
+          <Redirect exact to='/'/>
+        </>
+      }
     </div>  
-     </Router>
+    </Router>
 
   );
 }

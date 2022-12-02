@@ -13,7 +13,6 @@ import {
   useLocation
 } from "react-router-dom";
 import ReactTimeAgo from 'react-time-ago'
-import emailjs from 'emailjs-com'
 import Usersettings from "./Usersettings";
 import { ContextApp } from "../ContextAPI";
 import Hoverlink from "./Hoverlink";
@@ -41,35 +40,6 @@ function Body(props) {
         <Hoverlink  icon={lnk.icon} txt={lnk.txt} handleLogout={handleLogout} />
       );
     });
-
-  const form = useRef();
-  function MailSending(e){
-    e.preventDefault();
-
-    emailjs.sendForm(
-      "service_k0epgii",
-      "template_a0nogel",
-      form.current,
-      "J14Ld2x5lECND_Nx1"
-    )
-    .then(
-      (result) => {
-        console.log(result.text);
-        alert("SUCCESS!");
-      },
-      (error) => {
-        console.log(error.text);
-        alert("FAILED...", error);
-      }
-    );
-  }
-
-  const history = useHistory();
-  const nav2emaillinkage = () => {
-    history.push('/linkage');
-  };
-
-
 
   function determineTime() {
     const d = new Date();
@@ -120,13 +90,6 @@ function Body(props) {
             clk={() => props.handleLogout()}
           />
         </div>
-      </div>
-      <div>
-        {/*
-        <button className="btn btn-success" onClick={nav2emaillinkage}>
-          Email Linkage
-        </button>
-        */}
       </div>
 
       <div className="homeside">
