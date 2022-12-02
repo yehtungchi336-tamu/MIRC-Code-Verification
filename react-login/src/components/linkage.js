@@ -61,7 +61,8 @@ export default function Linkage(props) {
         tutorialsRef.push({
         serviceid: inputs.serviceid,
         templateid: inputs.templateid,
-        key: inputs.key
+        key: inputs.key,
+        username: user.displayName
         })
         .then(
             (result) => {
@@ -157,10 +158,20 @@ export default function Linkage(props) {
 
 
             </div>
-                <a href="https://www.emailjs.com">
-                    <button className="btn btn-primary" id="linkage_btn">EmailJS Linkage</button>
-                </a>
+                <div>
+                    <a href="https://www.emailjs.com" target='_blank'>
+                        <button className="btn btn-primary" id="linkage_btn">EmailJS Linkage</button>
+                    </a>
+                </div>
+
+                <div>
+                    <a href="https://www.emailjs.com/docs/tutorial/overview/" target='_blank'>
+                        <button className="btn btn-primary" id="toturial_btn">Toturial for EmailJS</button>
+                    </a>
+                </div>
             </div>
+
+            
         </div>
         <div className="homeside">
 

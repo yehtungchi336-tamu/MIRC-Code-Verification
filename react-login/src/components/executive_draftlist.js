@@ -9,13 +9,15 @@ import {
   Link,
   NavLink,
   Redirect,
-  useLocation
+  useLocation,
+  useHistory
 } from "react-router-dom";
 import ReactTimeAgo from 'react-time-ago'
 import emailjs from 'emailjs-com'
 import Usersettings from "./Usersettings";
 import { ContextApp } from "../ContextAPI";
 import Hoverlink from "./Hoverlink";
+//import Table from 'react-bootstrap/Table';
 
 function Collapse(props) {
   const [isCollapsed, setIsCollapsed] = React.useState(props.collapsed);
@@ -96,9 +98,10 @@ function Executive_draftlist(props) {
     var executive_name = "Yaru Yang";//user.displayName;
     var userRef = realtime_db.ref("/draft");
     const data = [];
-    
 
-    userRef.orderByChild("username").equalTo(executive_name).once("value", function (snapshot) {
+    userRef.orderByChild("username")
+    .equalTo(executive_name)
+    .on('value', function(snapshot) {
       snapshot.forEach(function(childSnapshot) {
         if (childSnapshot.val().status != "Pending") {         
             data.push({ key: childSnapshot.key, status: childSnapshot.val().status, username: childSnapshot.val().username, bcc: childSnapshot.val().bcc, 
@@ -114,7 +117,6 @@ function Executive_draftlist(props) {
     });
 
     const [state, setState] = React.useState(data);
-    console.log(data);
     // return data;
     return (
       <table>
