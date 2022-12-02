@@ -107,7 +107,7 @@ function Executive_draftlist(props) {
               recipient: childSnapshot.val().recipient,
               subject: childSnapshot.val().subject,
               assistant: childSnapshot.val().assistant,
-              duedate: childSnapshot.val().due,
+              deadline: childSnapshot.val().deadline,
             })
         }
       });
@@ -122,6 +122,7 @@ function Executive_draftlist(props) {
           <td>Executive</td>
           <td>Assistant</td>
           <td>Draft_Status</td>
+          <td>Dead_Line</td>
           <td>Review</td>
         </tr>
         -----------------------------------
@@ -131,6 +132,7 @@ function Executive_draftlist(props) {
             <td>{item.username}</td>
             <td>{item.assistant}</td>
             <td>{item.status}</td>
+            <td>{item.deadline}</td>
             <td>
             <NavLink activeClassName='activelink'  to={{ pathname:'/executive_updatedraft',aboutProps: {datakey:item.key,bcc: item.bcc, 
             cc: item.cc,
@@ -158,6 +160,7 @@ function Executive_draftlist(props) {
               recipient: childSnapshot.val().recipient,
               subject: childSnapshot.val().subject,
               assistant: childSnapshot.val().assistant,
+              deadline: childSnapshot.val().deadline,
             })
         }
       });
@@ -172,6 +175,7 @@ function Executive_draftlist(props) {
           <td>Executive</td>
           <td>Assistant</td>
           <td>Draft_Status</td>
+          <td>Dead_Line</td>
           <td>Review</td>
         </tr>
         ----------------------------
@@ -181,6 +185,7 @@ function Executive_draftlist(props) {
             <td>{item.username}</td>
             <td>{item.assistant}</td>
             <td>{item.status}</td>
+            <td>{item.deadline}</td>
             <td>
             <NavLink activeClassName='activelink'  to={{ pathname:'/executive_updatedraft',aboutProps: {datakey:item.key,bcc: item.bcc, 
             cc: item.cc,

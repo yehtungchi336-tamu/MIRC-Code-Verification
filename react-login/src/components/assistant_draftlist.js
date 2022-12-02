@@ -110,6 +110,7 @@ function Assistant_draftlist(props) {
             recipient: childSnapshot.val().recipient,
             subject: childSnapshot.val().subject,
             status: childSnapshot.val().status,
+            deadline: childSnapshot.val().deadline,
           })
         }
       });
@@ -122,6 +123,7 @@ function Assistant_draftlist(props) {
         <tr>
           <td>Executive</td>
           <td>Draft_Status</td>
+          <td>Dead_Line</td>
           <td>Button</td>
         </tr>
         {state.map((item) => (
@@ -129,6 +131,7 @@ function Assistant_draftlist(props) {
           <tr>
             <td>{item.username}</td>
             <td>{item.status}</td>
+            <td>{item.deadline}</td>
             <td>
             <NavLink activeClassName='activelink'  to={{ pathname:'/updatedraft',aboutProps: {datakey:item.key,bcc: item.bcc, 
             cc: item.cc,
@@ -159,6 +162,7 @@ function Assistant_draftlist(props) {
             recipient: childSnapshot.val().recipient,
             subject: childSnapshot.val().subject,
             status: childSnapshot.val().status,
+            deadline: childSnapshot.val().deadline,
           })
         }
       });
@@ -171,6 +175,7 @@ function Assistant_draftlist(props) {
         <tr>
           <td>Executive</td>
           <td>Draft_Status</td>
+          <td>Dead_Line</td>
           <td>Button</td>
         </tr>
         {state.map((item) => (
@@ -178,6 +183,7 @@ function Assistant_draftlist(props) {
           <tr>
             <td>{item.username}</td>
             <td>{item.status}</td>
+            <td>{item.deadline}</td>
             <td>
             <NavLink activeClassName='activelink'  to={{ pathname:'/updatedraft',aboutProps: {datakey:item.key,bcc: item.bcc, 
             cc: item.cc,
