@@ -317,7 +317,7 @@ function App() {
   }
   useBeforeunload(() => {
     if(user) {
-      db.collection('users').doc(user.uid).update({online: false})
+      //db.collection('users').doc(user.uid).update({online: false})
     }
   }) 
 
@@ -346,13 +346,21 @@ function App() {
 
     <Router >
     <div className="App">
-      {user?
+      {user? 
+        (user.msgids == "assistant" ?          
         <ContextAppProvider>
         <>
           <Body setLoading={setLoading} handleLogout={handleLogout} />
           <Redirect exact to='/Home'/>
         </>
         </ContextAppProvider>
+        :
+        <ContextAppProvider>
+        <>
+          <Body setLoading={setLoading} handleLogout={handleLogout} />
+          <Redirect exact to='/linkage'/>
+        </>
+        </ContextAppProvider> )
         :
         <> 
           <Login loginwithFacebook={()=>loginwithFacebook} loginwithGoogle={()=>loginwithGoogle}  setRoleType={setRoleType} loading={loading} name={name} setName={setName} lname={lname} setlName={setlName}email={email} handleSignup={handleSignup} setEmail={setEmail} password= {password} setPassword={setPassword} handleLogin={handleLogin} hasAccount={hasAccount} setHasAccount={setHasAccount} emailError={emailError} passwordError={passwordError}/>       

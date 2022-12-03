@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useContext } from "react";
+import { useHistory } from "react-router-dom";
 import firebase from "firebase";
 import { db,realtime_db } from "../Fire";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
@@ -35,6 +36,7 @@ export default function Linkage(props) {
         { icon: "fal fa-sign-out", txt: "Logout" }
     ];
     const id =db.collection('users').doc().id
+    let history = useHistory()
     const lnksrow =
         lnks &&
         lnks.map((lnk) => {
@@ -68,6 +70,7 @@ export default function Linkage(props) {
             (result) => {
               console.log(result.text);
               alert("Email Linkage SUCCESS!");
+              history.push('/Home');
             },
             (error) => {
               console.log(error.text);

@@ -61,14 +61,30 @@ function Body(props) {
       if (user){
           if (!user.msgids)
           {
-            props.handleLogout()
+            props.handleLogout();
             return;
+          }
+          else 
+          {         
+            var username = (user.msgids == "assistant") ? "YiChia" : "Yaru Yang"; //user.displayName;
+            var userRef = realtime_db.ref("/draft");
+            var count = 0;
+            userRef.orderByChild("username")
+            .equalTo(username)
+            .on('value', function(snapshot) {
+              snapshot.forEach(function(childSnapshot) {
+                if (childSnapshot.val().status == "Pending") {         
+                  count = count + 1;
+                }
+              });
+            });
+            setNotifLength(count);
           }
       }
     })
 
     function determinetext() {
-    if (user) {
+    if (user) {  
         return determineTime() + " " + user.msgids + " " + user.displayName + " (login type: " + user.providerData[0].providerId + ")"
       }
   }
@@ -91,9 +107,26 @@ function Body(props) {
           />
         </div>
       </div>
+      <div>
+        {/*
+        <button className="btn btn-success" onClick={nav2emaillinkage}>
+          Email Linkage
+        </button>
+        */}
+
+      </div>
 
       <div className="homeside">
-
+        <div className="notifications flex bs">
+          <h2 className="homeside_type">Notifications</h2>
+          <strong><p>Pending: {notifi}</p></strong>
+          <Link to= {user.msgids == "assistant" ? "/assistant_draftlist" : "/executive_draftlist"} className="flexrow sb">
+            <p>
+              Go to notifications <hr />
+            </p>
+            <i className="fal fa-arrow-right" style={{ color: themecolor }}></i>
+          </Link>
+        </div>
       </div>
     </div>
   );
