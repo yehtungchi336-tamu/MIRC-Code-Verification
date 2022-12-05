@@ -56,7 +56,6 @@ function Body(props) {
     }
   }
 
-
   useEffect(()=>{
       if (user){
           if (!user.msgids)
@@ -117,11 +116,11 @@ function Body(props) {
       </div>
 
       <div className="homeside">
-        <div className="notifications flex bs">
-          <h2 className="homeside_type">Notifications</h2>
-          <strong><p>Pending: {notifi}</p></strong>
+        <div className="notifications bs">
+          <p className="homeside_type">Notifications</p>
+          <strong><p className="homeside_type_3">Pending: {notifi}</p></strong>
           <Link to= {user.msgids == "assistant" ? "/assistant_draftlist" : "/executive_draftlist"} className="flexrow sb">
-            <p>
+            <p className="homeside_type_2">
               Go to notifications <hr />
             </p>
             <i className="fal fa-arrow-right" style={{ color: themecolor }}></i>

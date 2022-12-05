@@ -991,14 +991,33 @@ form label input:focus {
 }
 
 .home .homeside {
-  width: 400px;
+  width: 420px;
   max-width: 70%;
   display: grid;
   grid-gap: 10px;
+  line-height: 40px;
 }
 
 .home .homeside_type {
-  color:rgb(96, 107, 116)
+  font-size: 20px;
+  color:rgb(96, 107, 116);
+  font-weight:bold;
+  display: flex;
+  align-items: center
+}
+
+.home .homeside_type_2 {
+  font-size: 20px;
+  color:rgb(0, 0, 0);
+  display: flex;
+  align-items: center
+}
+
+.home .homeside_type_3 {
+  font-size: 20px;
+  color:rgb(255, 0, 0);
+  display: flex;
+  align-items: center
 }
 
 .home hr {
