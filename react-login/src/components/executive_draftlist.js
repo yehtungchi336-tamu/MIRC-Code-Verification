@@ -31,7 +31,7 @@ function Collapse(props) {
     },
     buttonStyle: {
       display: "block",
-      width: "100%"
+      width: "15%"
     }
   };
 
@@ -41,7 +41,7 @@ function Collapse(props) {
         style={style.buttonStyle}
         onClick={() => setIsCollapsed(!isCollapsed)}
       >
-        {isCollapsed ? "show" : "collapse"}
+        {isCollapsed ? "show" : "Collapse"}
       </button>
       <div
         className="collapse-content"
@@ -103,7 +103,7 @@ function Executive_draftlist(props) {
     .equalTo(executive_name)
     .on('value', function(snapshot) {
       snapshot.forEach(function(childSnapshot) {
-        if (childSnapshot.val().status != "Pending") {         
+        if (childSnapshot.val().status === "Accepted") {         
             data.push({ key: childSnapshot.key, status: childSnapshot.val().status, username: childSnapshot.val().username, bcc: childSnapshot.val().bcc, 
               cc: childSnapshot.val().cc,
               message: childSnapshot.val().message, 
@@ -119,32 +119,44 @@ function Executive_draftlist(props) {
     const [state, setState] = React.useState(data);
     // return data;
     return (
-      <table>
-        <tr>
-          <td>Executive</td>
-          <td>Assistant</td>
-          <td>Draft_Status</td>
-          <td>Dead_Line</td>
-          <td>Review</td>
-        </tr>
-        -----------------------------------
-        {state.map((item) => (
-          // <tr key={item.id}>
-          <tr>
-            <td>{item.username}</td>
-            <td>{item.assistant}</td>
-            <td>{item.status}</td>
-            <td>{item.deadline}</td>
-            <td>
-            <NavLink activeClassName='activelink'  to={{ pathname:'/executive_updatedraft',aboutProps: {datakey:item.key,bcc: item.bcc, 
-            cc: item.cc,
-            message: item.message, 
-            recipient: item.recipient,
-            subject: item.subject,}}}exact><span><i class="far fa-bell"></i>Review Draft</span></NavLink>
-            </td>
-          </tr>
-        ))}
-      </table>
+      <div>
+        <table id="draftlist_table">
+          <thead>
+            <tr>
+              <th>Executive</th>
+              <th>Assistant</th>
+              <th>Draft_Status</th>
+              <th>DeadLine</th>
+              <th>Review</th>
+            </tr>
+          </thead>
+          <tbody>
+            {state.map((item) => {
+              return (
+                <>
+                  <tr>
+                    <td>{item.username}</td>
+                    <td>{item.assistant}</td>
+                    <td>{item.status}</td>
+                    <td>{item.deadline}</td>
+                    <td>
+                      <NavLink activeClassName='activelink' 
+                      to={{ pathname:'/executive_updatedraft',
+                      aboutProps: {
+                      datakey:item.key,
+                      bcc: item.bcc, 
+                      cc: item.cc,
+                      message: item.message, 
+                      recipient: item.recipient,
+                      subject: item.subject,}}}exact><span><i class="far fa-bell"></i>Review Draft</span></NavLink>
+                    </td>
+                  </tr>
+                </>
+              )
+            })}
+          </tbody>
+        </table>
+      </div>
     );
   }
   const handleUnfinishedread = () => {
@@ -155,7 +167,7 @@ function Executive_draftlist(props) {
 
     userRef.orderByChild("username").equalTo(executive_name).once("value", function (snapshot) {
       snapshot.forEach(function(childSnapshot) {
-        if (childSnapshot.val().status == "Pending") {         
+        if (childSnapshot.val().status === "Completed") {         
             data.push({ key: childSnapshot.key, status: childSnapshot.val().status, username: childSnapshot.val().username, bcc: childSnapshot.val().bcc, 
               cc: childSnapshot.val().cc,
               message: childSnapshot.val().message, 
@@ -172,32 +184,44 @@ function Executive_draftlist(props) {
     console.log(data);
     // return data;
     return (
-      <table>
-        <tr>
-          <td>Executive</td>
-          <td>Assistant</td>
-          <td>Draft_Status</td>
-          <td>Dead_Line</td>
-          <td>Review</td>
-        </tr>
-        ----------------------------
-        {state.map((item) => (
-          // <tr key={item.id}>
-          <tr>
-            <td>{item.username}</td>
-            <td>{item.assistant}</td>
-            <td>{item.status}</td>
-            <td>{item.deadline}</td>
-            <td>
-            <NavLink activeClassName='activelink'  to={{ pathname:'/executive_updatedraft',aboutProps: {datakey:item.key,bcc: item.bcc, 
-            cc: item.cc,
-            message: item.message, 
-            recipient: item.recipient,
-            subject: item.subject,}}}exact><span><i class="far fa-bell"></i>Review Draft</span></NavLink>
-            </td>
-          </tr>
-        ))}
-      </table>
+      <div>
+        <table id="draftlist_table">
+          <thead>
+            <tr>
+              <th>Executive</th>
+              <th>Assistant</th>
+              <th>Draft_Status</th>
+              <th>DeadLine</th>
+              <th>Review</th>
+            </tr>
+          </thead>
+          <tbody>
+            {state.map((item) => {
+              return (
+                <>
+                  <tr>
+                    <td>{item.username}</td>
+                    <td>{item.assistant}</td>
+                    <td>{item.status}</td>
+                    <td>{item.deadline}</td>
+                    <td>
+                      <NavLink activeClassName='activelink' 
+                      to={{ pathname:'/executive_updatedraft',
+                      aboutProps: {
+                      datakey:item.key,
+                      bcc: item.bcc, 
+                      cc: item.cc,
+                      message: item.message, 
+                      recipient: item.recipient,
+                      subject: item.subject,}}}exact><span><i class="far fa-bell"></i>Review Draft</span></NavLink>
+                    </td>
+                  </tr>
+                </>
+              )
+            })}
+          </tbody>
+        </table>
+      </div>
     );
   }
 
@@ -245,11 +269,13 @@ function Executive_draftlist(props) {
       <div class="container">
         <div class="row">
           <div class="col align-self-center">
-            --------------Unfinished-----------------
+            -----Unfinished--------
             <Collapse>
             { handleUnfinishedread()}
             </Collapse>
-            --------------Finished-----------------
+            <br />
+            <br />
+            ------Finished---------
             <Collapse>
             { handleFinishedread()}
             </Collapse>
