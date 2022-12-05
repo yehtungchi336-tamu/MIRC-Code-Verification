@@ -89,11 +89,11 @@ function ExecutiveUpdatedraft(props) {
       )
       .then(
         (result) => {
-          console.log(result.text);
+          console.log(result);
           alert("MAILSEND SUCCESS!");
         },
         (error) => {
-          console.log(error.text);
+          console.log(error);
           alert("MAILSEND FAILED...", error);
         }
       );
@@ -125,16 +125,6 @@ function ExecutiveUpdatedraft(props) {
     }
   }
 
-  useEffect(()=>{
-    if (user){
-    db.collection('users').doc(user.uid).onSnapshot(snap=>{
-      const tmp = snap.data()
-      setRoleType(tmp.role)
-      //roleType = tmp.role
-      console.log("home set role.." + tmp.role)
-    })
-    }
-  },[])
 
   function determineTime() {
     const d = new Date();
