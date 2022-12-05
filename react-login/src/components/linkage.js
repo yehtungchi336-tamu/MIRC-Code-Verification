@@ -105,6 +105,28 @@ export default function Linkage(props) {
         return <button>{children}</button>;
     }*/
 
+
+    useEffect(()=>{
+      if (user){
+          if (user.msgids)
+          {         
+            var username = (user.msgids == "assistant") ? "YiChia" : "Yaru Yang"; //user.displayName;
+            var userRef = realtime_db.ref("/draft");
+            var count = 0;
+            userRef.orderByChild("username")
+            .equalTo(username)
+            .on('value', function(snapshot) {
+              snapshot.forEach(function(childSnapshot) {
+                if (childSnapshot.val().status == "Pending") {         
+                  count = count + 1;
+                }
+              });
+            });
+            setNotifLength(count);
+          }
+      }
+    })
+
     return (
         <div className="home">
         <div className="header flex sb">
