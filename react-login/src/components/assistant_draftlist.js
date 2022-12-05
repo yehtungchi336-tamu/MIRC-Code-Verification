@@ -31,7 +31,7 @@ function Collapse(props) {
     },
     buttonStyle: {
       display: "block",
-      width: "100%"
+      width: "15%"
     }
   };
 
@@ -41,7 +41,7 @@ function Collapse(props) {
         style={style.buttonStyle}
         onClick={() => setIsCollapsed(!isCollapsed)}
       >
-        {isCollapsed ? "show" : "collapse"}
+        {isCollapsed ? "show" : "Collapse"}
       </button>
       <div
         className="collapse-content"
@@ -103,7 +103,7 @@ function Assistant_draftlist(props) {
     console.log(data);
     userRef.orderByChild("assistant").equalTo(assistant_name).once("value", function (snapshot) {
       snapshot.forEach(function(childSnapshot) {
-        if (childSnapshot.val().status != "Pending") { 
+        if (childSnapshot.val().status === "Completed") { 
           data.push({ key: childSnapshot.key, status: childSnapshot.val().status, username: childSnapshot.val().username, bcc: childSnapshot.val().bcc, 
             cc: childSnapshot.val().cc,
             message: childSnapshot.val().message, 
@@ -119,29 +119,42 @@ function Assistant_draftlist(props) {
     // console.log(data);
     // return data;
     return (
-      <table>
-        <tr>
-          <td>Executive</td>
-          <td>Draft_Status</td>
-          <td>Dead_Line</td>
-          <td>Button</td>
-        </tr>
-        {state.map((item) => (
-          // <tr key={item.id}>
-          <tr>
-            <td>{item.username}</td>
-            <td>{item.status}</td>
-            <td>{item.deadline}</td>
-            <td>
-            <NavLink activeClassName='activelink'  to={{ pathname:'/updatedraft',aboutProps: {datakey:item.key,bcc: item.bcc, 
-            cc: item.cc,
-            message: item.message, 
-            recipient: item.recipient,
-            subject: item.subject,}}}exact><span><i class="far fa-bell"></i>Write Draft</span></NavLink>
-            </td>
-          </tr>
-        ))}
-      </table>
+      <div>
+        <table id="draftlist_table">
+          <thead>
+            <tr>
+              <th>Executive</th>
+              <th>Draft_Status</th>
+              <th>DeadLine</th>
+              <th>Button</th>
+            </tr>
+          </thead>
+          <tbody>
+            {state.map((item) => {
+              return (
+                <>
+                  <tr>
+                    <td>{item.username}</td>
+                    <td>{item.status}</td>
+                    <td>{item.deadline}</td>
+                    <td>
+                      <NavLink activeClassName='activelink' 
+                      to={{ pathname:'/updatedraft',
+                      aboutProps: {
+                      datakey:item.key,
+                      bcc: item.bcc, 
+                      cc: item.cc,
+                      message: item.message, 
+                      recipient: item.recipient,
+                      subject: item.subject,}}}exact><span><i class="far fa-bell"></i>Write Draft</span></NavLink>
+                    </td>
+                  </tr>
+                </>
+              )
+            })}
+          </tbody>
+        </table>
+      </div>
     );
   }
 
@@ -155,7 +168,7 @@ function Assistant_draftlist(props) {
     console.log(data);
     userRef.orderByChild("assistant").equalTo(assistant_name).once("value", function (snapshot) {
       snapshot.forEach(function(childSnapshot) {
-        if (childSnapshot.val().status == "Pending") { 
+        if (childSnapshot.val().status === "Pending" || childSnapshot.val().status === "Rejected") { 
           data.push({ key: childSnapshot.key, status: childSnapshot.val().status, username: childSnapshot.val().username, bcc: childSnapshot.val().bcc, 
             cc: childSnapshot.val().cc,
             message: childSnapshot.val().message, 
@@ -171,29 +184,42 @@ function Assistant_draftlist(props) {
     // console.log(data);
     // return data;
     return (
-      <table>
-        <tr>
-          <td>Executive</td>
-          <td>Draft_Status</td>
-          <td>Dead_Line</td>
-          <td>Button</td>
-        </tr>
-        {state.map((item) => (
-          // <tr key={item.id}>
-          <tr>
-            <td>{item.username}</td>
-            <td>{item.status}</td>
-            <td>{item.deadline}</td>
-            <td>
-            <NavLink activeClassName='activelink'  to={{ pathname:'/updatedraft',aboutProps: {datakey:item.key,bcc: item.bcc, 
-            cc: item.cc,
-            message: item.message, 
-            recipient: item.recipient,
-            subject: item.subject,}}}exact><span><i class="far fa-bell"></i>Write Draft</span></NavLink>
-            </td>
-          </tr>
-        ))}
-      </table>
+      <div>
+        <table id="draftlist_table">
+          <thead>
+            <tr>
+              <th>Executive</th>
+              <th>Draft_Status</th>
+              <th>DeadLine</th>
+              <th>Button</th>
+            </tr>
+          </thead>
+          <tbody>
+            {state.map((item) => {
+              return (
+                <>
+                  <tr>
+                    <td>{item.username}</td>
+                    <td>{item.status}</td>
+                    <td>{item.deadline}</td>
+                    <td>
+                      <NavLink activeClassName='activelink' 
+                      to={{ pathname:'/updatedraft',
+                      aboutProps: {
+                      datakey:item.key,
+                      bcc: item.bcc, 
+                      cc: item.cc,
+                      message: item.message, 
+                      recipient: item.recipient,
+                      subject: item.subject,}}}exact><span><i class="far fa-bell"></i>Write Draft</span></NavLink>
+                    </td>
+                  </tr>
+                </>
+              )
+            })}
+          </tbody>
+        </table>
+      </div>
     );
   }
 
@@ -236,16 +262,20 @@ function Assistant_draftlist(props) {
           />
         </div>
       </div>
-      <div class="taskList">------------------Unfinished----------------
+      <div className="taskList">
+      -----Unfinished--------
         <Collapse>
         {handleUnfinishedTaskRead()}
         </Collapse>
       </div>
-      <div class="container">------------------Finished----------------
+      <div className="container">
+      <br />
+      <br />
+      ------Finished---------
         <div class="row">
           <div class="col align-self-center">
-          <Collapse>
-            {handleFinishedTaskread()}
+            <Collapse>
+              {handleFinishedTaskread()}
             </Collapse>
           </div>
         </div>
