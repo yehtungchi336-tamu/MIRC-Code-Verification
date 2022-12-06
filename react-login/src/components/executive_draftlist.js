@@ -165,7 +165,7 @@ function Executive_draftlist(props) {
     var userRef = realtime_db.ref("/draft");
     const data = [];    
 
-    userRef.orderByChild("username").equalTo(executive_name).once("value", function (snapshot) {
+    userRef.orderByChild("username").equalTo(executive_name).on("value", function (snapshot) {
       snapshot.forEach(function(childSnapshot) {
         if (childSnapshot.val().status === "Completed") {         
             data.push({ key: childSnapshot.key, status: childSnapshot.val().status, username: childSnapshot.val().username, bcc: childSnapshot.val().bcc, 
