@@ -101,10 +101,16 @@ function Assistant_draftlist(props) {
     const data = [];
     console.log("ori_data");
     console.log(data);
-    userRef.orderByChild("assistant").equalTo(assistant_name).once("value", function (snapshot) {
+    userRef.orderByChild("assistant")
+    .equalTo(assistant_name)
+    .on("value", function (snapshot) {
       snapshot.forEach(function(childSnapshot) {
         if (childSnapshot.val().status === "Completed") { 
-          data.push({ key: childSnapshot.key, status: childSnapshot.val().status, username: childSnapshot.val().username, bcc: childSnapshot.val().bcc, 
+          data.push({ 
+            key: childSnapshot.key, 
+            status: childSnapshot.val().status, 
+            username: childSnapshot.val().username, 
+            bcc: childSnapshot.val().bcc, 
             cc: childSnapshot.val().cc,
             message: childSnapshot.val().message, 
             recipient: childSnapshot.val().recipient,
@@ -166,10 +172,16 @@ function Assistant_draftlist(props) {
     const data = [];
     console.log("ori_data");
     console.log(data);
-    userRef.orderByChild("assistant").equalTo(assistant_name).once("value", function (snapshot) {
+    userRef.orderByChild("assistant")
+    .equalTo(assistant_name)
+    .on("value", function (snapshot) {
       snapshot.forEach(function(childSnapshot) {
         if (childSnapshot.val().status === "Pending" || childSnapshot.val().status === "Rejected") { 
-          data.push({ key: childSnapshot.key, status: childSnapshot.val().status, username: childSnapshot.val().username, bcc: childSnapshot.val().bcc, 
+          data.push({ 
+            key: childSnapshot.key, 
+            status: childSnapshot.val().status, 
+            username: childSnapshot.val().username, 
+            bcc: childSnapshot.val().bcc, 
             cc: childSnapshot.val().cc,
             message: childSnapshot.val().message, 
             recipient: childSnapshot.val().recipient,
