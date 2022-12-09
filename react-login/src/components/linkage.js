@@ -108,7 +108,12 @@ export default function Linkage(props) {
 
     useEffect(()=>{
       if (user){
-          if (user.msgids)
+          if (!user.msgids)
+          {
+            props.handleLogout();
+            return;
+          }
+          else
           {         
             var username = (user.msgids == "assistant") ? "YiChia" : "Yaru Yang"; //user.displayName;
             var userRef = realtime_db.ref("draft");
