@@ -66,18 +66,34 @@ function Body(props) {
           else 
           {         
             var username = (user.msgids == "assistant") ? "YiChia" : "Yaru Yang"; //user.displayName;
-            var userRef = realtime_db.ref("/draft");
+            var userRef = realtime_db.ref("draft");
             var count = 0;
-            userRef.orderByChild("username")
+            if (user.msgids == "assistant")
+            {
+            userRef.orderByChild("assistant")
             .equalTo(username)
             .on('value', function(snapshot) {
               snapshot.forEach(function(childSnapshot) {
-                if (childSnapshot.val().status == "Pending") {         
+                if (childSnapshot.val().status === "Pending" || childSnapshot.val().status === "Rejected") {         
                   count = count + 1;
                 }
               });
             });
+            }
+            else //executive
+            {
+            userRef.orderByChild("username")
+            .equalTo(username)
+            .on('value', function(snapshot) {
+              snapshot.forEach(function(childSnapshot) {
+                if (childSnapshot.val().status === "Completed") {         
+                  count = count + 1;
+                }
+              });
+            });
+            }
             setNotifLength(count);
+            console.log("set notification.." + user.msgids + " username = " + username + " count = " + count)
           }
       }
     })
