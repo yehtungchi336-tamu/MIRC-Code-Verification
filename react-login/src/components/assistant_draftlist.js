@@ -97,7 +97,7 @@ function Assistant_draftlist(props) {
 
     var assistant_name = 'YiChia'
     //var assistant_name = user.displayName
-    var userRef = realtime_db.ref("/draft");
+    var userRef = realtime_db.ref("draft");
     const data = [];
     console.log("ori_data");
     console.log(data);
@@ -168,7 +168,7 @@ function Assistant_draftlist(props) {
 
     var assistant_name = 'YiChia'
     //var assistant_name = user.displayName
-    var userRef = realtime_db.ref("/draft");
+    var userRef = realtime_db.ref("draft");
     const data = [];
     console.log("ori_data");
     console.log(data);

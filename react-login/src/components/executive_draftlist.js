@@ -96,7 +96,7 @@ function Executive_draftlist(props) {
   const handleFinishedread = () => {
 
     var executive_name = "Yaru Yang";//user.displayName;
-    var userRef = realtime_db.ref("/draft");
+    var userRef = realtime_db.ref("draft");
     const data = [];
 
     userRef.orderByChild("username")
@@ -162,7 +162,7 @@ function Executive_draftlist(props) {
   const handleUnfinishedread = () => {
 
     var executive_name = "Yaru Yang";//user.displayName;
-    var userRef = realtime_db.ref("/draft");
+    var userRef = realtime_db.ref("draft");
     const data = [];    
 
     userRef.orderByChild("username").equalTo(executive_name).on("value", function (snapshot) {
