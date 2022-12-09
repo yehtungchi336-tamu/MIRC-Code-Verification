@@ -11,7 +11,7 @@
   --mainshadow: rgba(48, 210, 252, 0.4);
   --dark: #0d1a25;
   --red: #ff0051;
-  --theme-color: #38567cce;
+  --theme-color: #008DFFce;
   --chat-color: #056dff;
   --low-priority: 50;
   --medium-priority: 60;
@@ -78,7 +78,7 @@ hr {
 }
 i {
   cursor: pointer;
-  color: var(--theme-color);
+  color: #464753ce;
   font-size: 20px;
   transition: all 0.3s;
 }
@@ -117,7 +117,7 @@ button:active {
   color: #000000;
 }
 ::selection {
-  background-color: var(--theme-color);
+  background-color: #6e6e6ece;
   color: white;
 }
 
@@ -125,11 +125,11 @@ button:active {
   position: fixed;
   bottom: 0;
   color: rgba(255, 255, 255, 0.873);
-  background-color: #6ce1f6;
+  background-color: #008DFF;
   width: 100%;
-  height: 40pt;
+  height: 30pt;
   padding-left: 10px;
-  padding-top: 15px;
+  padding-top: 10px;
   font-weight: bold;
 }
 
@@ -710,8 +710,9 @@ a {
   max-width: 90%;
 }
 .image {
-  position: absolute;
-  top: 10%;
+  position: fixed;
+  top: 5%;
+  left: 2%;
 }
 .icon {
   display: flex;
@@ -895,10 +896,10 @@ form label input:focus {
 }
 
  .activelink {
-  background-color: rgba(207, 207, 207, 0.404);
+  background-color: rgba(244, 244, 244, 0.557);
 }
 .sidebar .icons a:hover, .sidebaricons a:hover {
-  background-color: rgba(207, 207, 207, 0.404);
+  background-color: rgba(213, 213, 213, 0.653);
 }
 .sidebar i {
   color: white;
@@ -918,7 +919,6 @@ form label input:focus {
   display: grid;
   grid-template-rows: repeat(10, 10%);
   height: 100%;
-  background-color: var(--theme-color);
 }
 .conversations.darkmode {
   background-color: black;
@@ -991,14 +991,33 @@ form label input:focus {
 }
 
 .home .homeside {
-  width: 400px;
+  width: 420px;
   max-width: 70%;
   display: grid;
   grid-gap: 10px;
+  line-height: 40px;
 }
 
 .home .homeside_type {
-  color:rgb(96, 107, 116)
+  font-size: 20px;
+  color:rgb(96, 107, 116);
+  font-weight:bold;
+  display: flex;
+  align-items: center
+}
+
+.home .homeside_type_2 {
+  font-size: 20px;
+  color:rgb(0, 0, 0);
+  display: flex;
+  align-items: center
+}
+
+.home .homeside_type_3 {
+  font-size: 20px;
+  color:rgb(255, 0, 0);
+  display: flex;
+  align-items: center
 }
 
 .home hr {
@@ -3112,4 +3131,25 @@ transform: translateY(-50%)
   width: 125px;
   height: 35px;
   color: black
+}
+
+#toturial_btn{
+  margin-top: 20px;
+  width: 150px;
+  height: 35px;
+  color: black
+}
+
+#draftlist_table {
+  border: 2px solid darkgray;
+  width: 800px;
+  height: 200px;
+}
+  
+th {
+  border-bottom: 1px solid black;
+}
+  
+td {
+  text-align: center;
 }

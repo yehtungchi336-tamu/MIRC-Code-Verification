@@ -3,3 +3,5 @@ react-login/build
 
 backend
 mirc-demo-login
+react-login/client-gmail-credentials.json
+react-login/credentials.json

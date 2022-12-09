@@ -19,6 +19,43 @@ import Hoverlink from "./Hoverlink";
 import Updatedraft from './updatedraft';
 import Table from "./Table";
 
+function Collapse(props) {
+  const [isCollapsed, setIsCollapsed] = React.useState(props.collapsed);
+
+  const style = {
+    collapsed: {
+      display: "none"
+    },
+    expanded: {
+      display: "block"
+    },
+    buttonStyle: {
+      display: "block",
+      width: "15%"
+    }
+  };
+
+  return (
+    <div>
+      <button
+        style={style.buttonStyle}
+        onClick={() => setIsCollapsed(!isCollapsed)}
+      >
+        {isCollapsed ? "show" : "Collapse"}
+      </button>
+      <div
+        className="collapse-content"
+        // 决定显示和折叠
+        style={isCollapsed ? style.collapsed : style.expanded}
+        // aria-expanded 是给 Screen Reader 用来 判断当前元素状态的辅助属性
+        aria-expanded={isCollapsed}
+      >
+        {props.children}
+      </div>
+    </div>
+  );
+}
+
 function Assistant_draftlist(props) {
   const { themecolor } = useContext(ContextApp)
   const user = firebase.auth().currentUser
@@ -34,6 +71,7 @@ function Assistant_draftlist(props) {
     { icon: "fal fa-cog", txt: "Adddraft" },
     { icon: "fal fa-sign-out", txt: "Logout" }
   ];
+
   const id =db.collection('users').doc().id
   const lnksrow =
     lnks &&
@@ -55,22 +93,30 @@ function Assistant_draftlist(props) {
     setTextarea(event.target.value)
   }
 
-  const handleread = () => {
+  const handleFinishedTaskread = () => {
 
     var assistant_name = 'YiChia'
-    var userRef = realtime_db.ref("/draft");
+    //var assistant_name = user.displayName
+    var userRef = realtime_db.ref("draft");
     const data = [];
     console.log("ori_data");
     console.log(data);
-    userRef.orderByChild("assistant").equalTo(assistant_name).once("value", function (snapshot) {
+    userRef.orderByChild("assistant")
+    .equalTo(assistant_name)
+    .on("value", function (snapshot) {
       snapshot.forEach(function(childSnapshot) {
-        if (childSnapshot.val().status == "Pending" || childSnapshot.val().status == "Rejected") { 
-          data.push({ key: childSnapshot.key, status: childSnapshot.val().status, username: childSnapshot.val().username, bcc: childSnapshot.val().bcc, 
+        if (childSnapshot.val().status === "Completed") { 
+          data.push({ 
+            key: childSnapshot.key, 
+            status: childSnapshot.val().status, 
+            username: childSnapshot.val().username, 
+            bcc: childSnapshot.val().bcc, 
             cc: childSnapshot.val().cc,
             message: childSnapshot.val().message, 
             recipient: childSnapshot.val().recipient,
             subject: childSnapshot.val().subject,
             status: childSnapshot.val().status,
+            deadline: childSnapshot.val().deadline,
           })
         }
       });
@@ -79,40 +125,115 @@ function Assistant_draftlist(props) {
     // console.log(data);
     // return data;
     return (
-      <table>
-        <tr>
-          <td>Executive</td>
-          <td>Draft_Status</td>
-          <td>Button</td>
-        </tr>
-        {state.map((item) => (
-          // <tr key={item.id}>
-          <tr>
-            <td>{item.username}</td>
-            <td>{item.status}</td>
-            <td>
-            <NavLink activeClassName='activelink'  to={{ pathname:'/updatedraft',aboutProps: {datakey:item.key,bcc: item.bcc, 
-            cc: item.cc,
-            message: item.message, 
-            recipient: item.recipient,
-            subject: item.subject,}}}exact><span><i class="far fa-bell"></i>Write Draft</span></NavLink>
-            </td>
-          </tr>
-        ))}
-      </table>
+      <div>
+        <table id="draftlist_table">
+          <thead>
+            <tr>
+              <th>Executive</th>
+              <th>Draft_Status</th>
+              <th>DeadLine</th>
+              <th>Button</th>
+            </tr>
+          </thead>
+          <tbody>
+            {state.map((item) => {
+              return (
+                <>
+                  <tr>
+                    <td>{item.username}</td>
+                    <td>{item.status}</td>
+                    <td>{item.deadline}</td>
+                    <td>
+                      <NavLink activeClassName='activelink' 
+                      to={{ pathname:'/updatedraft',
+                      aboutProps: {
+                      datakey:item.key,
+                      bcc: item.bcc, 
+                      cc: item.cc,
+                      message: item.message, 
+                      recipient: item.recipient,
+                      subject: item.subject,}}}exact><span><i class="far fa-bell"></i>Write Draft</span></NavLink>
+                    </td>
+                  </tr>
+                </>
+              )
+            })}
+          </tbody>
+        </table>
+      </div>
     );
   }
 
-  useEffect(()=>{
-    if (user){
-    db.collection('users').doc(user.uid).onSnapshot(snap=>{
-      const tmp = snap.data()
-      setRoleType(tmp.role)
-      //roleType = tmp.role
-      console.log("home set role.." + tmp.role)
-    })
-    }
-  },[])
+  const handleUnfinishedTaskRead = () => {   
+
+    var assistant_name = 'YiChia'
+    //var assistant_name = user.displayName
+    var userRef = realtime_db.ref("draft");
+    const data = [];
+    console.log("ori_data");
+    console.log(data);
+    userRef.orderByChild("assistant")
+    .equalTo(assistant_name)
+    .on("value", function (snapshot) {
+      snapshot.forEach(function(childSnapshot) {
+        if (childSnapshot.val().status === "Pending" || childSnapshot.val().status === "Rejected") { 
+          data.push({ 
+            key: childSnapshot.key, 
+            status: childSnapshot.val().status, 
+            username: childSnapshot.val().username, 
+            bcc: childSnapshot.val().bcc, 
+            cc: childSnapshot.val().cc,
+            message: childSnapshot.val().message, 
+            recipient: childSnapshot.val().recipient,
+            subject: childSnapshot.val().subject,
+            status: childSnapshot.val().status,
+            deadline: childSnapshot.val().deadline,
+          })
+        }
+      });
+    });
+    const [state, setState] = React.useState(data);
+    // console.log(data);
+    // return data;
+    return (
+      <div>
+        <table id="draftlist_table">
+          <thead>
+            <tr>
+              <th>Executive</th>
+              <th>Draft_Status</th>
+              <th>DeadLine</th>
+              <th>Button</th>
+            </tr>
+          </thead>
+          <tbody>
+            {state.map((item) => {
+              return (
+                <>
+                  <tr>
+                    <td>{item.username}</td>
+                    <td>{item.status}</td>
+                    <td>{item.deadline}</td>
+                    <td>
+                      <NavLink activeClassName='activelink' 
+                      to={{ pathname:'/updatedraft',
+                      aboutProps: {
+                      datakey:item.key,
+                      bcc: item.bcc, 
+                      cc: item.cc,
+                      message: item.message, 
+                      recipient: item.recipient,
+                      subject: item.subject,}}}exact><span><i class="far fa-bell"></i>Write Draft</span></NavLink>
+                    </td>
+                  </tr>
+                </>
+              )
+            })}
+          </tbody>
+        </table>
+      </div>
+    );
+  }
 
   function determineTime() {
     const d = new Date();
@@ -135,39 +256,6 @@ function Assistant_draftlist(props) {
     }
   }
 
-  // function MyTable() {
-  //   const initState = [
-  //     { id: 1, name: "bread", quantitiy: 50, location: "cupboard" },
-  //     { id: 2, name: "milk", quantitiy: 20, location: "fridge" },
-  //     { id: 3, name: "water", quantitiy: 10, location: "fridge" }
-  //   ];
-  //   console.log(initState);
-  //   const [state, setState] = React.useState(initState);
-  
-  //   return (
-  //     <table>
-  //       <tr>
-  //         <td>Executive</td>
-  //         <td>Draft_Status</td>
-  //         <td>Button</td>
-  //       </tr>
-  //       {state.map((item) => (
-  //         // <tr key={item.id}>
-  //         <tr>
-  //           <td>{item.location}</td>
-  //           <td>{item.name}</td>
-  //           <td>{item.quantitiy}</td>
-            
-            
-  //           {/* {Object.values(item).map((val) => (
-  //             <td>{val}</td>
-  //           ))} */}
-  //         </tr>
-  //       ))}
-  //     </table>
-  //   );
-  // }
-
   return (
     <div className="home">
       <div className="header flex sb">
@@ -186,12 +274,21 @@ function Assistant_draftlist(props) {
           />
         </div>
       </div>
-
-
-      <div class="container">
+      <div className="taskList">
+      -----Unfinished--------
+        <Collapse>
+        {handleUnfinishedTaskRead()}
+        </Collapse>
+      </div>
+      <div className="container">
+      <br />
+      <br />
+      ------Finished---------
         <div class="row">
           <div class="col align-self-center">
-            {handleread()}
+            <Collapse>
+              {handleFinishedTaskread()}
+            </Collapse>
           </div>
         </div>
       </div>

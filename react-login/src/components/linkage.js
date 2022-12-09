@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useContext } from "react";
+import { useHistory } from "react-router-dom";
 import firebase from "firebase";
 import { db,realtime_db } from "../Fire";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
@@ -35,6 +36,7 @@ export default function Linkage(props) {
         { icon: "fal fa-sign-out", txt: "Logout" }
     ];
     const id =db.collection('users').doc().id
+    let history = useHistory()
     const lnksrow =
         lnks &&
         lnks.map((lnk) => {
@@ -61,7 +63,8 @@ export default function Linkage(props) {
         tutorialsRef.push({
         serviceid: inputs.serviceid,
         templateid: inputs.templateid,
-        key: inputs.key
+        key: inputs.key,
+        username: user.displayName
         })
         .then(
             (result) => {
@@ -76,6 +79,7 @@ export default function Linkage(props) {
         );
 =======
               alert("Email Linkage SUCCESS!");
+              history.push('/Home');
             },
             (error) => {
               console.log(error.text);
@@ -110,6 +114,28 @@ export default function Linkage(props) {
     /*function Button({children}) {
         return <button>{children}</button>;
     }*/
+
+
+    useEffect(()=>{
+      if (user){
+          if (user.msgids)
+          {         
+            var username = (user.msgids == "assistant") ? "YiChia" : "Yaru Yang"; //user.displayName;
+            var userRef = realtime_db.ref("/draft");
+            var count = 0;
+            userRef.orderByChild("username")
+            .equalTo(username)
+            .on('value', function(snapshot) {
+              snapshot.forEach(function(childSnapshot) {
+                if (childSnapshot.val().status == "Pending") {         
+                  count = count + 1;
+                }
+              });
+            });
+            setNotifLength(count);
+          }
+      }
+    })
 
     return (
         <div className="home">
@@ -167,10 +193,20 @@ export default function Linkage(props) {
 
 
             </div>
-                <a href="https://www.emailjs.com">
-                    <button className="btn btn-primary" id="linkage_btn">EmailJS Linkage</button>
-                </a>
+                <div>
+                    <a href="https://www.emailjs.com" target='_blank'>
+                        <button className="btn btn-primary" id="linkage_btn">EmailJS Linkage</button>
+                    </a>
+                </div>
+
+                <div>
+                    <a href="https://www.emailjs.com/docs/tutorial/overview/" target='_blank'>
+                        <button className="btn btn-primary" id="toturial_btn">Toturial for EmailJS</button>
+                    </a>
+                </div>
             </div>
+
+            
         </div>
         <div className="homeside">
 

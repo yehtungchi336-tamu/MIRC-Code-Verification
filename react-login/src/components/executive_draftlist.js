@@ -9,13 +9,52 @@ import {
   Link,
   NavLink,
   Redirect,
-  useLocation
+  useLocation,
+  useHistory
 } from "react-router-dom";
 import ReactTimeAgo from 'react-time-ago'
 import emailjs from 'emailjs-com'
 import Usersettings from "./Usersettings";
 import { ContextApp } from "../ContextAPI";
 import Hoverlink from "./Hoverlink";
+//import Table from 'react-bootstrap/Table';
+
+function Collapse(props) {
+  const [isCollapsed, setIsCollapsed] = React.useState(props.collapsed);
+
+  const style = {
+    collapsed: {
+      display: "none"
+    },
+    expanded: {
+      display: "block"
+    },
+    buttonStyle: {
+      display: "block",
+      width: "15%"
+    }
+  };
+
+  return (
+    <div>
+      <button
+        style={style.buttonStyle}
+        onClick={() => setIsCollapsed(!isCollapsed)}
+      >
+        {isCollapsed ? "show" : "Collapse"}
+      </button>
+      <div
+        className="collapse-content"
+        // 决定显示和折叠
+        style={isCollapsed ? style.collapsed : style.expanded}
+        // aria-expanded 是给 Screen Reader 用来 判断当前元素状态的辅助属性
+        aria-expanded={isCollapsed}
+      >
+        {props.children}
+      </div>
+    </div>
+  );
+}
 
 function Executive_draftlist(props) {
   const { themecolor } = useContext(ContextApp)
@@ -54,84 +93,137 @@ function Executive_draftlist(props) {
   }
 
 
-  const handleread = () => {
+  const handleFinishedread = () => {
 
-    var executive_name = 'Yaru Yang'
+    var executive_name = "Yaru Yang";//user.displayName;
     var userRef = realtime_db.ref("/draft");
     const data = [];
-    const send_data = [];
-    
 
-    userRef.orderByChild("username").equalTo(executive_name).once("value", function (snapshot) {
+    userRef.orderByChild("username")
+    .equalTo(executive_name)
+    .on('value', function(snapshot) {
       snapshot.forEach(function(childSnapshot) {
-        if (childSnapshot.val().status != "Pending") {         
+        if (childSnapshot.val().status === "Accepted") {         
             data.push({ key: childSnapshot.key, status: childSnapshot.val().status, username: childSnapshot.val().username, bcc: childSnapshot.val().bcc, 
               cc: childSnapshot.val().cc,
               message: childSnapshot.val().message, 
               recipient: childSnapshot.val().recipient,
               subject: childSnapshot.val().subject,
               assistant: childSnapshot.val().assistant,
+              deadline: childSnapshot.val().deadline,
             })
         }
       });
     });
 
-    // userRef.orderBy('username')
-    // .startAt(executive_name).endAt(executive_name)
-    // .orderBy('lead')                  // !!! THIS LINE WILL RAISE AN ERROR !!!
-    // .startAt('Jack Nicholson').endAt('Jack Nicholson')
-    // .on("value", function (snapshot) {
-    //   snapshot.forEach(function(childSnapshot) {
-    //       data.push({ key: childSnapshot.key, status: childSnapshot.val().status, username: childSnapshot.val().username, bcc: childSnapshot.val().bcc, 
-    //         cc: childSnapshot.val().cc,
-    //         message: childSnapshot.val().message, 
-    //         recipient: childSnapshot.val().recipient,
-    //         subject: childSnapshot.val().subject,
-    //         assistant: childSnapshot.val().assistant,
-    //       })
-    //   });
-    // });
+    const [state, setState] = React.useState(data);
+    // return data;
+    return (
+      <div>
+        <table id="draftlist_table">
+          <thead>
+            <tr>
+              <th>Executive</th>
+              <th>Assistant</th>
+              <th>Draft_Status</th>
+              <th>DeadLine</th>
+              <th>Review</th>
+            </tr>
+          </thead>
+          <tbody>
+            {state.map((item) => {
+              return (
+                <>
+                  <tr>
+                    <td>{item.username}</td>
+                    <td>{item.assistant}</td>
+                    <td>{item.status}</td>
+                    <td>{item.deadline}</td>
+                    <td>
+                      <NavLink activeClassName='activelink' 
+                      to={{ pathname:'/executive_updatedraft',
+                      aboutProps: {
+                      datakey:item.key,
+                      bcc: item.bcc, 
+                      cc: item.cc,
+                      message: item.message, 
+                      recipient: item.recipient,
+                      subject: item.subject,}}}exact><span><i class="far fa-bell"></i>Review Draft</span></NavLink>
+                    </td>
+                  </tr>
+                </>
+              )
+            })}
+          </tbody>
+        </table>
+      </div>
+    );
+  }
+  const handleUnfinishedread = () => {
+
+    var executive_name = "Yaru Yang";//user.displayName;
+    var userRef = realtime_db.ref("/draft");
+    const data = [];    
+
+    userRef.orderByChild("username").equalTo(executive_name).on("value", function (snapshot) {
+      snapshot.forEach(function(childSnapshot) {
+        if (childSnapshot.val().status === "Completed") {         
+            data.push({ key: childSnapshot.key, status: childSnapshot.val().status, username: childSnapshot.val().username, bcc: childSnapshot.val().bcc, 
+              cc: childSnapshot.val().cc,
+              message: childSnapshot.val().message, 
+              recipient: childSnapshot.val().recipient,
+              subject: childSnapshot.val().subject,
+              assistant: childSnapshot.val().assistant,
+              deadline: childSnapshot.val().deadline,
+            })
+        }
+      });
+    });
 
     const [state, setState] = React.useState(data);
     console.log(data);
     // return data;
     return (
-      <table>
-        <tr>
-          <td>Executive</td>
-          <td>Assistant</td>
-          <td>Draft_Status</td>
-          <td>Review</td>
-        </tr>
-        {state.map((item) => (
-          // <tr key={item.id}>
-          <tr>
-            <td>{item.username}</td>
-            <td>{item.assistant}</td>
-            <td>{item.status}</td>
-            <td>
-            <NavLink activeClassName='activelink'  to={{ pathname:'/executive_updatedraft',aboutProps: {datakey:item.key,bcc: item.bcc, 
-            cc: item.cc,
-            message: item.message, 
-            recipient: item.recipient,
-            subject: item.subject,}}}exact><span><i class="far fa-bell"></i>Review Draft</span></NavLink>
-            </td>
-          </tr>
-        ))}
-      </table>
+      <div>
+        <table id="draftlist_table">
+          <thead>
+            <tr>
+              <th>Executive</th>
+              <th>Assistant</th>
+              <th>Draft_Status</th>
+              <th>DeadLine</th>
+              <th>Review</th>
+            </tr>
+          </thead>
+          <tbody>
+            {state.map((item) => {
+              return (
+                <>
+                  <tr>
+                    <td>{item.username}</td>
+                    <td>{item.assistant}</td>
+                    <td>{item.status}</td>
+                    <td>{item.deadline}</td>
+                    <td>
+                      <NavLink activeClassName='activelink' 
+                      to={{ pathname:'/executive_updatedraft',
+                      aboutProps: {
+                      datakey:item.key,
+                      bcc: item.bcc, 
+                      cc: item.cc,
+                      message: item.message, 
+                      recipient: item.recipient,
+                      subject: item.subject,}}}exact><span><i class="far fa-bell"></i>Review Draft</span></NavLink>
+                    </td>
+                  </tr>
+                </>
+              )
+            })}
+          </tbody>
+        </table>
+      </div>
     );
   }
-
-  useEffect(()=>{
-    if (user){
-    db.collection('users').doc(user.uid).onSnapshot(snap=>{
-      const tmp = snap.data()
-      setRoleType(tmp.role)
-      //roleType = tmp.role
-      console.log("home set role.." + tmp.role)
-    })
-    }
-  },[])
 
   function determineTime() {
     const d = new Date();
@@ -177,7 +269,16 @@ function Executive_draftlist(props) {
       <div class="container">
         <div class="row">
           <div class="col align-self-center">
-            { handleread()}
+            -----Unfinished--------
+            <Collapse>
+            { handleUnfinishedread()}
+            </Collapse>
+            <br />
+            <br />
+            ------Finished---------
+            <Collapse>
+            { handleFinishedread()}
+            </Collapse>
           </div>
         </div>
       </div>

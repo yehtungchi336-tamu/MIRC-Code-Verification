@@ -9,7 +9,8 @@ import {
   Link,
   NavLink,
   Redirect,
-  useLocation
+  useLocation,
+  useHistory
 } from "react-router-dom";
 import ReactTimeAgo from 'react-time-ago'
 import emailjs from 'emailjs-com'
@@ -25,6 +26,7 @@ import Hoverlink from "./Hoverlink";
 function Updatedraft(props) {
 
   let location = useLocation();
+  let history = useHistory();
   // console.log(location.aboutProps);
   
   const { themecolor } = useContext(ContextApp)
@@ -92,22 +94,21 @@ function Updatedraft(props) {
     updates[`draft/${key}/message`] = form.current.message.value;
     updates[`draft/${key}/recipient`] = form.current.recipient.value;
     updates[`draft/${key}/status`] = "Completed";
-    realtime_db.ref().update(updates);
-    console.log("RRRRRRRR")
-
-
+    realtime_db.ref().update(updates)
+    .then(
+      (result) => {
+        console.log(result);
+        alert("SUBMISSION SUCCESS!");
+        
+      },
+      (error) => {
+        console.log(error);
+        alert("SUBMISSION FAILED...", error);
+      }
+    );
+    history.push("/assistant_draftlist");
   }
 
-  useEffect(()=>{
-    if (user){
-    db.collection('users').doc(user.uid).onSnapshot(snap=>{
-      const tmp = snap.data()
-      setRoleType(tmp.role)
-      //roleType = tmp.role
-      console.log("home set role.." + tmp.role)
-    })
-    }
-  },[])
 
   function determineTime() {
     const d = new Date();

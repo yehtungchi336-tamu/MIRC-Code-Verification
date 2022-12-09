@@ -158,7 +158,7 @@ function Body(props) {
       .doc(user.uid)
       .onSnapshot((user) => {
         const userlist = user.data();
-        setMsgpersonids(userlist.msgpersonids);
+        //setMsgpersonids(userlist.msgpersonids);
         setUserlist(userlist);
         db.collection("conversations").onSnapshot((snap) => {
           let convos = [];
@@ -205,7 +205,7 @@ function Body(props) {
     className={widemode ? "body widebody" : "body"}
       style={{ backgroundColor: themecolor }}
     >
-      <div className='sidebar' style={{backgroundColor: user.msgids === "assistant" ? 'var(--theme-color)' : '#7c3838ce'}}
+      <div className='sidebar' style={{backgroundColor: user.msgids === "assistant" ? 'var(--theme-color)' : '#FFAA01ce'}}
       >
         <Sidebar updateProfile={updateProfile} chatFuncDisplay={chatFuncDisplay} setChatview={setChatview} setChatstarted={setChatstarted} handleLogout={handleLogout}/>
       </div>

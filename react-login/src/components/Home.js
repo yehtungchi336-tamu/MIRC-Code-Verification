@@ -13,7 +13,6 @@ import {
   useLocation
 } from "react-router-dom";
 import ReactTimeAgo from 'react-time-ago'
-import emailjs from 'emailjs-com'
 import Usersettings from "./Usersettings";
 import { ContextApp } from "../ContextAPI";
 import Hoverlink from "./Hoverlink";
@@ -42,35 +41,6 @@ function Body(props) {
       );
     });
 
-  const form = useRef();
-  function MailSending(e){
-    e.preventDefault();
-
-    emailjs.sendForm(
-      "service_k0epgii",
-      "template_a0nogel",
-      form.current,
-      "J14Ld2x5lECND_Nx1"
-    )
-    .then(
-      (result) => {
-        console.log(result.text);
-        alert("SUCCESS!");
-      },
-      (error) => {
-        console.log(error.text);
-        alert("FAILED...", error);
-      }
-    );
-  }
-
-  const history = useHistory();
-  const nav2emaillinkage = () => {
-    history.push('/linkage');
-  };
-
-
-
   function determineTime() {
     const d = new Date();
     if (d.getHours() >= 6 && d.getHours() < 12) {
@@ -86,21 +56,36 @@ function Body(props) {
     }
   }
 
- /* 
   useEffect(()=>{
       if (user){
-      db.collection('users').doc(user.uid).onSnapshot(snap=>{
-        const tmp = snap.data()
-        setRoleType(tmp.msgids)
-        console.log("home set role.." + tmp.msgids)
-      })
+          if (!user.msgids)
+          {
+            props.handleLogout();
+            return;
+          }
+          else 
+          {         
+            var username = (user.msgids == "assistant") ? "YiChia" : "Yaru Yang"; //user.displayName;
+            var userRef = realtime_db.ref("/draft");
+            var count = 0;
+            userRef.orderByChild("username")
+            .equalTo(username)
+            .on('value', function(snapshot) {
+              snapshot.forEach(function(childSnapshot) {
+                if (childSnapshot.val().status == "Pending") {         
+                  count = count + 1;
+                }
+              });
+            });
+            setNotifLength(count);
+          }
       }
     })
-*/
-  function determinetext() {
-    if (user) {
+
+    function determinetext() {
+    if (user) {  
         return determineTime() + " " + user.msgids + " " + user.displayName + " (login type: " + user.providerData[0].providerId + ")"
-    }
+      }
   }
 
   return (
@@ -127,10 +112,20 @@ function Body(props) {
           Email Linkage
         </button>
         */}
+
       </div>
 
       <div className="homeside">
-
+        <div className="notifications bs">
+          <p className="homeside_type">Notifications</p>
+          <strong><p className="homeside_type_3">Pending: {notifi}</p></strong>
+          <Link to= {user.msgids == "assistant" ? "/assistant_draftlist" : "/executive_draftlist"} className="flexrow sb">
+            <p className="homeside_type_2">
+              Go to notifications <hr />
+            </p>
+            <i className="fal fa-arrow-right" style={{ color: themecolor }}></i>
+          </Link>
+        </div>
       </div>
     </div>
   );

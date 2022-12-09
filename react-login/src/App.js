@@ -2,7 +2,7 @@ import React, {useState, useEffect} from "react";
 import "./styles.css";
 import {db, Fire} from './Fire';
 import firebase from "firebase";
-import { BrowserRouter as Router,Switch,Route,Link,NavLink, Redirect } from "react-router-dom" 
+import { BrowserRouter as Router,Switch,Route,Link,NavLink, useHistory, Redirect } from "react-router-dom" 
 import Sidebar from './components/Sidebar'
 import Login from './components/Login'
 import Body from './components/Body'
@@ -28,6 +28,7 @@ function App() {
   const [forgotpassword, setForgotpassword]=useState(false)
   //const [msgids, setMsgIds] = useState([''])
   const [loading, setLoading]=useState(false)
+  let history = useHistory()
   const clearInputs = () => {
     setEmail('')
     setPassword('')
@@ -39,7 +40,12 @@ function App() {
   const handleLogin = () => {
     clearErrors()
 
-    
+    if (!loginType)
+    {
+      window.alert('Please select your login role!')
+      return
+    }
+
     firebase.auth().signInWithEmailAndPassword(email, password)
     .then(()=>{
       //db.collection('users').doc(user.uid).update({msgids: loginType})
@@ -68,11 +74,34 @@ function App() {
     console.log('signup')
     clearErrors()
     firebase.auth().createUserWithEmailAndPassword(email, password)
-    .then(()=>{
-      firebase.auth().currentUser.updateProfile({
-        displayName: name,
-      }) 
-      //authListener()
+    .then(function(result) {
+      result.user.updateProfile({
+        displayName: name
+      })
+
+      db.collection('users').doc(result.user.uid).set({
+        created: new Date(), 
+        msgids,
+        uid: result.user.uid,
+        online: true,
+        userinfo: {
+          name,
+          cover,
+          age: '', 
+          phone: '', 
+          city: '',
+          country: '',
+          website: 'https://',
+          job: '',
+          email,
+        },
+        customization: {
+          color: '#10325c',
+          themecolor: '#0f6ce6',
+          darkmode: false,
+          widemode: false,
+        }
+    })
     })
     .catch(err => {
         
@@ -92,12 +121,12 @@ function App() {
     })
     firebase.auth().onAuthStateChanged(user => {
       if(user) {
-          user.updateProfile({
-            displayName: name,
-          }) 
+          //user.updateProfile({
+          //  displayName: name,
+          //}) 
           db.collection('users').doc(user.uid).set({
               created: new Date(), 
-              msgids: loginType,
+              msgids,
               uid: firebase.auth().currentUser.uid,
               online: true,
               userinfo: {
@@ -121,8 +150,8 @@ function App() {
           db.collection('notifications').doc(user.uid).set({
             notifications: 'email'
           })
-          firebase.auth().currentUser.msgids = loginType
-          console.log("email signup success.." + firebase.auth().currentUser.msgids)
+          //firebase.auth().currentUser.msgids = loginType
+          //console.log("email signup success.." + firebase.auth().currentUser.msgids)
       }//if (user)
       else {
         setUser('')
@@ -132,18 +161,19 @@ function App() {
 
   const handleLogout = () => {
     if(user) {
-      db.collection('users').doc(user.uid).update({online: false})
+      //db.collection('users').doc(user.uid).update({online: false})
     }
     console.log("handle logout.." + loginType)
     firebase.auth().signOut()
     window.location.href = '/'
   }
+
   const authListener = () => {
     firebase.auth().onAuthStateChanged(user => {   
       if(user) {
         clearInputs()
         setUser(user)
-        db.collection('users').doc(user.uid).update({online: true})
+        //db.collection('users').doc(user.uid).update({online: true})
       }
       else {
           setUser('')
@@ -153,6 +183,12 @@ function App() {
   } 
   
   function loginwithGoogle(){
+    if (!loginType)
+    {
+      window.alert('Please select your login role!')
+      return
+    }
+
     var provider = new firebase.auth.GoogleAuthProvider();
     provider.addScope('email');
 
@@ -213,6 +249,11 @@ function App() {
     });
   }
   function loginwithFacebook(){
+    if (!loginType)
+    {
+      window.alert('Please select your login role!')
+      return
+    }
     var provider = new firebase.auth.FacebookAuthProvider();
     provider.addScope("email");
 
@@ -276,7 +317,7 @@ function App() {
   }
   useBeforeunload(() => {
     if(user) {
-      db.collection('users').doc(user.uid).update({online: false})
+      //db.collection('users').doc(user.uid).update({online: false})
     }
   }) 
 
@@ -287,25 +328,26 @@ function App() {
     window.addEventListener('onbeforeunload', removeActiveStatus) 
     function removeActiveStatus() {
       if(user) {
-        db.collection('users').doc(user.uid).update({online: false})
+        //db.collection('users').doc(user.uid).update({online: false})
         firebase.auth().currentUser.msgids = loginType
         console.log("login success 1.." + firebase.auth().currentUser.msgids)
       }
     }
     if(user) {
-      db.collection('users').doc(user.uid).update({online: true})
+      //db.collection('users').doc(user.uid).update({online: true})
       firebase.auth().currentUser.msgids = loginType
       console.log("login success 2.." + firebase.auth().currentUser.msgids)
     }
 
     return() => cnt = true
-  },[])  
+    },[])  
 
-   return ( 
+  return ( 
 
     <Router >
     <div className="App">
-       {user?
+      {user? 
+        (user.msgids == "assistant" ?          
         <ContextAppProvider>
         <>
           <Body setLoading={setLoading} handleLogout={handleLogout} />
@@ -313,13 +355,20 @@ function App() {
         </>
         </ContextAppProvider>
         :
+        <ContextAppProvider>
+        <>
+          <Body setLoading={setLoading} handleLogout={handleLogout} />
+          <Redirect exact to='/linkage'/>
+        </>
+        </ContextAppProvider> )
+        :
         <> 
-        <Login loginwithFacebook={()=>loginwithFacebook}loginwithGoogle={()=>loginwithGoogle}  setRoleType={setRoleType} loading={loading} name={name} setName={setName} lname={lname} setlName={setlName}email={email} handleSignup={handleSignup} setEmail={setEmail} password= {password} setPassword={setPassword} handleLogin={handleLogin} hasAccount={hasAccount} setHasAccount={setHasAccount} emailError={emailError} passwordError={passwordError}/>       
-        <Redirect to='/'/>
-     </>
-        }
+          <Login loginwithFacebook={()=>loginwithFacebook} loginwithGoogle={()=>loginwithGoogle}  setRoleType={setRoleType} loading={loading} name={name} setName={setName} lname={lname} setlName={setlName}email={email} handleSignup={handleSignup} setEmail={setEmail} password= {password} setPassword={setPassword} handleLogin={handleLogin} hasAccount={hasAccount} setHasAccount={setHasAccount} emailError={emailError} passwordError={passwordError}/>       
+          <Redirect exact to='/'/>
+        </>
+      }
     </div>  
-     </Router>
+    </Router>
 
   );
 }

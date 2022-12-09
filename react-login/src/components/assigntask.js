@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useContext } from "react";
 import firebase from "firebase";
 import { db,realtime_db } from "../Fire";
+import DatePicker from "react-datepicker";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 import {
   BrowserRouter as Router,
@@ -16,12 +17,15 @@ import emailjs from 'emailjs-com'
 import Usersettings from "./Usersettings";
 import { ContextApp } from "../ContextAPI";
 import Hoverlink from "./Hoverlink";
+import "react-datepicker/dist/react-datepicker.css";
+
 function Assigntask(props) {
   const { themecolor } = useContext(ContextApp)
   const user = firebase.auth().currentUser
   const [roleType, setRoleType] = useState('')
   const [cover, setCover] = useState("")
   const { handleLogout } = props
+  const [startDate, setStartDate] = useState(new Date());
   const links = ["comment", "notifications", "settings", "adddraft", "logout"]
   const [notifi, setNotifLength]=useState(0)
   const lnks = [
@@ -40,8 +44,11 @@ function Assigntask(props) {
       );
     });
 
+    
   const [textarea, setTextarea] = useState();
-  const [inputs, setInputs] = useState({})
+  const [inputs, setInputs] = useState({});
+
+
   const handleChange = (event) => {
     setInputs(event.target.value)
   }
@@ -54,6 +61,9 @@ function Assigntask(props) {
   const handleSubmit = (event) => {
     event.preventDefault();
     console.log(inputs);
+    console.log(startDate);
+    const formattedDate = `${startDate.getMonth()+1}/${startDate.getDate()}/${startDate.getFullYear()}`;
+    console.log(formattedDate);
 
     var tutorialsRef = realtime_db.ref("/draft");
     tutorialsRef.push({
@@ -64,13 +74,31 @@ function Assigntask(props) {
       bcc: "",//inputs.BCC,
       message: "",//textarea,
       assistant: inputs,
-      audiofile: "",
+      deadline: formattedDate,
+      comments: textarea,
       status: "Pending",
-    });
+    }).then(
+      (result) => {
+        console.log(result.text);
+        alert("SUBMISSION SUCCESS!");
+      },
+      (error) => {
+        console.log(error.text);
+        alert("SUBMISSION FAILED...", error);
+      }
+    );
 
 
   }
 
+
+  // const Example = () => {
+  //   const [startDate, setStartDate] = useState(new Date());
+  //   return (
+  //     <DatePicker selected={startDate} onChange={(date) => setStartDate(date)} />
+  //   );
+  // };
+/*
   useEffect(()=>{
     if (user){
     db.collection('users').doc(user.uid).onSnapshot(snap=>{
@@ -81,7 +109,7 @@ function Assigntask(props) {
     })
     }
   },[])
-
+*/
   function determineTime() {
     const d = new Date();
     if (d.getHours() >= 6 && d.getHours() < 12) {
@@ -109,7 +137,7 @@ function Assigntask(props) {
         {/*<h2 className="marginBottom">{determinetext()}</h2>*/}
         <h2 style={{color: 'black'}}>Assign Task</h2>
       </div>
-      
+
       <div className="flex fe sticky">
         <div className="gridobjects  bs marginBottom">
           <Hoverlink
@@ -126,10 +154,10 @@ function Assigntask(props) {
           <div class="col align-self-center">
           <form onSubmit={handleSubmit}>
             {/* <label>Assistant
-            <input 
-              type="text" 
-              name="subject" 
-              value={inputs.subject || ""} 
+            <input
+              type="text"
+              name="subject"
+              value={inputs.subject || ""}
               placeholder=" enter email subject"
               onChange={handleChange}
             />
@@ -144,51 +172,25 @@ function Assigntask(props) {
               <option value="Max">Max</option>
             </select>
           </label>
-            Audiofile
-            {/* <label>Subject
-            <input 
-              type="text" 
-              name="subject" 
-              value={inputs.subject || ""} 
-              placeholder=" enter email subject"
-              onChange={handleChange}
-            />
-            </label> */}
-            {/* <label>TO
-              <input 
-                type="text" 
-                name="recipient" 
-                value={inputs.recipient || ""} 
-                placeholder=" enter the recipient's address"
-                onChange={handleChange}
-            />
-            </label>
-            <label>CC
-              <input 
-                type="text" 
-                name="CC" 
-                value={inputs.CC || ""} 
-                placeholder=" enter the Carbon Copy"
-                onChange={handleChange}
-            />
-            </label>
-            <label>BCC
-              <input 
-                type="text" 
-                name="BCC" 
-                value={inputs.BCC || ""} 
-                placeholder=" enter the Blind Carbon Copy"
-                onChange={handleChange}
-            />
-            </label>
 
-            <label>Message<textarea value={textarea  || ""} rows="10" onChange={handle_textarea_Change} />
-            </label> */}
-              <input type="submit" class="btn btn-primary" id='draft_submit' value='Submit' />
+          
+            {/* Date
+            <DatePicker
+              selected={ startDate }
+              onChange={ handle_Date_Change }
+              name="startDate"
+              dateFormat="MM/dd/yyyy"
+            /> */}
 
-
+            
+            <label>Comment<textarea value={textarea  || ""} rows="10" onChange={handle_textarea_Change} />
+            </label>
+              
+            <label>Deadline
+            {<DatePicker selected={startDate} onChange={(date) => setStartDate(date)} />}
+            </label>
+            <input type="submit" class="btn btn-primary" id='draft_submit' value='Submit' />
           </form>
-
 
           </div>
         </div>

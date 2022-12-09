@@ -9,7 +9,8 @@ import {
   Link,
   NavLink,
   Redirect,
-  useLocation
+  useLocation,
+  useHistory
 } from "react-router-dom";
 import ReactTimeAgo from 'react-time-ago'
 import emailjs from 'emailjs-com'
@@ -25,6 +26,7 @@ import Hoverlink from "./Hoverlink";
 function ExecutiveUpdatedraft(props) {
 
   let location = useLocation();
+  let history = useHistory();
   // console.log(location.aboutProps);
   const button_state = {button: 1};
   const { themecolor } = useContext(ContextApp)
@@ -68,57 +70,61 @@ function ExecutiveUpdatedraft(props) {
   
     const key = location.aboutProps['datakey'];
     console.log("handleSubmit");
-    console.log(form.current);
-    console.log(form.current.message.value);
-
+    // console.log(form.current);
+    // console.log(form.current.message.value);
     const updates = {};
-    updates[`draft/${key}/subject`] = form.current.subject.value;
-    updates[`draft/${key}/cc`] = form.current.cc.value;
-    updates[`draft/${key}/bcc`] = form.current.bcc.value;
-    updates[`draft/${key}/message`] = form.current.message.value;
-    updates[`draft/${key}/recipient`] = form.current.recipient.value;
+    
     if (button_state.button === 1) {
+      updates[`draft/${key}/subject`] = form.current.subject.value;
+      updates[`draft/${key}/cc`] = form.current.cc.value;
+      updates[`draft/${key}/bcc`] = form.current.bcc.value;
+      updates[`draft/${key}/message`] = form.current.message.value;
+      updates[`draft/${key}/recipient`] = form.current.recipient.value;
       updates[`draft/${key}/status`] = "Accepted";
-
+      emailjs.sendForm(
+        "service_k0epgii",
+        "template_a0nogel",
+        form.current,
+        "J14Ld2x5lECND_Nx1"
+      )
+      .then(
+        (result) => {
+          console.log(result);
+          alert("MAILSEND SUCCESS!");
+        },
+        (error) => {
+          console.log(error);
+          alert("MAILSEND FAILED...", error);
+        }
+      );
+      realtime_db.ref().update(updates);
+      history.push("/executive_draftlist");
     }
     if (button_state.button === 2) {
+      updates[`draft/${key}/subject`] = form.current.subject.value;
+      updates[`draft/${key}/cc`] = form.current.cc.value;
+      updates[`draft/${key}/bcc`] = form.current.bcc.value;
+      updates[`draft/${key}/message`] = form.current.message.value;
+      updates[`draft/${key}/recipient`] = form.current.recipient.value;
       updates[`draft/${key}/status`] = "Rejected";
+      realtime_db.ref().update(updates);
+      alert("DRAFT REJECTED!");
+      history.push("/executive_draftlist");
+
     }
-    realtime_db.ref().update(updates);
-
-
-    emailjs.sendForm(
-      "service_k0epgii",
-      "template_a0nogel",
-      form.current,
-      "J14Ld2x5lECND_Nx1"
-    )
-    .then(
-      (result) => {
-        console.log(result.text);
-        alert("MailSend SUCCESS!");
-      },
-      (error) => {
-        console.log(error.text);
-        alert("MailSend FAILED...", error);
-      }
-    );
-
-    console.log("RRRRRRRR")
-
-
+    if (button_state.button === 3) {
+      
+      if (confirm('Are you sure you want to delete this draft?')) { 
+        console.log(key);
+        console.log("delete");
+        var userRef = realtime_db.ref("/draft");
+        userRef.child(key).remove();
+        alert("DELETE SUCCESS!");
+        history.push("/executive_draftlist");
+      } 
+    }
   }
 
-  useEffect(()=>{
-    if (user){
-    db.collection('users').doc(user.uid).onSnapshot(snap=>{
-      const tmp = snap.data()
-      setRoleType(tmp.role)
-      //roleType = tmp.role
-      console.log("home set role.." + tmp.role)
-    })
-    }
-  },[])
 
   function determineTime() {
     const d = new Date();
@@ -273,7 +279,6 @@ function ExecutiveUpdatedraft(props) {
                   onClick={() => (button_state.button = 1)}
                   type="submit"
                   name="Accept"
-                  id='draft_submit'
                   value="wow"
                   id='draft_accept'
                 >
@@ -283,12 +288,22 @@ function ExecutiveUpdatedraft(props) {
                   onClick={() => (button_state.button = 2)}
                   type="submit"
                   name="btn2"
-                  id='draft_submit'
                   value="oh no"
                   id='draft_accept'
                 >
                   Reject
                 </button>
+
+                <button
+                  onClick={() => (button_state.button = 3)}
+                  type="submit"
+                  name="btn3"
+                  value="delete"
+                  id='draft_accept'
+                >
+                  Delete
+                </button>
+
               </form>
             </div>
           </div>
