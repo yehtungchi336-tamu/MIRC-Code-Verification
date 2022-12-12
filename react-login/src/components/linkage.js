@@ -115,7 +115,7 @@ export default function Linkage(props) {
           }
           else
           {         
-            var username = (user.msgids == "assistant") ? "YiChia" : "Yaru Yang"; //user.displayName;
+            var username = (user.msgids == "assistant") ? "YiChia" : user.displayName;
             var userRef = realtime_db.ref("draft");
             var count = 0;
             if (user.msgids == "assistant")
